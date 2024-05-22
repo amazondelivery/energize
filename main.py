@@ -6,6 +6,19 @@ from scenes import *
 # to go with it
 class Game:
     def __init__(self):
+        #sequences
+        self.sceneManager = SceneManager()
+        # why does python make you add "self." every time i use an instance variable. so annoying
+
+    def tick(self):
+        self.sceneManager.tick()
+
+    def record(self, char):
+
+        self.sceneManager.record(char)
+
+class SceneManager:
+    def __init__(self):
         pg.init()
         pg.display.set_caption("Energize")
 
@@ -14,12 +27,31 @@ class Game:
         self.screen = pg.display.set_mode((self.screen_width, self.screen_height))
         self.clock = pg.time.Clock()
 
-        #sequences
-        self.sceneManager = SceneManager()
+        self.sequences = [TitleSequence(), SettingsSequence(), GameScene()]
+
+        #sets intial scene to title screen
+        self.currentScene = self.sequences[0]
+
+    def update(self, screen):
+        self.screen = self.currentScene.draw(screen)
+
+    def changeScene(self, sequenceNum):
+        self.currentScene = self.sequences[sequenceNum]
+
+    def getSceneName(self):
+        return self.currentScene.getName()
 
     def tick(self):
         self.clock.tick(60)
+        self.update(self.screen)
 
+    def record(self, char):
+        num = self.currentScene.record(char)
+        if num != -1:
+            self.changeScene(num)
+
+
+    #where to put the below funcs? def not here. change later
     def mids(self, obj):
         return (self.screen_height / 2 - obj.get_height() // 2, self.screen_width / 2 - obj.get_width() // 2)
 
@@ -29,20 +61,6 @@ class Game:
     def mid_width(self, obj):
         return self.mids(self,obj)[1]
 
-class SceneManager:
-    def __init__(self):
-        sequences = [TitleSequence()]
-
-        #sets intial scene to title screen
-        self.currentScene = sequences[0]
-
-    def drawScene(self):
-        self.currentScene.draw()
-
-    def getScene(self):
-        return self.currentScene.getName()
-
-
 
 game = Game()
 
@@ -51,6 +69,12 @@ while True:
         if event.type == pg.QUIT:
             pg.quit()
             raise SystemExit
+
+        if event.type == pg.KEYDOWN:
+
+            if event.key == pg.K_a:
+
+                game.record('a')
 
     game.tick()
     pg.display.flip()
