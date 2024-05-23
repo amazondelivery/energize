@@ -8,23 +8,24 @@ class Game:
     def __init__(self):
         #sequences
         self.sceneManager = SceneManager()
-        # why does python make you add "self." every time i use an instance variable. so annoying
+        # why does python make you add "self." every time you use an instance variable. so annoying
 
     def tick(self):
         self.sceneManager.tick()
 
     def record(self, char):
-
         self.sceneManager.record(char)
+
+    #debug purposes
+    def screenshot(self):
+        self.sceneManager.screenshot()
 
 class SceneManager:
     def __init__(self):
         pg.init()
         pg.display.set_caption("Energize")
 
-        self.screen_width = 1280
-        self.screen_height = 720
-        self.screen = pg.display.set_mode((self.screen_width, self.screen_height))
+        self.screen = pg.display.set_mode((1280, 720))
         self.clock = pg.time.Clock()
 
         self.sequences = [TitleSequence(), SettingsSequence(), GameScene()]
@@ -50,16 +51,11 @@ class SceneManager:
         if num != -1:
             self.changeScene(num)
 
+    #debug purposes
+    def screenshot(self):
+        pg.image.save(self.screen, "screenshot.jpg")
 
-    #where to put the below funcs? def not here. change later
-    def mids(self, obj):
-        return (self.screen_height / 2 - obj.get_height() // 2, self.screen_width / 2 - obj.get_width() // 2)
 
-    def mid_height(self, obj):
-        return self.mids(self,obj)[0]
-
-    def mid_width(self, obj):
-        return self.mids(self,obj)[1]
 
 
 game = Game()
@@ -78,3 +74,6 @@ while True:
 
     game.tick()
     pg.display.flip()
+
+
+
