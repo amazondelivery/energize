@@ -72,6 +72,10 @@ while True:
 
                 game.record('a')
 
+            if event.key == pg.K_q:
+
+                game.record('q')
+
     game.tick()
     pg.display.flip()
 

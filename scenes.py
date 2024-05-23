@@ -45,7 +45,11 @@ class TitleSequence(Sequence):
 
     def record(self, char):
         if char == 'a':
+            #changes scene to settings page
             return 1
+        elif char == 'q':
+            #changes scene to game
+            return 2
         else:
             return -1
 
