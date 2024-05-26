@@ -1,4 +1,6 @@
 import pygame as pg
+import json
+import os.path
 from abc import ABC, abstractmethod
 
 class Sequence(ABC):
@@ -40,7 +42,7 @@ class TitleSequence(Sequence):
 
         screen.blit(title, (super().mids(title, 0, 165)))
         screen.blit(playButton, (super().mids(playButton, 0, -30)))
-        screen.blit(settingsButton, super().mids(settingsButton, 0, -100))
+        screen.blit(settingsButton, super().mids(settingsButton, 0, -130))
         return screen
 
     def record(self, char):
@@ -70,6 +72,10 @@ class SettingsSequence(Sequence):
         return 0
 
 class GameScene(Sequence):
+    #in my attempts to find out how to serialize an object to file in python, literally every guide told me I need to
+    #use something called "pickle." Not only is that a silly name, it's amazing that I need to use some unheard of
+    #package just to do something so basic. im not using pickle. I will be using json and I don't care if this makes
+    #saving data exponentially harder
     def __init__(self):
         super().__init__()
         print('game scene initalized')
@@ -81,3 +87,9 @@ class GameScene(Sequence):
 
     def record(self, char):
         return 0
+
+    def introScene(self):
+        print("intro scene bla bla bla")
+
+
+
