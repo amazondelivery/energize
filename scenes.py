@@ -8,8 +8,15 @@ class Sequence(ABC):
     def __init__(self):
         self.screen_width = 1280
         self.screen_height = 720
+        self.fonts = {}
+        self.texts = {}
+
     @abstractmethod
     def record(self, char):
+        pass
+
+    @abstractmethod
+    def mouse(self, coords, buttonsPressed):
         pass
 
     @abstractmethod
@@ -30,19 +37,27 @@ class TitleSequence(Sequence):
     def __init__(self):
         super().__init__()
         self.audioToggle = True
-        self.titleFont = pg.font.Font("MajorMonoDisplay-Regular.ttf", 185)
-        self.buttonFont = pg.font.Font("MajorMonoDisplay-Regular.ttf", 40) #prob not using this
-        self.textFont = pg.font.Font("AeogoPixellated-DYYEd.ttf", 40)
+
+        #this whole dictionary thing is only gonna be on the title sequence because I'm just testing it out and seeing how
+        #it goes
+        self.fonts = {
+            "titleFont" : pg.font.Font("MajorMonoDisplay-Regular.ttf", 185),
+            "buttonFont" :   pg.font.Font("MajorMonoDisplay-Regular.ttf", 40), #prob not using this
+            "textFont" : pg.font.Font("AeogoPixellated-DYYEd.ttf", 40)
+        }
+
+        self.texts = {
+            "title" : self.fonts["titleFont"].render("ENERGIZE", True, "White"),
+            "playButton" : self.fonts["buttonFont"].render("PLAY", True, "White"),
+            "settingsButton" : self.fonts["buttonFont"].render("SETTINGS", True, "White")
+        }
 
     def draw(self, screen):
         screen.fill("BLACK")
-        title = self.titleFont.render("ENERGIZE", True, "White")
-        playButton = self.textFont.render("PLAY", True, "White")
-        settingsButton = self.textFont.render("SETTINGS", True, "White")
 
-        screen.blit(title, (super().mids(title, 0, 165)))
-        screen.blit(playButton, (super().mids(playButton, 0, -30)))
-        screen.blit(settingsButton, super().mids(settingsButton, 0, -130))
+        screen.blit(self.texts["title"], (super().mids(self.texts["title"], 0, 165)))
+        screen.blit(self.texts["playButton"], (super().mids(self.texts["playButton"], 0, -30)))
+        screen.blit(self.texts["settingsButton"], super().mids(self.texts["settingsButton"], 0, -130))
         return screen
 
     def record(self, char):
@@ -55,6 +70,17 @@ class TitleSequence(Sequence):
         else:
             return -1
 
+    def checkCollision(self, buttonRect, mouseClickCoords):
+        #rework this to compare to every button isntead of just one button
+        if (buttonRect[0] < mouseClickCoords[0] <
+            buttonRect[0] + buttonRect[2]) and (buttonRect[1] < mouseClickCoords[1] <
+                                                buttonRect[1] + buttonRect[3]):
+            return True
+        else:
+            return False
+    def mouse(self, coords, buttonsPressed):
+
+        return -1
 
 class SettingsSequence(Sequence):
     def __init__(self):
@@ -70,6 +96,9 @@ class SettingsSequence(Sequence):
 
     def record(self, char):
         return 0
+
+    def mouse(self, coords, buttonsPressed):
+        return -1
 
 class GameScene(Sequence):
     #in my attempts to find out how to serialize an object to file in python, literally every guide told me I need to
@@ -87,6 +116,9 @@ class GameScene(Sequence):
 
     def record(self, char):
         return 0
+
+    def mouse(self, coords, buttonsPressed):
+        return -1
 
     def introScene(self):
         print("intro scene bla bla bla")
