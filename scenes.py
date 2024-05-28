@@ -23,6 +23,33 @@ class Sequence(ABC):
     def draw(self, screen):
         pass
 
+    @abstractmethod
+    def addSizes(self):
+        pass
+
+    def blit(self, screen):
+        for text in self.texts.values():
+            screen.blit(text[0], text[1])
+
+    def checkCollision(self, mouseClickCoords):
+        for text in self.texts.keys():
+
+            textCoords = self.texts[text][0].get_rect()
+            xMouse = mouseClickCoords[0]
+            yMouse = mouseClickCoords[1]
+            xInit = self.texts[text][1][0]
+            yInit = self.texts[text][1][1]
+            xText = textCoords[0]
+            yText = textCoords[1]
+            textLength = textCoords[2]
+            textHeight = textCoords[3]
+
+            if ((xText + xInit <= xMouse <= xText + xInit + textLength)
+                    and (yText + yInit <= yMouse <= yText + yInit + textHeight)):
+                return text
+
+        return None
+
     def mids(self, obj, x = 0, y = 0):
         return (self.screen_width / 2 - obj.get_width() // 2 + x, self.screen_height / 2 - obj.get_height() // 2 - y)
 
@@ -47,17 +74,15 @@ class TitleSequence(Sequence):
         }
 
         self.texts = {
-            "title" : self.fonts["titleFont"].render("ENERGIZE", True, "White"),
-            "playButton" : self.fonts["buttonFont"].render("PLAY", True, "White"),
-            "settingsButton" : self.fonts["buttonFont"].render("SETTINGS", True, "White")
+            "title" : [self.fonts["titleFont"].render("ENERGIZE", True, "White")],
+            "playButton" : [self.fonts["buttonFont"].render("PLAY", True, "White")],
+            "settingsButton" : [self.fonts["buttonFont"].render("SETTINGS", True, "White")]
         }
+        self.addSizes()
 
     def draw(self, screen):
         screen.fill("BLACK")
-
-        screen.blit(self.texts["title"], (super().mids(self.texts["title"], 0, 165)))
-        screen.blit(self.texts["playButton"], (super().mids(self.texts["playButton"], 0, -30)))
-        screen.blit(self.texts["settingsButton"], super().mids(self.texts["settingsButton"], 0, -130))
+        self.blit(screen)
         return screen
 
     def record(self, char):
@@ -70,33 +95,51 @@ class TitleSequence(Sequence):
         else:
             return -1
 
-    def checkCollision(self, buttonRect, mouseClickCoords):
-        #rework this to compare to every button isntead of just one button
-        if (buttonRect[0] < mouseClickCoords[0] <
-            buttonRect[0] + buttonRect[2]) and (buttonRect[1] < mouseClickCoords[1] <
-                                                buttonRect[1] + buttonRect[3]):
-            return True
-        else:
-            return False
-    def mouse(self, coords, buttonsPressed):
+    def addSizes(self):
 
+        #set positions for buttons here
+        title = (self.mids(self.texts["title"][0], 0, 165))
+        playButton = (self.mids(self.texts["playButton"][0], 0, -30))
+        settingsButton = (self.mids(self.texts["settingsButton"][0], 0, -130))
+
+        self.texts["title"].append(title)
+        self.texts["playButton"].append(playButton)
+        self.texts["settingsButton"].append(settingsButton)
+
+    #currently debugging
+    def mouse(self, coords, buttonsPressed):
+        collisionButton = self.checkCollision(coords)
+        if buttonsPressed[0] == True:
+            if collisionButton == "playButton":
+                return 2
+            elif collisionButton == "settingsButton":
+                return 1
         return -1
 
 class SettingsSequence(Sequence):
     def __init__(self):
         super().__init__()
-        self.font = pg.font.Font("AeogoPixellated-DYYEd.ttf", 40)
+
+        self.fonts = {
+            "mainFont" : pg.font.Font("AeogoPixellated-DYYEd.ttf", 40)
+        }
+        self.texts = {
+            "sampleText" : [self.fonts["mainFont"].render("hi", True, "BLACK")]
+        }
+        self.addSizes()
 
     def draw(self, screen):
         screen.fill("PURPLE")
-        sampleText = self.font.render("hi", True, "BLACK")
-
-        screen.blit(sampleText, (200,200))
+        self.blit(screen)
         return screen
 
     def record(self, char):
         return 0
 
+    def addSizes(self):
+        sampleText = (200,200)
+
+        self.texts["sampleText"].append(sampleText)
     def mouse(self, coords, buttonsPressed):
         return -1
 
@@ -107,7 +150,7 @@ class GameScene(Sequence):
     #saving data exponentially harder
     def __init__(self):
         super().__init__()
-        print('game scene initalized')
+        self.addSizes()
 
     def draw(self, screen):
         screen.fill("RED")
@@ -119,6 +162,9 @@ class GameScene(Sequence):
 
     def mouse(self, coords, buttonsPressed):
         return -1
+
+    def addSizes(self):
+        return 0
 
     def introScene(self):
         print("intro scene bla bla bla")

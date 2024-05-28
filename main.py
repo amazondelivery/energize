@@ -36,6 +36,7 @@ class Game:
     def saveGameData(self):
         with open('gameData.json', 'w') as gameData:
             json.dump(self.data, gameData)
+
     def getGameData(self):
         with open("gameData.json") as gameData:
             return json.load(gameData)
@@ -79,7 +80,9 @@ class SceneManager:
             self.changeScene(num)
 
     def mouse(self, coords, buttonsPressed):
-        self.currentScene.mouse(coords, buttonsPressed)
+        num = self.currentScene.mouse(coords, buttonsPressed)
+        if num != -1:
+            self.changeScene(num)
 
     #debug purposes
     def screenshot(self):
@@ -98,6 +101,7 @@ while True:
             pg.quit()
             raise SystemExit
 
+        #there is a problem where one single click gets registered as multiple clicks that I will address later
         game.mouse(pg.mouse.get_pos(), pg.mouse.get_pressed())
 
         if event.type == pg.KEYDOWN:
