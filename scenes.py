@@ -8,8 +8,6 @@ class Sequence(ABC):
     def __init__(self):
         self.screen_width = 1280
         self.screen_height = 720
-        self.fonts = {}
-        self.texts = {}
 
     @abstractmethod
     def record(self, char):
@@ -20,16 +18,27 @@ class Sequence(ABC):
         pass
 
     @abstractmethod
+    def drawHelper(self, screen):
+        pass
+
     def draw(self, screen):
-        pass
+        screen = self.drawHelper(screen)
+        self.blit(screen)
+        return screen
 
-    @abstractmethod
     def addSizes(self):
-        pass
-
+        for text in self.texts.keys():
+            self.texts[text].append(self.sizes[text])
+        self.sizes = None #disposes of the dict sizes
     def blit(self, screen):
         for text in self.texts.values():
-            screen.blit(text[0], text[1])
+            screen.blit(text[0], text[2])
+
+    def font(self, fontName, fontSize):
+        return pg.font.Font(fontName, fontSize)
+
+    def renderText(self, font, text, antialias, color):
+        return font.render(text, antialias, color)
 
     def checkCollision(self, mouseClickCoords):
         for text in self.texts.keys():
@@ -37,8 +46,8 @@ class Sequence(ABC):
             textCoords = self.texts[text][0].get_rect()
             xMouse = mouseClickCoords[0]
             yMouse = mouseClickCoords[1]
-            xInit = self.texts[text][1][0]
-            yInit = self.texts[text][1][1]
+            xInit = self.texts[text][2][0]
+            yInit = self.texts[text][2][1]
             xText = textCoords[0]
             yText = textCoords[1]
             textLength = textCoords[2]
@@ -68,21 +77,27 @@ class TitleSequence(Sequence):
         #this whole dictionary thing is only gonna be on the title sequence because I'm just testing it out and seeing how
         #it goes
         self.fonts = {
-            "titleFont" : pg.font.Font("MajorMonoDisplay-Regular.ttf", 185),
-            "buttonFont" :   pg.font.Font("MajorMonoDisplay-Regular.ttf", 40), #prob not using this
-            "textFont" : pg.font.Font("AeogoPixellated-DYYEd.ttf", 40)
+            "titleFont" : self.font("MajorMonoDisplay-Regular.ttf", 185),
+            "buttonFont" : self.font("MajorMonoDisplay-Regular.ttf", 40), #prob not using this
+            "textFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
         }
 
         self.texts = {
-            "title" : [self.fonts["titleFont"].render("ENERGIZE", True, "White")],
-            "playButton" : [self.fonts["buttonFont"].render("PLAY", True, "White")],
-            "settingsButton" : [self.fonts["buttonFont"].render("SETTINGS", True, "White")]
+            # "buttonName" : [renderText(), sceneDirection, size]
+            "title" : [self.renderText(self.fonts["titleFont"], "ENERGIZE", True, "White"), -1],
+            "playButton" : [self.renderText(self.fonts["buttonFont"], "PLAY", True, "White"), 2],
+            "settingsButton" : [self.renderText(self.fonts["buttonFont"], "SETTINGS", True, "White"), 1]
+        }
+
+        self.sizes = {
+            "title" : (self.mids(self.texts["title"][0], 0, 165)),
+            "playButton" : (self.mids(self.texts["playButton"][0], 0, -30)),
+            "settingsButton" : (self.mids(self.texts["settingsButton"][0], 0, -130))
         }
         self.addSizes()
 
-    def draw(self, screen):
+    def drawHelper(self, screen):
         screen.fill("BLACK")
-        self.blit(screen)
         return screen
 
     def record(self, char):
@@ -96,24 +111,15 @@ class TitleSequence(Sequence):
             return -1
 
     def addSizes(self):
-
-        #set positions for buttons here
-        title = (self.mids(self.texts["title"][0], 0, 165))
-        playButton = (self.mids(self.texts["playButton"][0], 0, -30))
-        settingsButton = (self.mids(self.texts["settingsButton"][0], 0, -130))
-
-        self.texts["title"].append(title)
-        self.texts["playButton"].append(playButton)
-        self.texts["settingsButton"].append(settingsButton)
+        for text in self.texts.keys():
+            self.texts[text].append(self.sizes[text])
+        self.sizes = None #disposes of the dict sizes
 
     #currently debugging
     def mouse(self, coords, buttonsPressed):
         collisionButton = self.checkCollision(coords)
-        if buttonsPressed[0] == True:
-            if collisionButton == "playButton":
-                return 2
-            elif collisionButton == "settingsButton":
-                return 1
+        if buttonsPressed[0] == True and collisionButton != None:
+            return self.texts[collisionButton][1]
         return -1
 
 class SettingsSequence(Sequence):
@@ -121,25 +127,25 @@ class SettingsSequence(Sequence):
         super().__init__()
 
         self.fonts = {
-            "mainFont" : pg.font.Font("AeogoPixellated-DYYEd.ttf", 40)
+            "mainFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
         }
+
         self.texts = {
             "sampleText" : [self.fonts["mainFont"].render("hi", True, "BLACK")]
         }
+
+        self.sizes = {
+            "sampleText" : (200,200)
+        }
         self.addSizes()
 
-    def draw(self, screen):
+    def drawHelper(self, screen):
         screen.fill("PURPLE")
-        self.blit(screen)
         return screen
 
     def record(self, char):
         return 0
 
-    def addSizes(self):
-        sampleText = (200,200)
-
-        self.texts["sampleText"].append(sampleText)
     def mouse(self, coords, buttonsPressed):
         return -1
 
@@ -161,9 +167,8 @@ class GameScene(Sequence):
 
         self.addSizes()
 
-    def draw(self, screen):
+    def drawHelper(self, screen):
         screen.fill("RED")
-
         return screen
 
     def record(self, char):
