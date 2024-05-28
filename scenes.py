@@ -150,6 +150,15 @@ class GameScene(Sequence):
     #saving data exponentially harder
     def __init__(self):
         super().__init__()
+
+        self.fonts = {
+
+        }
+
+        self.texts = {
+
+        }
+
         self.addSizes()
 
     def draw(self, screen):
