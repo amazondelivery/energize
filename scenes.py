@@ -40,6 +40,9 @@ class Sequence(ABC):
     def renderText(self, font, text, antialias, color):
         return font.render(text, antialias, color)
 
+    def renderImage(self, fileName):
+        return pg.image.load(fileName)
+
     def checkCollision(self, mouseClickCoords):
         for text in self.texts.keys():
 
@@ -87,6 +90,10 @@ class TitleSequence(Sequence):
             "title" : [self.renderText(self.fonts["titleFont"], "ENERGIZE", True, "White"), -1],
             "playButton" : [self.renderText(self.fonts["buttonFont"], "PLAY", True, "White"), 2],
             "settingsButton" : [self.renderText(self.fonts["buttonFont"], "SETTINGS", True, "White"), 1]
+        }
+
+        self.images = {
+            # "imageName" : [renderImage()]
         }
 
         self.sizes = {
@@ -163,6 +170,11 @@ class GameScene(Sequence):
 
         self.texts = {
 
+        }
+
+        self.images = {
+            # "imageName" : [renderImage()]
+            "map" : [self.renderImage("map.png")]
         }
 
         self.addSizes()
