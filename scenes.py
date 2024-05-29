@@ -29,8 +29,13 @@ class Sequence(ABC):
     def addSizes(self):
         for text in self.texts.keys():
             self.texts[text].append(self.sizes[text])
+        for image in self.images.keys():
+            self.images[image].append(self.sizes[image])
         self.sizes = None #disposes of the dict sizes
+
     def blit(self, screen):
+        for image in self.images.values():
+            screen.blit(image[0], (200,200)) #test value
         for text in self.texts.values():
             screen.blit(text[0], text[2])
 
@@ -42,6 +47,10 @@ class Sequence(ABC):
 
     def renderImage(self, fileName):
         return pg.image.load(fileName)
+
+    def renderImage(self, filename, transformation):
+        image = pg.image.load(filename)
+        return pg.transform.scale(image, transformation)
 
     def checkCollision(self, mouseClickCoords):
         for text in self.texts.keys():
@@ -117,11 +126,6 @@ class TitleSequence(Sequence):
         else:
             return -1
 
-    def addSizes(self):
-        for text in self.texts.keys():
-            self.texts[text].append(self.sizes[text])
-        self.sizes = None #disposes of the dict sizes
-
     #currently debugging
     def mouse(self, coords, buttonsPressed):
         collisionButton = self.checkCollision(coords)
@@ -138,7 +142,11 @@ class SettingsSequence(Sequence):
         }
 
         self.texts = {
-            "sampleText" : [self.fonts["mainFont"].render("hi", True, "BLACK")]
+            "sampleText" : [self.fonts["mainFont"].render("hi", True, "BLACK"), -1]
+        }
+
+        self.images = {
+
         }
 
         self.sizes = {
@@ -174,13 +182,16 @@ class GameScene(Sequence):
 
         self.images = {
             # "imageName" : [renderImage()]
-            "map" : [self.renderImage("map.png")]
+            "map" : [self.renderImage("map.png", (self.screen_width, self.screen_height))]
         }
 
+        self.sizes = {
+            "map" : (0,0)
+        }
         self.addSizes()
 
     def drawHelper(self, screen):
-        screen.fill("RED")
+        screen.fill("BLACK")
         return screen
 
     def record(self, char):
