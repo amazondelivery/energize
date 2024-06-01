@@ -1,7 +1,6 @@
-from abc import ABC, abstractmethod
 import pygame as pg
 
-class Object(ABC):
+class Object():
 
     screen_width = 1280
     screen_height = 720

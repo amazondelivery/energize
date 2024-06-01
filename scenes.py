@@ -10,8 +10,8 @@ class Sequence(ABC):
     screen_height = 720
     @abstractmethod
     def __init__(self):
-        self.images = {}
-        self.texts = {}
+        self.images = []
+        self.texts = []
         self.fonts = {}
 
     @abstractmethod
@@ -162,7 +162,7 @@ class GameScene(Sequence):
         }
 
         self.images = [
-            Image("map.png", -1, (0,0), (self.screen_width * 16, self.screen_height * 16))
+            Image("map.png", -1, (0,0), (self.screen_width * 12, self.screen_height * 24))
         ]
 
         self.sizes = {
