@@ -1,13 +1,18 @@
 import pygame as pg
+from screenObject import *
 import json
 import os.path
 from abc import ABC, abstractmethod
 
 class Sequence(ABC):
+
+    screen_width = 1280
+    screen_height = 720
     @abstractmethod
     def __init__(self):
-        self.screen_width = 1280
-        self.screen_height = 720
+        self.images = {}
+        self.texts = {}
+        self.fonts = {}
 
     @abstractmethod
     def record(self, char):
@@ -34,36 +39,21 @@ class Sequence(ABC):
         self.sizes = None #disposes of the dict sizes
 
     def blit(self, screen):
-        for image in self.images.values():
-            screen.blit(image[0], (200,200)) #test value
-        for text in self.texts.values():
-            screen.blit(text[0], text[2])
+        for image in self.images:
+            screen.blit(*image.blit()) #test value
+        for text in self.texts:
+            screen.blit(*text.blit())
 
     def font(self, fontName, fontSize):
         return pg.font.Font(fontName, fontSize)
 
-    def renderText(self, font, text, antialias, color):
-        return font.render(text, antialias, color)
-
-    def renderImage(self, fileName):
-        return pg.image.load(fileName)
-
-    def renderImage(self, filename, transformation):
-        image = pg.image.load(filename)
-        return pg.transform.scale(image, transformation)
-
     def checkCollision(self, mouseClickCoords):
-        for text in self.texts.keys():
 
-            textCoords = self.texts[text][0].get_rect()
+        for text in self.texts:
+            xText, yText, textLength, textHeight = text.getRect()
             xMouse = mouseClickCoords[0]
             yMouse = mouseClickCoords[1]
-            xInit = self.texts[text][2][0]
-            yInit = self.texts[text][2][1]
-            xText = textCoords[0]
-            yText = textCoords[1]
-            textLength = textCoords[2]
-            textHeight = textCoords[3]
+            xInit, yInit = text.getPos()
 
             if ((xText + xInit <= xMouse <= xText + xInit + textLength)
                     and (yText + yInit <= yMouse <= yText + yInit + textHeight)):
@@ -71,14 +61,11 @@ class Sequence(ABC):
 
         return None
 
-    def mids(self, obj, x = 0, y = 0):
-        return (self.screen_width / 2 - obj.get_width() // 2 + x, self.screen_height / 2 - obj.get_height() // 2 - y)
-
-    def mid_height(self, obj):
-        return self.mids(self,obj)[0]
-
-    def mid_width(self, obj):
-        return self.mids(self,obj)[1]
+    def mouse(self, coords, buttonsPressed):
+        collisionButton = self.checkCollision(coords)
+        if buttonsPressed[0] == True and collisionButton != None:
+            return collisionButton.getAction()
+        return -1
 
 #java's abstract classes would be perfect here. real shame...
 class TitleSequence(Sequence):
@@ -94,23 +81,22 @@ class TitleSequence(Sequence):
             "textFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
         }
 
-        self.texts = {
-            # "buttonName" : [renderText(), sceneDirection, size]
-            "title" : [self.renderText(self.fonts["titleFont"], "ENERGIZE", True, "White"), -1],
-            "playButton" : [self.renderText(self.fonts["buttonFont"], "PLAY", True, "White"), 2],
-            "settingsButton" : [self.renderText(self.fonts["buttonFont"], "SETTINGS", True, "White"), 1]
-        }
+        self.texts = [
+            Text(self.fonts['titleFont'], "ENERGIZE", -1, position=(True, 0, True, 165)),
+            Text(self.fonts['buttonFont'], "PLAY", 2, position=(True, 0, True, -30)),
+            Text(self.fonts['buttonFont'], "SETTINGS", 1, position=(True, 0, True, -130))
+        ]
 
         self.images = {
             # "imageName" : [renderImage()]
         }
-
+        '''
         self.sizes = {
             "title" : (self.mids(self.texts["title"][0], 0, 165)),
             "playButton" : (self.mids(self.texts["playButton"][0], 0, -30)),
             "settingsButton" : (self.mids(self.texts["settingsButton"][0], 0, -130))
         }
-        self.addSizes()
+        self.addSizes()'''
 
     def drawHelper(self, screen):
         screen.fill("BLACK")
@@ -126,12 +112,7 @@ class TitleSequence(Sequence):
         else:
             return -1
 
-    #currently debugging
-    def mouse(self, coords, buttonsPressed):
-        collisionButton = self.checkCollision(coords)
-        if buttonsPressed[0] == True and collisionButton != None:
-            return self.texts[collisionButton][1]
-        return -1
+
 
 class SettingsSequence(Sequence):
     def __init__(self):
@@ -180,10 +161,9 @@ class GameScene(Sequence):
 
         }
 
-        self.images = {
-            # "imageName" : [renderImage()]
-            "map" : [self.renderImage("map.png", (self.screen_width, self.screen_height))]
-        }
+        self.images = [
+            Image("map.png", -1, (0,0), (self.screen_width * 16, self.screen_height * 16))
+        ]
 
         self.sizes = {
             "map" : (0,0)
