@@ -77,7 +77,7 @@ class TitleSequence(Sequence):
         #it goes
         self.fonts = {
             "titleFont" : self.font("MajorMonoDisplay-Regular.ttf", 185),
-            "buttonFont" : self.font("MajorMonoDisplay-Regular.ttf", 40), #prob not using this
+            "buttonFont" : self.font("MajorMonoDisplay-Regular.ttf", 40),
             "textFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
         }
 
@@ -146,10 +146,7 @@ class SettingsSequence(Sequence):
         return -1
 
 class GameScene(Sequence):
-    #in my attempts to find out how to serialize an object to file in python, literally every guide told me I need to
-    #use something called "pickle." Not only is that a silly name, it's amazing that I need to use some unheard of
-    #package just to do something so basic. im not using pickle. I will be using json and I don't care if this makes
-    #saving data exponentially harder
+    #im not using pickle for game saves
     def __init__(self):
         super().__init__()
 
@@ -160,11 +157,10 @@ class GameScene(Sequence):
         self.texts = {
 
         }
-
         self.images = [
-            Image("map.png", -1, (0,0), (self.screen_width * 12, self.screen_height * 24))
+            Image("map.png", -1, (False, 0, False, 0), (self.screen_width * 12, self.screen_height * 24)),
+            Image("groo.jpg", -1, (False, 0, False, 0), (288,276)) #temp player model will be gru from despicable me
         ]
-
         self.sizes = {
             "map" : (0,0)
         }
@@ -175,7 +171,15 @@ class GameScene(Sequence):
         return screen
 
     def record(self, char):
-        return 0
+        if char == 'w':
+            self.images[1].updatePos(0, 15)
+        elif char == 'a':
+            self.images[1].updatePos(-15, 0)
+        elif char == 's':
+            self.images[1].updatePos(0, -15)
+        elif char == 'd':
+            self.images[1].updatePos(15, 0)
+        return -1
 
     def mouse(self, coords, buttonsPressed):
         return -1

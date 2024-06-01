@@ -65,7 +65,7 @@ class Image(Object):
         else:
             self.obj = self.renderImage(imageName, transformation)
         self.clickAction = clickAction
-        self.position = position
+        self.position = self.regPosition(position)
 
     def getAction(self):
         return self.clickAction
@@ -75,3 +75,13 @@ class Image(Object):
 
     def getRect(self):
         return self.obg.get_rect()
+
+    def getX(self):
+        return self.position[0]
+
+    def getY(self):
+        return self.position[1]
+
+    def updatePos(self, x, y):
+        self.position[0] += x
+        self.position[1] -= y
