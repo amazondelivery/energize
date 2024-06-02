@@ -85,7 +85,7 @@ class GameScene(Sequence):
         ]
 
         self.characters = [
-            Player("groo.jpg", -1, (288,276)) #temp player model will be gru from despicable me
+            Player("groo.jpg", -1, (72,69)) #temp player model will be gru from despicable me
         ]
 
         self.inControl = self.characters[0]

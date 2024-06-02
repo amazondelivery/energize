@@ -20,6 +20,7 @@ while True:
         #there is a problem where one single click gets registered as multiple clicks that I will address later
         game.mouse(pg.mouse.get_pos(), pg.mouse.get_pressed())
 
+        pg.key.set_repeat(1, 90)
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_a:
                 game.record('a')
@@ -31,8 +32,6 @@ while True:
                 game.record('s')
             elif event.key == pg.K_d:
                 game.record('d')
-
-
 
     game.tick()
     pg.display.flip()
