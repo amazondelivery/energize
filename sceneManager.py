@@ -1,6 +1,7 @@
 import pygame as pg
 from scenes import *
 
+
 class SceneManager:
     def __init__(self):
         pg.init()

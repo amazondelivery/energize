@@ -27,6 +27,9 @@ class Object():
     def blit(self):
         return self.obj, self.position
 
+    def getRect(self):
+        return self.obj.get_rect()
+
     def regPosition(self, positionTuple):
         pos = [0,0]
 
@@ -55,9 +58,6 @@ class Text(Object):
     def getPos(self):
         return self.position
 
-    def getRect(self):
-        return self.obj.get_rect()
-
 class Image(Object):
     def __init__(self, imageName, clickAction, position = (True, 0, True, 0), transformation = None):
         if transformation == None:
@@ -74,7 +74,7 @@ class Image(Object):
         return self.position
 
     def getRect(self):
-        return self.obg.get_rect()
+        return self.obj.get_rect()
 
     def getX(self):
         return self.position[0]

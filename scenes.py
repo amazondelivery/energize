@@ -2,6 +2,7 @@ import pygame as pg
 from screenObject import *
 from character import *
 from sequence import Sequence
+from camera import *
 import json
 import os.path
 
@@ -52,9 +53,9 @@ class SettingsSequence(Sequence):
             "mainFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
         }
 
-        self.texts = {
-            "sampleText" : [self.fonts["mainFont"].render("hi", True, "BLACK"), -1]
-        }
+        self.texts = [
+            Text(self.fonts['mainFont'], "Sample Text", -1, position=(True, 0, True, 0))
+        ]
 
         self.images = []
         self.characters = []
@@ -74,6 +75,11 @@ class GameScene(Sequence):
     def __init__(self):
         super().__init__()
 
+        map_width = self.screen_width * 12
+        map_height = self.screen_height * 24
+
+        self.camera = Camera()
+
         self.fonts = {
 
         }
@@ -81,7 +87,7 @@ class GameScene(Sequence):
         self.texts = []
 
         self.images = [
-            Image("map.png", -1, (False, 0, False, 0), (self.screen_width * 12, self.screen_height * 24))
+            Image("map.png", -1, (False, 0, False, 0), (map_width, map_height))
         ]
 
         self.characters = [
