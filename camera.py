@@ -20,6 +20,10 @@ class Camera:
             self.focus[1] = addend
             return True
 
+    def scan(self, playerCoords):
+        print('placeholder')
+        #increase acceleration of movement of camera the farther the player is from the camera focus
+
     def getFocusPosition(self):
         return self.focus
 
