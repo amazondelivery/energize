@@ -133,7 +133,7 @@ class GameScene(Sequence):
     def getPlayerOffset(self):
         currentCameraFocus = self.camera.getFocusPosition()
         playerPosition = self.characters[0].getUniversalPosition()
-        return (playerPosition[0] - currentCameraFocus[0], playerPosition[1] - currentCameraFocus[1])
+        return (currentCameraFocus[0] - playerPosition[0], currentCameraFocus[1] - playerPosition[1])
 
     def blit(self, screen):
         offset = self.getPlayerOffset()

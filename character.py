@@ -31,9 +31,9 @@ class Player(Character):
         imageRect = self.characterImage.getRect()
         imageWidth = imageRect[2]
         imageHeight = imageRect[3]
-        if (x != 0 and (self.universalPosition[0] + x < 0 or self.universalPosition[0] + x + imageWidth//2 > 1280)):
+        if (x != 0 and (self.universalPosition[0] + x < 0 or self.universalPosition[0] + x + imageWidth//2 > 1280 * 12)):
             return True
-        elif (y != 0 and (self.universalPosition[1] - y < 0 or self.universalPosition[1] - y + imageHeight//2 > 720)):
+        elif (y != 0 and (self.universalPosition[1] - y < 0 or self.universalPosition[1] - y + imageHeight//2 > 720 * 24)):
             return True
         else:
             return False
