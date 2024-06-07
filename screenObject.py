@@ -24,8 +24,11 @@ class Object():
     def mid_width(self):
         return self.mids()[0]
 
-    def blit(self):
-        return self.obj, self.position
+    def blit(self, offset = (0,0)):
+        positionArray = self.position.copy()
+        positionArray[0] += offset[0]
+        positionArray[1] += offset[1]
+        return self.obj, positionArray
 
     def getRect(self):
         return self.obj.get_rect()

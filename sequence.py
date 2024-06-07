@@ -10,6 +10,7 @@ class Sequence(ABC):
         self.fonts = {}
         self.texts = []
         self.images = []
+        self.characters = []
 
     @abstractmethod
     def record(self, char):
@@ -27,13 +28,6 @@ class Sequence(ABC):
         screen = self.drawHelper(screen)
         self.blit(screen)
         return screen
-
-    def addSizes(self):
-        for text in self.texts.keys():
-            self.texts[text].append(self.sizes[text])
-        for image in self.images.keys():
-            self.images[image].append(self.sizes[image])
-        self.sizes = None #disposes of the dict sizes
 
     def blit(self, screen):
         for image in self.images:

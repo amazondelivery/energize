@@ -78,7 +78,9 @@ class GameScene(Sequence):
         map_width = self.screen_width * 12
         map_height = self.screen_height * 24
 
-        self.camera = Camera()
+        self.initialCameraX = 640
+        self.initialCameraY = 360
+        self.camera = Camera((map_width, map_height), (self.initialCameraX, self.initialCameraY))
 
         self.fonts = {
 
@@ -109,13 +111,38 @@ class GameScene(Sequence):
             self.inControl.updatePos(0, -15)
         elif char == 'd':
             self.inControl.updatePos(15, 0)
+        elif char == '<':
+            self.camera.moveLeft(15)
+        elif char == '>':
+            self.camera.moveRight(15)
+        elif char == "^":
+            self.camera.moveUp(15)
+        elif char == "|":
+            self.camera.moveDown(15)
+        self.camera.scan(self.characters[0].getPosition())
         return -1
 
     def mouse(self, coords, buttonsPressed):
         return -1
 
-    def addSizes(self):
-        return 0
+    def fixOffset(self, item, offset):
+        item[1][0] = item[1][0] + offset[0]
+        item[1][1] = item[1][1] + offset[1]
+        return item
+
+    def getPlayerOffset(self):
+        currentCameraFocus = self.camera.getFocusPosition()
+        playerPosition = self.characters[0].getUniversalPosition()
+        return (playerPosition[0] - currentCameraFocus[0], playerPosition[1] - currentCameraFocus[1])
+
+    def blit(self, screen):
+        offset = self.getPlayerOffset()
+        for image in self.images:
+            screen.blit(*image.blit(offset))
+        for text in self.texts:
+            screen.blit(*text.blit(offset))
+        for character in self.characters:
+            screen.blit(*character.blit(offset))
 
     def introScene(self):
         print("intro scene bla bla bla")

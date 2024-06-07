@@ -4,8 +4,8 @@ class Character():
         self.speed = 4
         self.characterImage = None
 
-    def blit(self):
-        return self.characterImage.blit()
+    def blit(self, offset = (0,0)):
+        return self.characterImage.blit(offset)
 
     def updatePos(self, x, y):
         self.characterImage.updatePos(x, y)
@@ -14,10 +14,16 @@ class Character():
         return 0
 
 class Player(Character):
+
+    def universalPositionGetter(self, initialPosition, dimensions):
+        initialPosition[0] += dimensions[0] //2
+        initialPosition[1] += dimensions[1] // 2
+        return initialPosition
+
     def __init__(self, imageName, clickAction, dimensions, position = (True, 0, True, 0), sprites = ()):
         super().__init__()
         self.characterImage = Image(imageName, clickAction, position, dimensions)
-        self.universalPosition = self.characterImage.getPos()
+        self.universalPosition = self.universalPositionGetter(self.characterImage.getPos(), dimensions)
         self.dimensions = dimensions
         self.sprites = sprites
 
@@ -42,6 +48,8 @@ class Player(Character):
         prevImage = self.characterImage
         self.characterImage = Image(newImage, prevImage.getAction(), prevImage.getPos(), self.dimensions)
 
+    def getUniversalPosition(self):
+        return self.universalPosition
+
     def getPosition(self):
         return self.characterImage.getPos()
-
