@@ -3,6 +3,7 @@ from screenObject import *
 from character import *
 from sequence import Sequence
 from camera import *
+from gradient import *
 import json
 import os.path
 
@@ -78,10 +79,10 @@ class GameScene(Sequence):
         map_width = self.screen_width * 12
         map_height = self.screen_height * 24
 
-        self.initialCameraX = 640
-        self.initialCameraY = 360
-        self.camera = Camera((map_width, map_height), (self.initialCameraX, self.initialCameraY))
-
+        initialCameraX = 640
+        initialCameraY = 360
+        self.camera = Camera((map_width, map_height), (initialCameraX, initialCameraY))
+        self.gradients = GameGradients()
         self.fonts = {
 
         }
@@ -96,10 +97,19 @@ class GameScene(Sequence):
             Player("groo.jpg", -1, (72,69)) #temp player model will be gru from despicable me
         ]
 
+        #sets the player in control to player 1
         self.inControl = self.characters[0]
 
+        self.timeControl = 0
+
     def drawHelper(self, screen):
-        screen.fill("BLACK")
+
+        #time increment
+        self.timeControl += 1
+        gradient = self.gradients.getGradient("sunset")
+        color = gradient.getColor(self.timeControl // (gradient.getTimeStop() * 10))
+        screen.fill(color)
+
         return screen
 
     def record(self, char):
@@ -125,18 +135,8 @@ class GameScene(Sequence):
     def mouse(self, coords, buttonsPressed):
         return -1
 
-    def fixOffset(self, item, offset):
-        item[1][0] = item[1][0] + offset[0]
-        item[1][1] = item[1][1] + offset[1]
-        return item
-
-    def getPlayerOffset(self):
-        currentCameraFocus = self.camera.getFocusPosition()
-        playerPosition = self.characters[0].getUniversalPosition()
-        return (currentCameraFocus[0] - playerPosition[0], currentCameraFocus[1] - playerPosition[1])
-
     def blit(self, screen):
-        offset = self.getPlayerOffset()
+        offset = self.camera.getPlayerOffset(self.characters[0])
         for image in self.images:
             screen.blit(*image.blit(offset))
         for text in self.texts:
