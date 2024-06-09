@@ -11,6 +11,9 @@ class Gradient:
     def getColor(self, inc):
         return self.colors[inc]
 
+    def getNumStops(self):
+        return self.numStops
+
 class GameGradients:
     #includes all the gradients used in the game backgrounds
     def __init__(self):

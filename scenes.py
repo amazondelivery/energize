@@ -4,6 +4,7 @@ from character import *
 from sequence import Sequence
 from camera import *
 from gradient import *
+from world import World
 import json
 import os.path
 
@@ -76,9 +77,13 @@ class GameScene(Sequence):
     def __init__(self):
         super().__init__()
 
-        map_width = self.screen_width * 12
-        map_height = self.screen_height * 24
+        #map dimensions
+        map_width = self.screen_width * 4
+        map_height = self.screen_height * 6
 
+        world = World((map_width, map_height))
+
+        #initial camera positions
         initialCameraX = 640
         initialCameraY = 360
         self.camera = Camera((map_width, map_height), (initialCameraX, initialCameraY))
@@ -94,7 +99,7 @@ class GameScene(Sequence):
         ]
 
         self.characters = [
-            Player("groo.jpg", -1, (72,69)) #temp player model will be gru from despicable me
+            Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height)) #temp player model will be gru from despicable me
         ]
 
         #sets the player in control to player 1
@@ -102,13 +107,18 @@ class GameScene(Sequence):
 
         self.timeControl = 0
 
+    def getGradientColor(self, gradientTitle):
+        gradient = self.gradients.getGradient(gradientTitle)
+        color = gradient.getColor((self.timeControl // (gradient.getTimeStop() * 10)) % gradient.getNumStops())
+        return color
+
     def drawHelper(self, screen):
 
         #time increment
         self.timeControl += 1
-        gradient = self.gradients.getGradient("sunset")
-        color = gradient.getColor(self.timeControl // (gradient.getTimeStop() * 10))
-        screen.fill(color)
+
+        #gradient fill
+        screen.fill(self.getGradientColor("sunset"))
 
         return screen
 
