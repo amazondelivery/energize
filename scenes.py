@@ -11,8 +11,6 @@ class TitleSequence(Sequence):
         super().__init__()
         self.audioToggle = True
 
-        #this whole dictionary thing is only gonna be on the title sequence because I'm just testing it out and seeing how
-        #it goes
         self.fonts = {
             "titleFont" : self.font("MajorMonoDisplay-Regular.ttf", 185),
             "buttonFont" : self.font("MajorMonoDisplay-Regular.ttf", 40),

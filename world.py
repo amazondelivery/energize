@@ -43,6 +43,15 @@ class World:
     def getMap(self):
         return self.map
 
+    def addSolarPanel(self, tilePositionIndexRow, tilePositionIndexColumn):
+        tile = self.tileMap[tilePositionIndexRow][tilePositionIndexColumn]
+        if tile.isEmpty():
+            tile.solarify()
+            return True
+        else:
+            return False
+
+
     def getCamera(self):
         return self.camera
 

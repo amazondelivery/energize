@@ -14,6 +14,12 @@ class Tile:
     def windifyHelper(self):
         self.type == 3
 
+    def isEmpty(self):
+        if self.type == 0:
+            return True
+        else:
+            return False
+
 
 class Wire:
 
