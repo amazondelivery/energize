@@ -11,9 +11,12 @@ class Object():
     def renderImage(self, fileName):
         return pg.image.load(fileName)
 
-    def renderImage(self, filename, transformation):
-        image = pg.image.load(filename)
-        return pg.transform.scale(image, transformation)
+    def renderImage(self, filename, transformation = False):
+        if transformation == False:
+            return pg.image.load(filename)
+        else:
+            image = pg.image.load(filename)
+            return pg.transform.scale(image, transformation)
 
     def mids(self):
         return (self.screen_width / 2 - self.obj.get_width() // 2, self.screen_height / 2 - self.obj.get_height() // 2)
@@ -88,3 +91,25 @@ class Image(Object):
     def updatePos(self, x, y):
         self.position[0] += x
         self.position[1] -= y
+
+    def instatePos(self, x, y):
+        self.position[0] = x
+        self.position[1] = y
+
+class GameImage:
+    def __init__(self, image, universalPosition, show = False):
+        self.image = image
+        self.universalPosition = universalPosition
+        self.show = show
+
+    def toggleShow(self):
+        if self.show == True:
+            self.show = False
+        else:
+            self.show = True
+
+    def updateUniversalPosition(self, x, y):
+        #error detection system goes here
+        self.universalPosition[0] += x
+        self.universalPosition[1] += y
+

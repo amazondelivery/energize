@@ -20,7 +20,6 @@ class Sequence(ABC):
     def mouse(self, coords, buttonsPressed):
         pass
 
-    @abstractmethod
     def drawHelper(self, screen):
         pass
 
@@ -60,4 +59,3 @@ class Sequence(ABC):
             return collisionButton.getAction()
         return -1
 
-#java's abstract classes would be perfect here. real shame...

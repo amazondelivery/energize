@@ -1,10 +1,8 @@
 import pygame as pg
 from screenObject import *
-from character import *
 from sequence import Sequence
-from camera import *
-from gradient import *
 from world import World
+from player import Player
 import json
 import os.path
 
@@ -77,82 +75,64 @@ class GameScene(Sequence):
     def __init__(self):
         super().__init__()
 
+        #initial camera positions
+        initialCameraX = 640
+        initialCameraY = 360
+
+        #map and player and assets
+
         #map dimensions
         map_width = self.screen_width * 4
         map_height = self.screen_height * 6
 
-        world = World((map_width, map_height))
-
-        #initial camera positions
-        initialCameraX = 640
-        initialCameraY = 360
-        self.camera = Camera((map_width, map_height), (initialCameraX, initialCameraY))
-        self.gradients = GameGradients()
-        self.fonts = {
-
+        map = Image("map.png", -1, (False, 0, False, 0), (map_width, map_height))
+        player = Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
+        assets = {
+            #"solarBright" : Image("solarBright.png", -1, ),
         }
 
-        self.texts = []
+        self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
 
-        self.images = [
-            Image("map.png", -1, (False, 0, False, 0), (map_width, map_height))
-        ]
-
-        self.characters = [
-            Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height)) #temp player model will be gru from despicable me
-        ]
-
-        #sets the player in control to player 1
-        self.inControl = self.characters[0]
-
-        self.timeControl = 0
-
-    def getGradientColor(self, gradientTitle):
-        gradient = self.gradients.getGradient(gradientTitle)
-        color = gradient.getColor((self.timeControl // (gradient.getTimeStop() * 10)) % gradient.getNumStops())
-        return color
-
-    def drawHelper(self, screen):
-
-        #time increment
-        self.timeControl += 1
-
-        #gradient fill
-        screen.fill(self.getGradientColor("sunset"))
-
+    #override
+    def draw(self, screen):
+        screen.fill(self.world.getGradientColor("sunset"))
+        self.blit(screen)
         return screen
+    #override
+    def blit(self, screen):
+        self.world.timeIncrease()
+        offset = self.world.getCamera().getPlayerOffset(self.world.getPlayer())
+
+        screen.blit(*self.world.getMap().blit(offset))
+
+        for structure in self.world.getStructures():
+            screen.blit(*structure.blit(offset))
+
+        screen.blit(*self.world.getPlayer().blit(offset))
 
     def record(self, char):
+        camera = self.world.getCamera()
         if char == 'w':
-            self.inControl.updatePos(0, 15)
+            self.world.updatePlayer(0, 15)
         elif char == 'a':
-            self.inControl.updatePos(-15, 0)
+            self.world.updatePlayer(-15, 0)
         elif char == 's':
-            self.inControl.updatePos(0, -15)
+            self.world.updatePlayer(0, -15)
         elif char == 'd':
-            self.inControl.updatePos(15, 0)
+            self.world.updatePlayer(15, 0)
         elif char == '<':
-            self.camera.moveLeft(15)
+            camera.moveLeft(15)
         elif char == '>':
-            self.camera.moveRight(15)
+            camera.moveRight(15)
         elif char == "^":
-            self.camera.moveUp(15)
+            camera.moveUp(15)
         elif char == "|":
-            self.camera.moveDown(15)
-        self.camera.scan(self.characters[0].getPosition())
+            camera.moveDown(15)
+        camera.scan(self.world.getPlayer().getPosition())
         return -1
 
     def mouse(self, coords, buttonsPressed):
         return -1
-
-    def blit(self, screen):
-        offset = self.camera.getPlayerOffset(self.characters[0])
-        for image in self.images:
-            screen.blit(*image.blit(offset))
-        for text in self.texts:
-            screen.blit(*text.blit(offset))
-        for character in self.characters:
-            screen.blit(*character.blit(offset))
 
     def introScene(self):
         print("intro scene bla bla bla")
