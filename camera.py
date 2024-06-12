@@ -39,7 +39,7 @@ class Camera:
 
     def getPlayerOffset(self, character):
         currentCameraFocus = self.getFocusPosition()
-        playerPosition = character.getUniversalPosition()
+        playerPosition = character.getPosition()
         return (currentCameraFocus[0] - playerPosition[0], currentCameraFocus[1] - playerPosition[1])
 
     def scan(self, playerCoords):

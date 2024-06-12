@@ -1,5 +1,6 @@
 import pygame as pg
 
+#id like to say this is deprecated but not yet!
 class Object():
 
     screen_width = 1280
@@ -7,9 +8,6 @@ class Object():
 
     def renderText(self, font, text, antialias, color):
         return font.render(text, antialias, color)
-
-    def renderImage(self, fileName):
-        return pg.image.load(fileName)
 
     def renderImage(self, filename, transformation = False):
         if transformation == False:
@@ -37,7 +35,6 @@ class Object():
         width, height = self.getWidthHeight()
         positionArray = self.position.copy()
 
-        #remove the width and height adjustments after positionArrays are normalized to be in the middle
         positionArray[0] = positionArray[0] + offset[0] - width//2
         positionArray[1] = positionArray[1] + offset[1] - height // 2
         return self.obj, positionArray
@@ -111,20 +108,4 @@ class Image(Object):
         self.position[0] = x
         self.position[1] = y
 
-class GameImage:
-    def __init__(self, image, universalPosition, show = False):
-        self.image = image
-        self.universalPosition = universalPosition
-        self.show = show
-
-    def toggleShow(self):
-        if self.show == True:
-            self.show = False
-        else:
-            self.show = True
-
-    def updateUniversalPosition(self, x, y):
-        #error detection system goes here
-        self.universalPosition[0] += x
-        self.universalPosition[1] += y
 

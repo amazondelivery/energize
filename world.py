@@ -1,6 +1,6 @@
 #at some point i want the world to be randomly generated with a seed
 from tile import Tile
-from screenObject import Image
+from asset import *
 from camera import *
 from gradient import *
 from player import Player
@@ -27,7 +27,7 @@ class World:
 
         self.structures = [
             #test
-            Image("solarBright.png", -1, (False, 900, False, 900), transformation = (80,80))
+            Image("solarBright.png", -1, (False, 800, False, 800), transformation = (80,80))
         ]
 
         #creates tilemap of width // 40 and height // 40)
@@ -92,7 +92,6 @@ class World:
     def getPlayerTile(self):
         position = self.player.getUniversalPosition()
         return (position[0] // 80, position[1] // 80)
-
 
     def addSolarPanel(self, tilePositionIndexRow, tilePositionIndexColumn):
         tile = self.tileMap[tilePositionIndexRow][tilePositionIndexColumn]
