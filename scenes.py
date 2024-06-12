@@ -6,6 +6,8 @@ from player import Player
 import json
 import os.path
 
+#main point of this class is to instate world and also translate player inputs to actual changes on screen
+
 class TitleSequence(Sequence):
     def __init__(self):
         super().__init__()
@@ -133,10 +135,8 @@ class GameScene(Sequence):
         return -1
 
     def mouse(self, coords, buttonsPressed):
+        if buttonsPressed[0] == True:
+            self.world.leftClick(*coords)
         return -1
-
-    def introScene(self):
-        print("intro scene bla bla bla")
-
 
 

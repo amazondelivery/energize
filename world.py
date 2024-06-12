@@ -3,7 +3,6 @@ from tile import Tile
 from asset import *
 from camera import *
 from gradient import *
-from player import Player
 from timeController import TimeController
 
 
@@ -16,6 +15,7 @@ class World:
 
         #making camera and gradients
         map_width, map_height = mapDimensions
+        self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((map_width, map_height), initialCameraPoint)
         self.gradients = GameGradients()
 
@@ -116,6 +116,19 @@ class World:
 
     def timeIncrease(self):
         self.timeController.timeIncrease()
+
+    def leftClick(self, framex, framey):
+        #this function doesnt work.
+        #framex & framey are coords as seen on screen, not map coords
+        cameraCoords = self.camera.getFocusPosition().copy()
+        print()
+        print(cameraCoords)
+        print(self.screen_width, self.screen_height)
+        print(framex, framey)
+        cameraCoords[0] = cameraCoords[0] - self.screen_width // 2 + framex
+        cameraCoords[1] = cameraCoords[1] - self.screen_height // 2 + framey
+        print(cameraCoords)
+
 
 
 

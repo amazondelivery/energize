@@ -1,5 +1,5 @@
 from character import Character
-from screenObject import *
+from asset import *
 
 class Player(Character):
 
@@ -8,10 +8,12 @@ class Player(Character):
         initialPosition[1] += dimensions[1] // 2
         return initialPosition
 
-    def __init__(self, imageName, clickAction, dimensions, position = (True, 0, True, 0), sprites = (), map_dimensions = ()):
+    def __init__(self, imageName, clickAction,
+                 dimensions, position = (True, 0, True, 0),
+                 sprites = (), map_dimensions = ()):
         super().__init__()
         self.characterImage = Image(imageName, clickAction, position, dimensions)
-        self.universalPosition = self.universalPositionGetter(self.characterImage.getPos(), dimensions)
+        self.universalPosition = self.universalPositionGetter(self.characterImage.getPosition(), dimensions)
         self.dimensions = dimensions
         self.sprites = sprites
         self.mapDimensions = map_dimensions
@@ -29,11 +31,11 @@ class Player(Character):
 
     def changeImage(self, newImage):
         prevImage = self.characterImage
-        self.characterImage = Image(newImage, prevImage.getAction(), prevImage.getPos(), self.dimensions)
+        self.characterImage = Image(newImage, prevImage.getAction(), prevImage.getPosition(), self.dimensions)
 
     def getUniversalPosition(self):
         return self.universalPosition
 
     def getPosition(self):
-        return self.characterImage.getPos()
+        return self.characterImage.getPosition()
 

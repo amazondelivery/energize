@@ -1,4 +1,3 @@
-import pygame as pg
 from game import *
 import json
 import os.path

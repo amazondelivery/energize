@@ -47,7 +47,7 @@ class Asset:
     def getPosition(self):
         return self.position
 
-    def updatePos(self, x, y):
+    def updatePosition(self, x, y):
         self.position[0] += x
         self.position[1] -= y
 
