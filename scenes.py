@@ -91,14 +91,17 @@ class GameScene(Sequence):
 
         self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
 
-    #override
     def draw(self, screen):
         screen.fill(self.world.getGradientColor("sunset"))
+        self.worldEvent()
         self.blit(screen)
         return screen
-    #override
-    def blit(self, screen):
+
+    def worldEvent(self):
         self.world.timeIncrease()
+        tile = self.world.getPlayerTile()  #unused so far
+
+    def blit(self, screen):
         offset = self.world.getCamera().getPlayerOffset(self.world.getPlayer())
 
         screen.blit(*self.world.getMap().blit(offset))

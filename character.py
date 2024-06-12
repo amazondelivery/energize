@@ -5,7 +5,7 @@ class Character():
         self.characterImage = None
 
     def blit(self, offset = (0,0)):
-        return self.characterImage.blit(offset)
+        return self.characterImage.playerBlit(offset)
 
     def updatePos(self, x, y):
         self.characterImage.updatePos(x, y)

@@ -33,6 +33,19 @@ class Object():
         positionArray[1] += offset[1]
         return self.obj, positionArray
 
+    def playerBlit(self, offset = (0,0)):
+        width, height = self.getWidthHeight()
+        positionArray = self.position.copy()
+
+        #remove the width and height adjustments after positionArrays are normalized to be in the middle
+        positionArray[0] = positionArray[0] + offset[0] - width//2
+        positionArray[1] = positionArray[1] + offset[1] - height // 2
+        return self.obj, positionArray
+
+    def getWidthHeight(self):
+        rect = self.getRect()
+        return (rect[2],rect[3])
+
     def getRect(self):
         return self.obj.get_rect()
 
@@ -51,6 +64,8 @@ class Object():
 
         return pos
 
+    def getUniversalPosition(self):
+        return None
 
 class Text(Object):
     def __init__(self, font, text, clickAction, color = pg.Color(255, 255, 255), position = (True, 0, True, 0), antialias = True):
