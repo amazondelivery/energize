@@ -14,9 +14,9 @@ class World:
             raise NotImplementedError
 
         #making camera and gradients
-        map_width, map_height = mapDimensions
+        self.map_width, self.map_height = mapDimensions
         self.screen_width, self.screen_height = 1280, 720
-        self.camera = Camera((map_width, map_height), initialCameraPoint)
+        self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
         self.gradients = GameGradients()
 
         #images that the tiles will use
@@ -123,12 +123,21 @@ class World:
         return self.camera.getPlayerOffset(self.player.getPosition())
 
     def leftClick(self, framex, framey):
-        #this function doesnt work.
-        #framex & framey are coords as seen on screen, not map coords
+        mapClick = self.getMapClickPosition(framex, framey)
 
-        cameraCoords = self.camera.getFocusPosition().copy()
-        cameraCoords[0] = cameraCoords[0] - self.screen_width // 2 + framex
-        cameraCoords[1] = cameraCoords[1] - self.screen_height // 2 + framey
+        if mapClick != None:
+            print("Do something on the map")
+
+
+    def getMapClickPosition(self, framex, framey):
+        #framex & framey are coords as seen on screen, not map coords
+        mapClick = self.map.getUniversalCornerPosition()
+        mapClick[0] += framex
+        mapClick[1] += framey
+        if not (mapClick[0] < 0 or mapClick[0] > self.map_width or mapClick[1] < 0 or mapClick[1] > self.map_height):
+            return mapClick
+        else:
+            return None
 
 
 

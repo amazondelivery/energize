@@ -106,10 +106,17 @@ class Map(Asset):
         self.obj = self.renderImage(imageName, transformation)
         self.clickAction = -1
         self.position = self.regPosition(position)
+        self.universalCornerPosition = [0,0]
+        #universalCornerPosition is the left corner of the screen relative to the left corner of the map as
+        #   the origin (0,0)
 
     def blit(self, offset = (0,0)):
         positionArray = self.position.copy()
         positionArray[0] += offset[0]
         positionArray[1] += offset[1]
+        self.universalCornerPosition[0], self.universalCornerPosition[1] = -positionArray[0], -positionArray[1]
         return self.obj, positionArray
+
+    def getUniversalCornerPosition(self):
+        return self.universalCornerPosition
 
