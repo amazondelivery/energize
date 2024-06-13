@@ -16,6 +16,8 @@ class Gradient:
 
 class GameGradients:
     #includes all the gradients used in the game backgrounds
+
+    #day colors should go like this : pure black -> orange -> blue -> pinkish -> dark blue -> pure black
     def __init__(self):
         self.gradients = {
             "sunset" :

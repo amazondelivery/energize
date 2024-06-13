@@ -42,6 +42,11 @@ class World:
         if self.checkCollision(changeX, changeY) == False:
             self.player.updatePos(changeX, changeY)
 
+    def renderTiles(self):
+        for rowNum, tileRow in enumerate(self.tileMap):
+            for columnNum, tile in enumerate(tileRow):
+                print('test')
+
 
     def checkCollision(self, playerChangeX, playerChangeY):
         if self.mapCollision(playerChangeX, playerChangeY):
@@ -122,22 +127,17 @@ class World:
     def getCameraOffset(self):
         return self.camera.getPlayerOffset(self.player.getPosition())
 
-    def leftClick(self, framex, framey):
-        mapClick = self.getMapClickPosition(framex, framey)
+    def getTileOfCoord(self, mapCoords):
+        return self.tileMap[mapCoords[0] // 80][mapCoords[0] // 80]
 
-        if mapClick != None:
-            print("Do something on the map")
-
-
-    def getMapClickPosition(self, framex, framey):
-        #framex & framey are coords as seen on screen, not map coords
-        mapClick = self.map.getUniversalCornerPosition()
-        mapClick[0] += framex
-        mapClick[1] += framey
-        if not (mapClick[0] < 0 or mapClick[0] > self.map_width or mapClick[1] < 0 or mapClick[1] > self.map_height):
-            return mapClick
+    def click(self, frameCoords, mapCoords):
+        if (mapCoords[0] < 0 or mapCoords[0] > self.map_width or mapCoords[1] < 0 or mapCoords[1] > self.map_height):
+            tile = self.getTileOfCoord(mapCoords)
+            #map coord click is valid
         else:
+            #invalid
             return None
+
 
 
 

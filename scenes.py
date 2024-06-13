@@ -142,7 +142,10 @@ class GameScene(Sequence):
 
     def mouse(self, coords, buttonsPressed):
         if buttonsPressed[0] == True:
-            self.world.leftClick(*coords)
+            mapClick = self.world.getMap().getUniversalCornerPosition()
+            mapClick[0] += coords[0]
+            mapClick[1] += coords[1]
+            self.world.click(coords, mapClick)
         return -1
 
 

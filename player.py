@@ -19,6 +19,9 @@ class Player(Character):
         self.mapDimensions = map_dimensions
         self.speed = speed
 
+        self.currentSelection = 0
+
+
     def getRect(self):
         return self.characterImage.getRect()
 
