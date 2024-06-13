@@ -42,13 +42,13 @@ class World:
         if self.checkCollision(changeX, changeY) == False:
             self.player.updatePos(changeX, changeY)
 
+
     def checkCollision(self, playerChangeX, playerChangeY):
         if self.mapCollision(playerChangeX, playerChangeY):
             return True
+        elif self.objectCollision(playerChangeX, playerChangeY):
+            return True
         else:
-            for object in self.structures:
-                if self.objectCollision(playerChangeX, playerChangeY, object):
-                    return True
             return False
 
     def mapCollision(self, changeX, changeY):
@@ -63,27 +63,29 @@ class World:
                 return True
         return False
 
-    def objectCollision(self, changeX, changeY, object):
-        return False
+    def objectCollision(self, changeX, changeY):
         #https://silentmatt.com/rectangle-intersection/
         #used the above link to help
         playerPosition = self.player.getPosition()
+        objectWiggleRoom = 0 #probably not needed
         playerWidth, playerHeight = self.player.getRect()[2:4]
-        pX1 = playerPosition[0] + changeX - playerWidth // 2
-        pX2 = playerPosition[0] + changeX + playerWidth // 2
-        pY1 = playerPosition[1] - changeY - playerHeight // 2
-        pY2 = playerPosition[1] - changeY + playerHeight // 2
+        paddingValue = 1 #normally 5/4
+        pX1 = playerPosition[0] + changeX * paddingValue - playerWidth // 2
+        pX2 = playerPosition[0] + changeX * paddingValue + playerWidth // 2
+        pY1 = playerPosition[1] - changeY * paddingValue - playerHeight // 2
+        pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
 
         for object in self.structures:
             objectPosition = object.getPosition()
             objectWidth, objectHeight = object.getRect()[2:4]
-            oX1 = objectPosition[0] - objectWidth // 2
-            oX2 = objectPosition[0] + objectWidth // 2
-            oY1 = objectPosition[1] - objectHeight // 2
-            oY2 = objectPosition[1] + objectHeight // 2
+            oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
+            oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
+            oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
+            oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
 
             if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
                 return True
+
         return False
 
     def getMap(self):
@@ -120,14 +122,14 @@ class World:
     def leftClick(self, framex, framey):
         #this function doesnt work.
         #framex & framey are coords as seen on screen, not map coords
+
+        speed = self.player.getSpeed()#debug
+        self.player.updatePos(speed, 0)
         cameraCoords = self.camera.getFocusPosition().copy()
         print()
         print(cameraCoords)
-        print(self.screen_width, self.screen_height)
-        print(framex, framey)
         cameraCoords[0] = cameraCoords[0] - self.screen_width // 2 + framex
         cameraCoords[1] = cameraCoords[1] - self.screen_height // 2 + framey
-        print(cameraCoords)
 
 
 

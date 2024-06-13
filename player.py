@@ -10,19 +10,22 @@ class Player(Character):
 
     def __init__(self, imageName, clickAction,
                  dimensions, position = (True, 0, True, 0),
-                 sprites = (), map_dimensions = ()):
+                 sprites = (), map_dimensions = (), speed = 15):
         super().__init__()
         self.characterImage = Image(imageName, clickAction, position, dimensions)
         self.universalPosition = self.universalPositionGetter(self.characterImage.getPosition(), dimensions)
         self.dimensions = dimensions
         self.sprites = sprites
         self.mapDimensions = map_dimensions
+        self.speed = speed
 
     def getRect(self):
         return self.characterImage.getRect()
 
+    def getSpeed(self):
+        return self.speed
+
     def updatePos(self, changeX, changeY):
-        super().updatePos(changeX, changeY)
         self.universalPosition[0] += changeX
         self.universalPosition[1] -= changeY
 

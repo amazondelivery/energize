@@ -115,22 +115,27 @@ class GameScene(Sequence):
 
     def record(self, char):
         camera = self.world.getCamera()
+        speed = self.world.getPlayer().getSpeed()
         if char == 'w':
-            self.world.updatePlayer(0, 15)
+            self.world.updatePlayer(0, speed)
+            self.world.updatePlayer(0, speed)
         elif char == 'a':
-            self.world.updatePlayer(-15, 0)
+            self.world.updatePlayer(-speed, 0)
+            self.world.updatePlayer(-speed, 0)
         elif char == 's':
-            self.world.updatePlayer(0, -15)
+            self.world.updatePlayer(0, -speed)
+            self.world.updatePlayer(0, -speed)
         elif char == 'd':
-            self.world.updatePlayer(15, 0)
+            self.world.updatePlayer(speed, 0)
+            self.world.updatePlayer(speed, 0)
         elif char == '<':
-            camera.moveLeft(15)
+            camera.moveLeft(speed)
         elif char == '>':
-            camera.moveRight(15)
+            camera.moveRight(speed)
         elif char == "^":
-            camera.moveUp(15)
+            camera.moveUp(speed)
         elif char == "|":
-            camera.moveDown(15)
+            camera.moveDown(speed)
         camera.scan(self.world.getPlayer().getPosition())
         return -1
 
