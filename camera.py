@@ -37,9 +37,8 @@ class Camera:
     def distanceFromPlayer(self, playerCoords):
         return math.sqrt((playerCoords[0] - self.focus[0])**2 + (playerCoords[1] - self.focus[1])**2)
 
-    def getPlayerOffset(self, character):
+    def getPlayerOffset(self, playerPosition):
         currentCameraFocus = self.getFocusPosition()
-        playerPosition = character.getPosition()
         return (currentCameraFocus[0] - playerPosition[0], currentCameraFocus[1] - playerPosition[1])
 
     def scan(self, playerCoords):

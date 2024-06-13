@@ -101,4 +101,15 @@ class Image(Asset):
         self.position = self.regPosition(position)
         self.cornerPlace = cornerPlace
 
+class Map(Asset):
+    def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
+        self.obj = self.renderImage(imageName, transformation)
+        self.clickAction = -1
+        self.position = self.regPosition(position)
+
+    def blit(self, offset = (0,0)):
+        positionArray = self.position.copy()
+        positionArray[0] += offset[0]
+        positionArray[1] += offset[1]
+        return self.obj, positionArray
 

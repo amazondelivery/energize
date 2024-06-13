@@ -1,8 +1,9 @@
 import pygame as pg
-from screenObject import *
+from screenObject import Text
 from sequence import Sequence
 from world import World
 from player import Player
+from asset import Map
 import json
 import os.path
 
@@ -85,7 +86,7 @@ class GameScene(Sequence):
         map_width = self.screen_width * 4
         map_height = self.screen_height * 6
 
-        map = Image("map.png", -1, (False, 0, False, 0), (map_width, map_height))
+        map = Map("map.png", (map_width, map_height), (False, 0, False, 0))
         player = Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
         assets = {
             #"solarBright" : Image("solarBright.png", -1, ),
@@ -104,7 +105,7 @@ class GameScene(Sequence):
         tile = self.world.getPlayerTile()  #unused so far
 
     def blit(self, screen):
-        offset = self.world.getCamera().getPlayerOffset(self.world.getPlayer())
+        offset = self.world.getCameraOffset()
 
         screen.blit(*self.world.getMap().blit(offset))
 

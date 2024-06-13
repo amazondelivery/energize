@@ -9,7 +9,8 @@ keywords = {
     pg.K_a : 'a',
     pg.K_q : 'q',
     pg.K_w : 'w',
-    pg.K_s : 's' }
+    pg.K_s : 's'
+}
 
 while True:
     for event in pg.event.get():

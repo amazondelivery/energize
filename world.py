@@ -119,15 +119,14 @@ class World:
     def timeIncrease(self):
         self.timeController.timeIncrease()
 
+    def getCameraOffset(self):
+        return self.camera.getPlayerOffset(self.player.getPosition())
+
     def leftClick(self, framex, framey):
         #this function doesnt work.
         #framex & framey are coords as seen on screen, not map coords
 
-        speed = self.player.getSpeed()#debug
-        self.player.updatePos(speed, 0)
         cameraCoords = self.camera.getFocusPosition().copy()
-        print()
-        print(cameraCoords)
         cameraCoords[0] = cameraCoords[0] - self.screen_width // 2 + framex
         cameraCoords[1] = cameraCoords[1] - self.screen_height // 2 + framey
 
