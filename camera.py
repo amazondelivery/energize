@@ -22,18 +22,6 @@ class Camera:
             self.focus[1] = addend
             return True
 
-    def moveLeft(self, distance):
-        print("")
-
-    def moveRight(self, distance):
-        print('')
-
-    def moveUp(self, distance):
-        print()
-
-    def moveDown(self, distance):
-        print()
-
     def distanceFromPlayer(self, playerCoords):
         return math.sqrt((playerCoords[0] - self.focus[0])**2 + (playerCoords[1] - self.focus[1])**2)
 
