@@ -110,7 +110,8 @@ class GameScene(Sequence):
         screen.blit(*self.world.getMap().blit(offset))
 
         for structure in self.world.getStructures():
-            screen.blit(*structure.blit(offset))
+            if structure.getShow() == True:
+                screen.blit(*structure.blit(offset))
 
         screen.blit(*self.world.getPlayer().blit(offset))
 

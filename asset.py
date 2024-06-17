@@ -82,17 +82,27 @@ class Asset:
             position[1] -= height // 2
         return position
 
+    def show(self):
+        self.show = True
+
+    def hide(self):
+        self.show = False
+
+    def getShow(self):
+        return self.show
+
 class Text(Asset):
     def __init__(self, font, text, clickAction, color = pg.Color(255, 255, 255),
-                 position = (True, 0, True, 0), antialias = True, cornerPlace = False):
+                 position = (True, 0, True, 0), antialias = True, cornerPlace = False, show = True):
         self.obj = self.renderText(font, text, color, antialias)
         self.clickAction = clickAction
         self.position = self.regPosition(position)
         self.cornerPlace = cornerPlace
+        self.show = show
 
 class Image(Asset):
     def __init__(self, imageName, clickAction,
-                 position = (True, 0, True, 0), transformation = None, cornerPlace = False):
+                 position = (True, 0, True, 0), transformation = None, cornerPlace = False, show = True):
         if transformation == None:
             self.obj = self.renderImage(imageName)
         else:
@@ -100,6 +110,7 @@ class Image(Asset):
         self.clickAction = clickAction
         self.position = self.regPosition(position)
         self.cornerPlace = cornerPlace
+        self.show = show
 
 class Map(Asset):
     def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
@@ -119,4 +130,18 @@ class Map(Asset):
 
     def getUniversalCornerPosition(self):
         return self.universalCornerPosition
+
+class Structure(Image):
+
+    #probably will not use this class, but im building it just in case
+    def __init__(self, imageName, clickAction,
+                 position =  (True, 0, True, 0), transformation = None, cornerPlace = False, rendered = False):
+        self.imageName = imageName
+        self.clickAction = clickAction
+        self.position = self.regPosition(position)
+        self.transformation = transformation
+        self.cornerPlace = cornerPlace
+        self.rendered = rendered
+        self.Image = None
+
 
