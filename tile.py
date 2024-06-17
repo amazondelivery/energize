@@ -5,14 +5,12 @@ class Tile:
         self.type = 0
         self.lightLevel = 10
 
-    def solarify(self):
-        self.type == 1
-
-    def windify(self):
-        self.type == 2
-
-    def windifyHelper(self):
-        self.type == 3
+    def place(self, type):
+        if self.isEmpty():
+            self.type = type
+            return True
+        else:
+            return False
 
     def isEmpty(self):
         if self.type == 0:

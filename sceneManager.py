@@ -15,6 +15,8 @@ class SceneManager:
         #sets intial scene to title screen
         self.currentScene = self.sequences[0]
 
+        self.mouseIgnoreFrames = 0
+
     def update(self, screen):
         self.screen = self.currentScene.draw(screen)
 
@@ -34,9 +36,13 @@ class SceneManager:
             self.changeScene(num)
 
     def mouse(self, coords, buttonsPressed):
-        num = self.currentScene.mouse(coords, buttonsPressed)
-        if num != -1:
-            self.changeScene(num)
+        if self.mouseIgnoreFrames == 0:
+            num = self.currentScene.mouse(coords, buttonsPressed)
+            if num != -1:
+                self.changeScene(num)
+            self.mouseIgnoreFrames = 3
+        else:
+            self.mouseIgnoreFrames -= 3
 
     #debug purposes
     def screenshot(self):

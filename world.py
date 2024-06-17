@@ -30,6 +30,12 @@ class World:
             Image("solarBright.png", -1, (False, 800, False, 800), transformation = (80,80))
         ]
 
+        self.structureCode = {
+            "solar" : 1,
+            "wind" : 2,
+            "windHelper" : 3
+        }
+
         #creates tilemap of width // 40 and height // 40)
         self.tileMap = [ [Tile()] * (mapDimensions[1] // 80) for i in range(mapDimensions[0] // 80) ]
 
@@ -103,7 +109,7 @@ class World:
     def addSolarPanel(self, tilePositionIndexRow, tilePositionIndexColumn):
         tile = self.tileMap[tilePositionIndexRow][tilePositionIndexColumn]
         if tile.isEmpty():
-            tile.solarify()
+            tile.place(1)
             return True
         else:
             return False
@@ -128,14 +134,23 @@ class World:
         return self.camera.getPlayerOffset(self.player.getPosition())
 
     def getTileOfCoord(self, mapCoords):
-        return self.tileMap[mapCoords[0] // 80][mapCoords[0] // 80]
+        return self.tileMap[mapCoords[1] // 80][mapCoords[0] // 80]
+
+    def getLocationOfTile(self, tile):
+        for rowNum, tileRow in enumerate(self.tileMap):
+            for columnNum, tileIterate in enumerate(tileRow):
+                if tile == tileIterate:
+                    return (columnNum, rowNum)
 
     def click(self, frameCoords, mapCoords):
-        if (mapCoords[0] < 0 or mapCoords[0] > self.map_width or mapCoords[1] < 0 or mapCoords[1] > self.map_height):
+        if not (mapCoords[0] < 0 or mapCoords[0] > self.map_width or mapCoords[1] < 0 or mapCoords[1] > self.map_height):
             tile = self.getTileOfCoord(mapCoords)
-            #map coord click is valid
+            print(self.getLocationOfTile(tile))
+            print(mapCoords)
+            print()
         else:
             #invalid
+            print("wah")
             return None
 
 
