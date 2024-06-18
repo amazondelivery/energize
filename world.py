@@ -7,7 +7,10 @@ from timeController import TimeController
 
 
 class World:
+
     tileDim = 80
+    gradients = GameGradients()
+
     def __init__(self, map, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0,0)):
 
         #error-checking
@@ -18,7 +21,6 @@ class World:
         self.map_width, self.map_height = mapDimensions
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
-        self.gradients = GameGradients()
 
         #images that the tiles will use
         self.map = map
@@ -28,6 +30,7 @@ class World:
 
         #some of these are reversed because i'm trying to see which works better here
         self.structureCode = {
+            0 : "none",
             1 : "solar",
             2 : "wind",
             "solar" : 1,
@@ -53,6 +56,8 @@ class World:
     def initializeStructure(self, type, coords):
         if self.structureCode[type] == "solar":
             return Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
+        elif self.structureCode[type] == "none":
+            print("No structure selected")
         else:
             print("No structure found")
 
@@ -171,7 +176,8 @@ class World:
 
     def click(self, frameCoords, mapCoords):
         if not (mapCoords[0] < 0 or mapCoords[0] > self.map_width or mapCoords[1] < 0 or mapCoords[1] > self.map_height):
-            print(self.getTileLocationOfCoord(mapCoords))
+            tileTuple = self.getTileOfCoord(mapCoords)
+            self.initializeStructure(self.player.getCurrentSelection(), tileTuple)
         else:
             #invalid
             print("wah")

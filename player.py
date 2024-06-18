@@ -25,6 +25,9 @@ class Player(Character):
     def getRect(self):
         return self.characterImage.getRect()
 
+    def getCurrentSelection(self):
+        return self.currentSelection
+
     def getSpeed(self):
         return self.speed
 

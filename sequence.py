@@ -5,6 +5,7 @@ class Sequence(ABC):
 
     screen_width = 1280
     screen_height = 720
+
     @abstractmethod
     def __init__(self):
         self.fonts = {}
@@ -18,9 +19,6 @@ class Sequence(ABC):
 
     @abstractmethod
     def mouse(self, coords, buttonsPressed):
-        pass
-
-    def drawHelper(self, screen):
         pass
 
     def draw(self, screen):

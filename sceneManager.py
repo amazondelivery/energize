@@ -3,7 +3,9 @@ from scenes import *
 
 
 class SceneManager:
+
     mouseIgnoreCapacity = 2
+
     def __init__(self):
         pg.init()
         pg.display.set_caption("Energize")
@@ -23,6 +25,9 @@ class SceneManager:
 
     def changeScene(self, sequenceNum):
         self.currentScene = self.sequences[sequenceNum]
+
+    def drawHelper(self, screen):
+        return screen
 
     def getSceneName(self):
         return self.currentScene.getName()

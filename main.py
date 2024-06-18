@@ -13,8 +13,8 @@ keywords = {
 }
 
 while True:
-    for event in pg.event.get():
 
+    for event in pg.event.get():
         if event.type == pg.QUIT:
             #game.saveGameData()
             pg.quit()
