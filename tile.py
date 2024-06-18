@@ -18,6 +18,9 @@ class Tile:
         else:
             return False
 
+    def getType(self):
+        return self.type
+
 
 class Wire:
 

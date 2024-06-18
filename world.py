@@ -7,6 +7,7 @@ from timeController import TimeController
 
 
 class World:
+    tileDim = 80
     def __init__(self, map, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0,0)):
 
         #error-checking
@@ -25,24 +26,43 @@ class World:
         self.player = player
         self.timeController = TimeController()
 
-        self.structures = [
-            #test
-            Image("solarBright.png", -1, (False, 800, False, 800), transformation = (80,80))
-        ]
-
+        #some of these are reversed because i'm trying to see which works better here
         self.structureCode = {
+            1 : "solar",
+            2 : "wind",
             "solar" : 1,
             "wind" : 2,
             "windHelper" : 3
         }
 
-        #creates tilemap of width // 40 and height // 40)
-        self.tileMap = [ [Tile()] * (mapDimensions[1] // 80) for i in range(mapDimensions[0] // 80) ]
+        #creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
+        self.tileMap = [ [Tile()] * (mapDimensions[1] // self.tileDim) for i in range(mapDimensions[0] // self.tileDim) ]
+        self.structures = self.initializeTileWorldStructures()
 
         self.mapDimensions = mapDimensions
 
+
+        #testing purposes
+        self.structures = [
+            Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
+        ]
+
     def getPlayer(self):
         return self.player
+
+    def initializeStructure(self, type, coords):
+        if self.structureCode[type] == "solar":
+            return Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
+        else:
+            print("No structure found")
+
+    def initializeTileWorldStructures(self):
+        structures = []
+        for rowNum, tileRow in enumerate(self.tileMap):
+            for columnNum, tile in enumerate(tileRow):
+                if tile.getType() != 0:
+                    tileCoords = self.getCoordsOfTile(columnNum, rowNum)
+                    structures.append(self.initializeStructure(type, tileCoords))
 
     def updatePlayer(self, changeX, changeY):
         if self.checkCollision(changeX, changeY) == False:
@@ -104,7 +124,7 @@ class World:
 
     def getPlayerTile(self):
         position = self.player.getUniversalPosition()
-        return (position[0] // 80, position[1] // 80)
+        return (position[0] // self.tileDim, position[1] // self.tileDim)
 
     def addSolarPanel(self, tilePositionIndexRow, tilePositionIndexColumn):
         tile = self.tileMap[tilePositionIndexRow][tilePositionIndexColumn]
@@ -134,20 +154,24 @@ class World:
         return self.camera.getPlayerOffset(self.player.getPosition())
 
     def getTileOfCoord(self, mapCoords):
-        return self.tileMap[mapCoords[1] // 80][mapCoords[0] // 80]
+        return self.tileMap[mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
+
+    def getTileLocationOfCoord(self, mapCoords):
+        return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
+
+    def getCoordsOfTile(self, col, row):
+        return (col * self.tileDim, row * self.tileDim)
 
     def getLocationOfTile(self, tile):
         for rowNum, tileRow in enumerate(self.tileMap):
             for columnNum, tileIterate in enumerate(tileRow):
+                print(columnNum, rowNum)
                 if tile == tileIterate:
                     return (columnNum, rowNum)
 
     def click(self, frameCoords, mapCoords):
         if not (mapCoords[0] < 0 or mapCoords[0] > self.map_width or mapCoords[1] < 0 or mapCoords[1] > self.map_height):
-            tile = self.getTileOfCoord(mapCoords)
-            print(self.getLocationOfTile(tile))
-            print(mapCoords)
-            print()
+            print(self.getTileLocationOfCoord(mapCoords))
         else:
             #invalid
             print("wah")
