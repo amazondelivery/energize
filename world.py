@@ -1,9 +1,9 @@
-#at some point i want the world to be randomly generated with a seed
 from tile import Tile
 from asset import *
 from camera import *
 from gradient import *
 from timeController import TimeController
+# at some point i want the world to be randomly generated with a seed
 
 
 class World:
@@ -11,24 +11,24 @@ class World:
     tileDim = 80
     gradients = GameGradients()
 
-    def __init__(self, map, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0,0)):
+    def __init__(self, gameMap, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0, 0)):
 
-        #error-checking
+        # error-checking
         if mapDimensions[0] == 0 or mapDimensions[1] == 0:
             raise NotImplementedError
 
-        #making camera and gradients
+        # making camera and gradients
         self.map_width, self.map_height = mapDimensions
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
 
-        #images that the tiles will use
-        self.map = map
+        # images that the tiles will use
+        self.map = gameMap
         self.assets = assets
         self.player = player
         self.timeController = TimeController()
 
-        #some of these are reversed because i'm trying to see which works better here
+        # some of these are reversed because i'm trying to see which works better here
         self.structureCode = {
             0 : "none",
             1 : "solar",
@@ -38,14 +38,13 @@ class World:
             "windHelper" : 3
         }
 
-        #creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
-        self.tileMap = [ [Tile()] * (mapDimensions[1] // self.tileDim) for i in range(mapDimensions[0] // self.tileDim) ]
+        # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
+        self.tileMap = [[Tile()] * (mapDimensions[1] // self.tileDim) for _ in range(mapDimensions[0] // self.tileDim)]
         self.structures = self.initializeTileWorldStructures()
 
         self.mapDimensions = mapDimensions
 
-
-        #testing purposes
+        # testing purposes
         self.structures = [
             Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
         ]
@@ -53,10 +52,10 @@ class World:
     def getPlayer(self):
         return self.player
 
-    def initializeStructure(self, type, coords):
-        if self.structureCode[type] == "solar":
+    def initializeStructure(self, typeOfStructure, coords):
+        if self.structureCode[typeOfStructure] == "solar":
             return Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
-        elif self.structureCode[type] == "none":
+        elif self.structureCode[typeOfStructure] == "none":
             print("No structure selected")
         else:
             print("No structure found")
@@ -68,16 +67,16 @@ class World:
                 if tile.getType() != 0:
                     tileCoords = self.getCoordsOfTile(columnNum, rowNum)
                     structures.append(self.initializeStructure(type, tileCoords))
+        return structures
 
     def updatePlayer(self, changeX, changeY):
-        if self.checkCollision(changeX, changeY) == False:
+        if not self.checkCollision(changeX, changeY):
             self.player.updatePos(changeX, changeY)
 
     def renderTiles(self):
         for rowNum, tileRow in enumerate(self.tileMap):
             for columnNum, tile in enumerate(tileRow):
                 print('test')
-
 
     def checkCollision(self, playerChangeX, playerChangeY):
         if self.mapCollision(playerChangeX, playerChangeY):
@@ -100,20 +99,20 @@ class World:
         return False
 
     def objectCollision(self, changeX, changeY):
-        #https://silentmatt.com/rectangle-intersection/
-        #used the above link to help
+        # https://silentmatt.com/rectangle-intersection/
+        # used the above link to help
         playerPosition = self.player.getPosition()
-        objectWiggleRoom = 0 #probably not needed
+        objectWiggleRoom = 0  # probably not needed
         playerWidth, playerHeight = self.player.getRect()[2:4]
-        paddingValue = 1 #normally 5/4
+        paddingValue = 1  # normally 5/4
         pX1 = playerPosition[0] + changeX * paddingValue - playerWidth // 2
         pX2 = playerPosition[0] + changeX * paddingValue + playerWidth // 2
         pY1 = playerPosition[1] - changeY * paddingValue - playerHeight // 2
         pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
 
-        for object in self.structures:
-            objectPosition = object.getPosition()
-            objectWidth, objectHeight = object.getRect()[2:4]
+        for obj in self.structures:
+            objectPosition = obj.getPosition()
+            objectWidth, objectHeight = obj.getRect()[2:4]
             oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
             oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
             oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
@@ -138,7 +137,6 @@ class World:
             return True
         else:
             return False
-
 
     def getCamera(self):
         return self.camera
@@ -165,7 +163,8 @@ class World:
             test = self.tileMap[mapCoords[0] // self.tileDim][mapCoords[1] // self.tileDim]
         except:
             print(f"map coords: {mapCoords}\nx:{mapCoords[0] // self.tileDim}\ny:{mapCoords[1] // self.tileDim}")
-            print(f"x array length: {len(self.tileDim[0])}\ny array length: {len(self.tileDim)}")
+            print(f"x array length: {len(self.tileMap[0])}\ny array length: {len(self.tileMap)}")
+            raise SystemExit
 
         return self.tileMap[mapCoords[0] // self.tileDim][mapCoords[1] // self.tileDim]
 
@@ -191,7 +190,6 @@ class World:
         else:
             return False
 
-
     def click(self, frameCoords, mapCoords):
         if not self.outOfMapBounds(mapCoords):
             tileTuple = self.getTileOfCoord(mapCoords)
@@ -204,11 +202,3 @@ class World:
         if not self.outOfMapBounds(mapCoords):
             # i want a yellow rectangle to border the tile hovered overs
             tileTuple = self.getTileOfCoord(mapCoords)
-
-
-
-
-
-
-
-
