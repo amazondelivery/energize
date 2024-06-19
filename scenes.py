@@ -147,6 +147,11 @@ class GameScene(Sequence):
             mapClick[0] += coords[0]
             mapClick[1] += coords[1]
             self.world.click(coords, mapClick)
+        else:
+            mapHover = self.world.getMap().getUniversalCornerPosition()
+            mapHover[0] += coords[0]
+            mapHover[1] += coords[1]
+            self.world.hover(coords, mapHover)
         return -1
 
 

@@ -159,7 +159,15 @@ class World:
         return self.camera.getPlayerOffset(self.player.getPosition())
 
     def getTileOfCoord(self, mapCoords):
-        return self.tileMap[mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
+
+        # for testing
+        try:
+            test = self.tileMap[mapCoords[0] // self.tileDim][mapCoords[1] // self.tileDim]
+        except:
+            print(f"map coords: {mapCoords}\nx:{mapCoords[0] // self.tileDim}\ny:{mapCoords[1] // self.tileDim}")
+            print(f"x array length: {len(self.tileDim[0])}\ny array length: {len(self.tileDim)}")
+
+        return self.tileMap[mapCoords[0] // self.tileDim][mapCoords[1] // self.tileDim]
 
     def getTileLocationOfCoord(self, mapCoords):
         return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
@@ -174,14 +182,30 @@ class World:
                 if tile == tileIterate:
                     return (columnNum, rowNum)
 
+    def outOfMapBounds(self, mapCoords):
+        x = mapCoords[0]
+        y = mapCoords[1]
+
+        if (x < 0 or x > self.map_width or y < 0 or y > self.map_height):
+            return True
+        else:
+            return False
+
+
     def click(self, frameCoords, mapCoords):
-        if not (mapCoords[0] < 0 or mapCoords[0] > self.map_width or mapCoords[1] < 0 or mapCoords[1] > self.map_height):
+        if not self.outOfMapBounds(mapCoords):
             tileTuple = self.getTileOfCoord(mapCoords)
             self.initializeStructure(self.player.getCurrentSelection(), tileTuple)
         else:
-            #invalid
-            print("wah")
+            print('wah')
             return None
+
+    def hover(self, frameCoords, mapCoords):
+        if not self.outOfMapBounds(mapCoords):
+            # i want a yellow rectangle to border the tile hovered overs
+            tileTuple = self.getTileOfCoord(mapCoords)
+
+
 
 
 
