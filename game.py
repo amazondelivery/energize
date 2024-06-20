@@ -37,6 +37,9 @@ class Game:
     def prepIntroScene(self):
         print("filler")
 
+    def scroll(self, x, y):
+        self.sceneManager.scroll(x, y)
+
     #debug purposes
     def screenshot(self):
         self.sceneManager.screenshot()

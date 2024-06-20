@@ -44,8 +44,11 @@ class World:
         self.guiIcons = [
 
         ]
-
         self.mapDimensions = mapDimensions
+
+        #player settings
+        self.currentSelection = 0
+        self.numItems = 2
 
         # testing purposes
         self.structures = [
@@ -58,7 +61,7 @@ class World:
 
     def initializeStructure(self, typeOfStructure, coords):
         if self.structureCode[typeOfStructure] == "solar":
-            return Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
+            return Image("solarBright.png", -1, (False, coords[0], False, coords[1]), transformation = (self.tileDim, self.tileDim))
         elif self.structureCode[typeOfStructure] == "none":
             print("No structure selected")
         else:
@@ -206,7 +209,7 @@ class World:
     def click(self, frameCoords, mapCoords):
         if not self.outOfMapBounds(mapCoords):
             tileTuple = self.getTileLocationOfCoord(mapCoords)
-            self.initializeStructure(self.player.getCurrentSelection(), tileTuple)
+            self.initializeStructure(self.currentSelection, tileTuple)
             print(tileTuple)
         else:
             print('wah')
@@ -215,4 +218,4 @@ class World:
     def hover(self, frameCoords, mapCoords):
         if not self.outOfMapBounds(mapCoords):
             # i want a yellow rectangle to border the tile hovered overs
-            tileTuple = self.getTileOfCoord(mapCoords)
+            tileTuple = self.getTileLocationOfCoord(mapCoords)

@@ -57,3 +57,6 @@ class Sequence(ABC):
             return collisionButton.getAction()
         return -1
 
+    def scroll(self, x, y):
+        return
+

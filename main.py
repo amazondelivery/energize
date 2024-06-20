@@ -22,6 +22,9 @@ while True:
 
         game.mouse(pg.mouse.get_pos(), pg.mouse.get_pressed())
 
+        if event.type == pg.MOUSEWHEEL:
+            game.scroll(event.x, event.y)
+
         pg.key.set_repeat(1, 90)
 
         if event.type == pg.KEYDOWN:

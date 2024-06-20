@@ -53,8 +53,13 @@ class SceneManager:
         if num != -1:
             self.changeScene(num)
 
+    def scroll(self, x, y):
+        self.currentScene.scroll(x, y)
+
     #debug purposes
     def screenshot(self):
         pg.image.save(self.screen, "screenshot.jpg")
+
+
 
 

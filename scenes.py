@@ -154,4 +154,7 @@ class GameScene(Sequence):
             self.world.hover(coords, mapHover)
         return -1
 
+    def scroll(self, x, y):
+        return
+
 
