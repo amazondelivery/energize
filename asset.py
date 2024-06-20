@@ -139,6 +139,53 @@ class Map(Asset):
     def getUniversalCornerPosition(self):
         return self.universalCornerPosition
 
+class GUI(Image):
+    def __init__(self, imageName, clickAction,
+                 transformation = None, show = True,
+                 left = 0, top = 0):
+        if transformation == None:
+            self.obj = self.renderImage(imageName)
+        else:
+            self.obj = self.renderImage(imageName, transformation)
+        self.clickAction = clickAction
+        self.position = self.regPosition(left, top)
+        self.cornerPlace = True
+        self.show = show
+
+    def regPosition(self, left, top):
+        width, height = self.getWidthHeight()
+        if left < 0:
+            x = self.screen_width + left - width
+            #right side must be -left from the right side of the screen
+        else:
+            x = left
+            #left side must be left from the left side of the screen
+
+        if top < 0:
+            #bottom side must be -top from the bottom side of the screen
+            y = self.screen_height + top - height
+        else:
+            y = top
+            #top side must be top from the top side of the screen
+
+        return (x, y)
+
+    def blit(self):
+        width, height = self.getWidthHeight()
+        positionArray = self.position.copy()
+
+        #remove the width and height adjustments after positionArrays are normalized to be in the middle
+        if self.cornerPlace:
+            positionArray[0] = positionArray[0]
+            positionArray[1] = positionArray[1]
+            return self.obj, positionArray
+        else:
+            positionArray[0] = positionArray[0] - width // 2
+            positionArray[1] = positionArray[1] - height // 2
+            return self.obj, positionArray
+
+
+
 class Structure(Image):
 
     #probably will not use this class, but im building it just in case

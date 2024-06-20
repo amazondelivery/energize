@@ -88,8 +88,11 @@ class GameScene(Sequence):
 
         map = Map("map.png", (map_width, map_height), (False, 0, False, 0))
         player = Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
+        self.guiItems = [
+
+        ]
         assets = {
-            #"solarBright" : Image("solarBright.png", -1, ),
+
         }
 
         self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
@@ -114,6 +117,11 @@ class GameScene(Sequence):
                 screen.blit(*structure.blit(offset))
 
         screen.blit(*self.world.getPlayer().blit(offset))
+
+        #gui stuff
+        for menu in self.guiItems:
+            if menu.getShow() == True:
+                screen.blit(*menu.blit(offset))
 
     def record(self, char):
         camera = self.world.getCamera()
