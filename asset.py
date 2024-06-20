@@ -28,14 +28,22 @@ class Asset:
     def midHeight(self):
         return self.mids(self.screen_width, self.screen_height)[1]
 
+    def getCornerType(self):
+        return self.cornerPlace
+
     def blit(self, offset = (0,0)):
         width, height = self.getWidthHeight()
         positionArray = self.position.copy()
 
         #remove the width and height adjustments after positionArrays are normalized to be in the middle
-        positionArray[0] = positionArray[0] + offset[0] - width//2
-        positionArray[1] = positionArray[1] + offset[1] - height // 2
-        return self.obj, positionArray
+        if self.cornerPlace:
+            positionArray[0] = positionArray[0] + offset[0]
+            positionArray[1] = positionArray[1] + offset[1]
+            return self.obj, positionArray
+        else:
+            positionArray[0] = positionArray[0] + offset[0] - width//2
+            positionArray[1] = positionArray[1] + offset[1] - height // 2
+            return self.obj, positionArray
 
     def getWidthHeight(self):
         rect = self.getRect()

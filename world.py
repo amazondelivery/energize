@@ -39,14 +39,18 @@ class World:
         }
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
-        self.tileMap = [[Tile()] * (mapDimensions[1] // self.tileDim) for _ in range(mapDimensions[0] // self.tileDim)]
+        self.tileMap = [[Tile()] * (self.map_width // self.tileDim) for _ in range(self.map_height // self.tileDim)]
         self.structures = self.initializeTileWorldStructures()
+        self.guiIcons = [
+
+        ]
 
         self.mapDimensions = mapDimensions
 
         # testing purposes
         self.structures = [
-            Image("solarBright.png", -1, (False, 800, False, 800), transformation = (self.tileDim, self.tileDim))
+            Image("solarBright.png", -1, (False, 800, False, 800),
+                  transformation = (self.tileDim, self.tileDim), cornerPlace = True)
         ]
 
     def getPlayer(self):
@@ -113,13 +117,22 @@ class World:
         for obj in self.structures:
             objectPosition = obj.getPosition()
             objectWidth, objectHeight = obj.getRect()[2:4]
-            oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
-            oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
-            oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
-            oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
+            if obj.getCornerType == False:
+                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
+                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
 
-            if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
-                return True
+                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+                    return True
+            else:
+                oX1 = objectPosition[0] + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
+                oY1 = objectPosition[1] + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
+
+                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+                    return True
 
         return False
 
@@ -160,13 +173,13 @@ class World:
 
         # for testing
         try:
-            test = self.tileMap[mapCoords[0] // self.tileDim][mapCoords[1] // self.tileDim]
+            test = self.tileMap[mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
         except:
             print(f"map coords: {mapCoords}\nx:{mapCoords[0] // self.tileDim}\ny:{mapCoords[1] // self.tileDim}")
             print(f"x array length: {len(self.tileMap[0])}\ny array length: {len(self.tileMap)}")
             raise SystemExit
 
-        return self.tileMap[mapCoords[0] // self.tileDim][mapCoords[1] // self.tileDim]
+        return self.tileMap[mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
 
     def getTileLocationOfCoord(self, mapCoords):
         return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
@@ -192,8 +205,9 @@ class World:
 
     def click(self, frameCoords, mapCoords):
         if not self.outOfMapBounds(mapCoords):
-            tileTuple = self.getTileOfCoord(mapCoords)
+            tileTuple = self.getTileLocationOfCoord(mapCoords)
             self.initializeStructure(self.player.getCurrentSelection(), tileTuple)
+            print(tileTuple)
         else:
             print('wah')
             return None
