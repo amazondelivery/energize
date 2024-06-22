@@ -88,8 +88,11 @@ class GameScene(Sequence):
 
         map = Map("map.png", (map_width, map_height), (False, 0, False, 0))
         player = Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
-        self.guiItems = [
 
+        currentSelectionImage = None
+        # add currentSelectionImage to guiItems below
+        self.guiItems = [
+            currentSelectionImage
         ]
         assets = {
 
@@ -101,6 +104,7 @@ class GameScene(Sequence):
         screen.fill(self.world.getGradientColor("sunset"))
         self.worldEvent()
         self.blit(screen)
+        print(self.world.getSelectedItem())
         return screen
 
     def worldEvent(self):
@@ -120,7 +124,7 @@ class GameScene(Sequence):
 
         #gui stuff
         for menu in self.guiItems:
-            if menu.getShow() == True:
+            if menu.getShow() == True and (not menu == None):
                 screen.blit(*menu.blit(offset))
 
     def record(self, char):
@@ -163,6 +167,6 @@ class GameScene(Sequence):
         return -1
 
     def scroll(self, x, y):
-        return
+        self.world.updateSelectedItem(y)
 
 

@@ -28,14 +28,11 @@ class World:
         self.player = player
         self.timeController = TimeController()
 
-        # some of these are reversed because i'm trying to see which works better here
         self.structureCode = {
             0 : "none",
             1 : "solar",
             2 : "wind",
-            "solar" : 1,
-            "wind" : 2,
-            "windHelper" : 3
+            3 : "windHelper"
         }
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
@@ -161,6 +158,12 @@ class World:
 
     def getCamera(self):
         return self.camera
+
+    def updateSelectedItem(self, y):
+        self.currentSelection += y
+
+    def getSelectedItem(self):
+        return self.currentSelection % self.numItems
 
     def getGradientColor(self, gradientTitle):
         gradient = self.gradients.getGradient(gradientTitle)
