@@ -56,6 +56,9 @@ class World:
     def getPlayer(self):
         return self.player
 
+    def getCurrentSelection(self):
+        return self.currentSelection
+
     def initializeStructure(self, typeOfStructure, coords):
         return 0 # for now...
         if self.structureCode[typeOfStructure] == "solar":
@@ -161,13 +164,8 @@ class World:
         return self.camera
 
     def updateSelectedItem(self, y):
-        #returns True if theres a change in selected item
-        prev = self.currentSelection % 2
-        self.currentSelection += y
-        if self.currentSelection % 2 != prev:
-            return True
-        else:
-            return False
+        if (self.currentSelection + y) % 2 != self.currentSelection % 2:
+            self.currentSelection = (self.currentSelection + y) % 2
 
     def getSelectedItem(self):
         return self.currentSelection % self.numItems

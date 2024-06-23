@@ -95,11 +95,12 @@ class GameScene(Sequence):
 
         }
 
-        currentlySelectedIcons = [
+        self.currentlySelectedIcons = [
+            None,
             GUI("assets/solarNight.png", -1, (80,80), True, -40, -40)
         ]
         self.guiItems = [
-            currentlySelectedIcons
+            self.currentlySelectedIcons
         ]
         self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
 
@@ -125,11 +126,11 @@ class GameScene(Sequence):
 
         screen.blit(*self.world.getPlayer().blit(offset))
 
-        #gui stuff
-        for guiItem in self.guiItems:
-            for menu in guiItem:
-                if menu != None and menu.getShow() == True:
-                    screen.blit(*menu.blit())
+        #blits currentlySelected
+        print(self.world.getCurrentSelection())
+        currentlySelected = self.currentlySelectedIcons[self.world.getCurrentSelection()]
+        if currentlySelected != None and currentlySelected.getShow() == True:
+            screen.blit(*currentlySelected.blit())
 
     def record(self, char):
         camera = self.world.getCamera()
@@ -171,8 +172,7 @@ class GameScene(Sequence):
         return -1
 
     def scroll(self, x, y):
-        if self.world.updateSelectedItem(y) == True:
-            newItem = self.world.getSelectedItem()
+        self.world.updateSelectedItem(y)
 
 
 
