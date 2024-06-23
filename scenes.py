@@ -127,7 +127,6 @@ class GameScene(Sequence):
         screen.blit(*self.world.getPlayer().blit(offset))
 
         #blits currentlySelected
-        print(self.world.getCurrentSelection())
         currentlySelected = self.currentlySelectedIcons[self.world.getCurrentSelection()]
         if currentlySelected != None and currentlySelected.getShow() == True:
             screen.blit(*currentlySelected.blit())

@@ -47,14 +47,12 @@ class World:
         self.currentSelection = 0
         self.numItems = 2
 
-        # testing purposes
-        self.structures = [
-            Image("solarBright.png", -1, (False, 800, False, 800),
-                  transformation = (self.tileDim, self.tileDim), cornerPlace = True)
-        ]
 
     def getPlayer(self):
         return self.player
+
+    def getActualCurrentSelection(self):
+        return self.currentSelection % self.numItems
 
     def getCurrentSelection(self):
         return self.currentSelection
@@ -93,52 +91,6 @@ class World:
             return True
         else:
             return False
-
-    def mapCollision(self, changeX, changeY):
-        playerRect = self.player.getRect()
-        if changeX == 0:
-            newY = self.player.getPosition()[1] - changeY
-            if (newY - playerRect[3] // 2 < 0 or newY + playerRect[3] // 2 > self.mapDimensions[1]):
-                return True
-        else:
-            newX = self.player.getPosition()[0] + changeX
-            if (newX - playerRect[2] // 2 < 0 or newX + playerRect[2] // 2 > self.mapDimensions[0]):
-                return True
-        return False
-
-    def objectCollision(self, changeX, changeY):
-        # https://silentmatt.com/rectangle-intersection/
-        # used the above link to help
-        playerPosition = self.player.getPosition()
-        objectWiggleRoom = 0  # probably not needed
-        playerWidth, playerHeight = self.player.getRect()[2:4]
-        paddingValue = 1  # normally 5/4
-        pX1 = playerPosition[0] + changeX * paddingValue - playerWidth // 2
-        pX2 = playerPosition[0] + changeX * paddingValue + playerWidth // 2
-        pY1 = playerPosition[1] - changeY * paddingValue - playerHeight // 2
-        pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
-
-        for obj in self.structures:
-            objectPosition = obj.getPosition()
-            objectWidth, objectHeight = obj.getRect()[2:4]
-            if obj.getCornerType == False:
-                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
-                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
-
-                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
-                    return True
-            else:
-                oX1 = objectPosition[0] + objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
-                oY1 = objectPosition[1] + objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
-
-                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
-                    return True
-
-        return False
 
     def getMap(self):
         return self.map
@@ -182,6 +134,27 @@ class World:
     def timeIncrease(self):
         self.timeController.timeIncrease()
 
+    def click(self, frameCoords, mapCoords):
+        if not self.outOfMapBounds(mapCoords):
+            if not self.inPlayersWay(mapCoords):
+                self.place(mapCoords)
+        else:
+            print('wah')
+            return None
+
+    def place(self, mapCoords):
+        mapTile = self.getTileLocationOfCoord(mapCoords)
+        objectPosition = self.getCoordsOfTile(*mapTile)
+        if self.structureCode.get(self.getActualCurrentSelection()) == "solar":
+            self.structures.append(Image("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1]),
+                  transformation = (self.tileDim, self.tileDim), cornerPlace = True))
+
+
+    def hover(self, frameCoords, mapCoords):
+        if not self.outOfMapBounds(mapCoords):
+            # i want a yellow rectangle to border the tile hovered overs
+            tileTuple = self.getTileLocationOfCoord(mapCoords)
+
     def getCameraOffset(self):
         return self.camera.getPlayerOffset(self.player.getPosition())
 
@@ -189,7 +162,7 @@ class World:
 
         # for testing
         try:
-            test = self.tileMap[mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
+            test = self.tileMap[ mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
         except:
             print(f"map coords: {mapCoords}\nx:{mapCoords[0] // self.tileDim}\ny:{mapCoords[1] // self.tileDim}")
             print(f"x array length: {len(self.tileMap[0])}\ny array length: {len(self.tileMap)}")
@@ -219,16 +192,75 @@ class World:
         else:
             return False
 
-    def click(self, frameCoords, mapCoords):
-        if not self.outOfMapBounds(mapCoords):
-            tileTuple = self.getTileLocationOfCoord(mapCoords)
-            self.initializeStructure(self.currentSelection, tileTuple)
-            print(tileTuple)
+    def mapCollision(self, changeX, changeY):
+        playerRect = self.player.getRect()
+        if changeX == 0:
+            newY = self.player.getPosition()[1] - changeY
+            if (newY - playerRect[3] // 2 < 0 or newY + playerRect[3] // 2 > self.mapDimensions[1]):
+                return True
         else:
-            print('wah')
-            return None
+            newX = self.player.getPosition()[0] + changeX
+            if (newX - playerRect[2] // 2 < 0 or newX + playerRect[2] // 2 > self.mapDimensions[0]):
+                return True
+        return False
 
-    def hover(self, frameCoords, mapCoords):
-        if not self.outOfMapBounds(mapCoords):
-            # i want a yellow rectangle to border the tile hovered overs
-            tileTuple = self.getTileLocationOfCoord(mapCoords)
+    def inPlayersWay(self, mapCoords):
+
+        mapTile = self.getTileLocationOfCoord(mapCoords)
+        playerTile = self.getPlayerTile()
+        if mapTile[0] == playerTile[0] and mapTile[1] == playerTile[1]:
+            return True
+
+        playerPosition = self.player.getUniversalPosition()
+        playerWidth, playerHeight = self.player.getRect()[2:4]
+        pX1 = playerPosition[0] - playerWidth // 2
+        pX2 = playerPosition[0] + playerWidth // 2
+        pY1 = playerPosition[1]  - playerHeight // 2
+        pY2 = playerPosition[1] + playerHeight // 2
+
+        objectPosition = self.getCoordsOfTile(*mapTile)
+        oX1 = objectPosition[0]
+        oX2 = objectPosition[0] + self.tileDim
+        oY1 = objectPosition[1]
+        oY2 = objectPosition[1] + self.tileDim
+
+        if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+            return True
+        else:
+            return False
+
+
+    def objectCollision(self, changeX, changeY):
+        # https://silentmatt.com/rectangle-intersection/
+        # used the above link to help
+        playerPosition = self.player.getPosition()
+        objectWiggleRoom = 0  # probably not needed
+        playerWidth, playerHeight = self.player.getRect()[2:4]
+        paddingValue = 1  # normally 5/4
+        pX1 = playerPosition[0] + changeX * paddingValue - playerWidth // 2
+        pX2 = playerPosition[0] + changeX * paddingValue + playerWidth // 2
+        pY1 = playerPosition[1] - changeY * paddingValue - playerHeight // 2
+        pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
+
+        for obj in self.structures:
+            objectPosition = obj.getPosition()
+            objectWidth, objectHeight = obj.getRect()[2:4]
+            if obj.getCornerType == False:
+                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
+                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
+
+                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+                    return True
+            else:
+                oX1 = objectPosition[0] + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
+                oY1 = objectPosition[1] + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
+
+                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+                    return True
+
+        return False
+
