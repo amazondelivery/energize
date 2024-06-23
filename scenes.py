@@ -1,9 +1,9 @@
 import pygame as pg
 from screenObject import Text
 from sequence import Sequence
+from character import Player
 from world import World
-from player import Player
-from asset import Map
+from asset import Map, GUI
 import json
 import os.path
 
@@ -91,20 +91,23 @@ class GameScene(Sequence):
 
         currentSelectionImage = None
         # add currentSelectionImage to guiItems below
-        self.guiItems = [
-            currentSelectionImage
-        ]
         assets = {
 
         }
 
+        currentlySelectedIcons = [
+            GUI("assets/solarNight.png", -1, (80,80), True, -40, -40)
+        ]
+        self.guiItems = [
+            currentlySelectedIcons
+        ]
         self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
 
     def draw(self, screen):
         screen.fill(self.world.getGradientColor("sunset"))
         self.worldEvent()
         self.blit(screen)
-        print(self.world.getSelectedItem())
+        # print(self.world.getSelectedItem())
         return screen
 
     def worldEvent(self):
@@ -123,9 +126,10 @@ class GameScene(Sequence):
         screen.blit(*self.world.getPlayer().blit(offset))
 
         #gui stuff
-        for menu in self.guiItems:
-            if menu.getShow() == True and (not menu == None):
-                screen.blit(*menu.blit(offset))
+        for guiItem in self.guiItems:
+            for menu in guiItem:
+                if menu != None and menu.getShow() == True:
+                    screen.blit(*menu.blit())
 
     def record(self, char):
         camera = self.world.getCamera()
@@ -167,6 +171,8 @@ class GameScene(Sequence):
         return -1
 
     def scroll(self, x, y):
-        self.world.updateSelectedItem(y)
+        if self.world.updateSelectedItem(y) == True:
+            newItem = self.world.getSelectedItem()
+
 
 

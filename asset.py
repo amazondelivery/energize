@@ -172,16 +172,14 @@ class GUI(Image):
 
     def blit(self):
         width, height = self.getWidthHeight()
-        positionArray = self.position.copy()
+        positionArray = self.position
 
         #remove the width and height adjustments after positionArrays are normalized to be in the middle
-        if self.cornerPlace:
-            positionArray[0] = positionArray[0]
-            positionArray[1] = positionArray[1]
-            return self.obj, positionArray
-        else:
+        if not self.cornerPlace:
             positionArray[0] = positionArray[0] - width // 2
             positionArray[1] = positionArray[1] - height // 2
+            return self.obj, positionArray
+        else:
             return self.obj, positionArray
 
 
