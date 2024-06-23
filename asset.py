@@ -183,18 +183,3 @@ class GUI(Image):
             return self.obj, positionArray
 
 
-
-class Structure(Image):
-
-    #probably will not use this class, but im building it just in case
-    def __init__(self, imageName, clickAction,
-                 position =  (True, 0, True, 0), transformation = None, cornerPlace = False, rendered = False):
-        self.imageName = imageName
-        self.clickAction = clickAction
-        self.position = self.regPosition(position)
-        self.transformation = transformation
-        self.cornerPlace = cornerPlace
-        self.rendered = rendered
-        self.Image = None
-
-

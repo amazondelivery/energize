@@ -1,5 +1,5 @@
 from tile import Tile
-from asset import *
+from structure import Structure
 from camera import *
 from gradient import *
 from timeController import TimeController
@@ -103,15 +103,6 @@ class World:
             print("get player tile has something wrong with it")
         return (position[0] // self.tileDim, position[1] // self.tileDim)
 
-    # probably will delete this function
-    def addSolarPanel(self, tilePositionIndexRow, tilePositionIndexColumn):
-        tile = self.tileMap[tilePositionIndexRow][tilePositionIndexColumn]
-        if tile.isEmpty():
-            tile.place(1)
-            return True
-        else:
-            return False
-
     def getCamera(self):
         return self.camera
 
@@ -146,7 +137,7 @@ class World:
         mapTile = self.getTileLocationOfCoord(mapCoords)
         objectPosition = self.getCoordsOfTile(*mapTile)
         if self.structureCode.get(self.getActualCurrentSelection()) == "solar":
-            self.structures.append(Image("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1]),
+            self.structures.append(Structure("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1]),
                   transformation = (self.tileDim, self.tileDim), cornerPlace = True))
 
 
