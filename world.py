@@ -53,6 +53,9 @@ class World:
         }
         self.inventory = Inventory(self.structureCode, startingInventory)
 
+        # testing
+        self.numSolarPanels = 15
+
     def getPlayer(self):
         return self.player
 
