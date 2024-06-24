@@ -1,4 +1,5 @@
 from sceneManager import *
+
 class Game:
     def __init__(self):
         #sequences

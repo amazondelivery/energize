@@ -5,6 +5,7 @@ class Asset:
 
     screen_width = 1280
     screen_height = 720
+    tileDim = 80
 
     def renderText(self, font, text, color, antialias = True):
         font.render(text, antialias, color)

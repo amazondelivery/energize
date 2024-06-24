@@ -3,6 +3,8 @@ from structure import Structure
 from camera import *
 from gradient import *
 from timeController import TimeController
+from inventory import Inventory
+from utils import *
 # at some point i want the world to be randomly generated with a seed
 
 
@@ -10,6 +12,12 @@ class World:
 
     tileDim = 80
     gradients = GameGradients()
+    structureCode = BidirectionalDict({
+            0 : "none",
+            1 : "solar",
+            2 : "wind",
+            3 : "windHelper"
+        })
 
     def __init__(self, gameMap, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0, 0)):
 
@@ -28,13 +36,6 @@ class World:
         self.player = player
         self.timeController = TimeController()
 
-        self.structureCode = {
-            0 : "none",
-            1 : "solar",
-            2 : "wind",
-            3 : "windHelper"
-        }
-
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
         self.tileMap = [[Tile()] * (self.map_width // self.tileDim) for _ in range(self.map_height // self.tileDim)]
         self.structures = self.initializeTileWorldStructures()
@@ -46,7 +47,11 @@ class World:
         #player settings
         self.currentSelection = 0
         self.numItems = 2
-
+        startingInventory = {
+            0 : 999999,
+            1 : 15
+        }
+        self.inventory = Inventory(self.structureCode, startingInventory)
 
     def getPlayer(self):
         return self.player
@@ -58,13 +63,7 @@ class World:
         return self.currentSelection
 
     def initializeStructure(self, typeOfStructure, coords):
-        return 0 # for now...
-        if self.structureCode[typeOfStructure] == "solar":
-            return Image("solarBright.png", -1, (False, coords[0], False, coords[1]), transformation = (self.tileDim, self.tileDim))
-        elif self.structureCode[typeOfStructure] == "none":
-            print("No structure selected")
-        else:
-            print("No structure found")
+        return 0
 
     def initializeTileWorldStructures(self):
         structures = []
@@ -136,9 +135,9 @@ class World:
     def place(self, mapCoords):
         mapTile = self.getTileLocationOfCoord(mapCoords)
         objectPosition = self.getCoordsOfTile(*mapTile)
-        if self.structureCode.get(self.getActualCurrentSelection()) == "solar":
-            self.structures.append(Structure("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1]),
-                  transformation = (self.tileDim, self.tileDim), cornerPlace = True))
+        if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0:
+            self.structures.append(Structure("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1])))
+            self.numSolarPanels -= 1
 
 
     def hover(self, frameCoords, mapCoords):
@@ -254,4 +253,3 @@ class World:
                     return True
 
         return False
-
