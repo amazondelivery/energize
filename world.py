@@ -87,9 +87,7 @@ class World:
                 print('test')
 
     def checkCollision(self, playerChangeX, playerChangeY):
-        if self.mapCollision(playerChangeX, playerChangeY):
-            return True
-        elif self.objectCollision(playerChangeX, playerChangeY):
+        if self.mapCollision(playerChangeX, playerChangeY) or self.objectCollision(playerChangeX, playerChangeY):
             return True
         else:
             return False
@@ -99,11 +97,7 @@ class World:
 
     def getPlayerTile(self):
         position = self.player.getUniversalPosition()
-
-        #will replace this with the function call so im testing to see if it works
-        if not (position[0] // self.tileDim, position[1] // self.tileDim) == self.getTileLocationOfCoord(position):
-            print("get player tile has something wrong with it")
-        return (position[0] // self.tileDim, position[1] // self.tileDim)
+        return (self.getTileLocationOfCoord(position))
 
     def getCamera(self):
         return self.camera

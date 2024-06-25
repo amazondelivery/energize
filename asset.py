@@ -47,8 +47,7 @@ class Asset:
             return self.obj, positionArray
 
     def getWidthHeight(self):
-        rect = self.getRect()
-        return (rect[2], rect[3])
+        return (self.rect[2], self.rect[3])
 
     def getRect(self):
         return self.obj.get_rect()
@@ -108,6 +107,7 @@ class Text(Asset):
         self.position = self.regPosition(position)
         self.cornerPlace = cornerPlace
         self.show = show
+        self.rect = self.getRect()
 
 class Image(Asset):
     def __init__(self, imageName, clickAction,
@@ -120,6 +120,7 @@ class Image(Asset):
         self.position = self.regPosition(position)
         self.cornerPlace = cornerPlace
         self.show = show
+        self.rect = self.getRect()
 
 class Map(Asset):
     def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
@@ -127,6 +128,7 @@ class Map(Asset):
         self.clickAction = -1
         self.position = self.regPosition(position)
         self.universalCornerPosition = [0,0]
+        self.rect = self.getRect()
         #universalCornerPosition is the left corner of the screen relative to the left corner of the map as
         #   the origin (0,0)
 
@@ -148,6 +150,7 @@ class GUI(Image):
             self.obj = self.renderImage(imageName)
         else:
             self.obj = self.renderImage(imageName, transformation)
+        self.rect = self.getRect()
         self.clickAction = clickAction
         self.position = self.regPosition(left, top)
         self.cornerPlace = True

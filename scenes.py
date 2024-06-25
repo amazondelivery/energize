@@ -86,7 +86,7 @@ class GameScene(Sequence):
         map_width = self.screen_width * 4
         map_height = self.screen_height * 6
 
-        map = Map("map.png", (map_width, map_height), (False, 0, False, 0))
+        map = Map("game_map.png", (map_width, map_height), (False, 0, False, 0))
         player = Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
 
         currentSelectionImage = None
