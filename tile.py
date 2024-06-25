@@ -1,7 +1,6 @@
 class Tile:
 
     def __init__(self):
-        # random variable to give it some meaning to be a tile in existence
         self.type = 0
         self.lightLevel = 10
 
@@ -16,6 +15,7 @@ class Tile:
         if self.type == 0:
             return True
         else:
+            print(self.type)
             return False
 
     def getType(self):

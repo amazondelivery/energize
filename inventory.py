@@ -1,4 +1,5 @@
 class Inventory:
 
     def __init__(self, codeBook, startingInventory):
-        print("hi")
+        self.codeBook = codeBook
+        self.startingInventory = startingInventory

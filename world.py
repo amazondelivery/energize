@@ -122,9 +122,8 @@ class World:
         self.timeController.timeIncrease()
 
     def click(self, frameCoords, mapCoords):
-        if not self.outOfMapBounds(mapCoords):
-            if not self.inPlayersWay(mapCoords):
-                self.place(mapCoords)
+        if not (self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords)):
+            self.place(mapCoords)
         else:
             print('wah')
             return None
@@ -135,6 +134,7 @@ class World:
         if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0:
             self.structures.append(Structure("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1])))
             self.numSolarPanels -= 1
+            print(self.numSolarPanels)
 
 
     def hover(self, frameCoords, mapCoords):
@@ -146,16 +146,9 @@ class World:
         return self.camera.getPlayerOffset(self.player.getPosition())
 
     def getTileOfCoord(self, mapCoords):
+        location = self.getTileLocationOfCoord(mapCoords)
+        return self.tileMap[location[1]][location[0]]
 
-        # for testing
-        try:
-            test = self.tileMap[ mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
-        except:
-            print(f"map coords: {mapCoords}\nx:{mapCoords[0] // self.tileDim}\ny:{mapCoords[1] // self.tileDim}")
-            print(f"x array length: {len(self.tileMap[0])}\ny array length: {len(self.tileMap)}")
-            raise SystemExit
-
-        return self.tileMap[mapCoords[1] // self.tileDim][mapCoords[0] // self.tileDim]
 
     def getTileLocationOfCoord(self, mapCoords):
         return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
@@ -164,6 +157,7 @@ class World:
         return (col * self.tileDim, row * self.tileDim)
 
     def getLocationOfTile(self, tile):
+        # avoid using this
         for rowNum, tileRow in enumerate(self.tileMap):
             for columnNum, tileIterate in enumerate(tileRow):
                 print(columnNum, rowNum)
