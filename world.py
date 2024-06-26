@@ -37,7 +37,7 @@ class World:
         self.timeController = TimeController()
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
-        self.tileMap = [[Tile()] * (self.map_width // self.tileDim) for _ in range(self.map_height // self.tileDim)]
+        self.tileMap = [[Tile() for i in range(self.map_width // self.tileDim)] for j in range(self.map_height // self.tileDim)]
         self.structures = self.initializeTileWorldStructures()
         self.guiIcons = [
 
@@ -131,11 +131,16 @@ class World:
     def place(self, mapCoords):
         mapTile = self.getTileLocationOfCoord(mapCoords)
         objectPosition = self.getCoordsOfTile(*mapTile)
-        if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0:
+        if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, 1):
             self.structures.append(Structure("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1])))
             self.numSolarPanels -= 1
             print(self.numSolarPanels)
 
+    def tilePlace(self, mapTile, type):
+        if self.tileMap[mapTile[1]][mapTile[0]].place(type) == True:
+            return True
+        else:
+            return False
 
     def hover(self, frameCoords, mapCoords):
         if not self.outOfMapBounds(mapCoords):
