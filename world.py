@@ -5,6 +5,7 @@ from gradient import *
 from timeController import TimeController
 from inventory import Inventory
 from utils import *
+import math
 # at some point i want the world to be randomly generated with a seed
 
 
@@ -122,11 +123,15 @@ class World:
         self.timeController.timeIncrease()
 
     def click(self, frameCoords, mapCoords):
-        if not (self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords)):
-            self.place(mapCoords)
+        if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
+            print("cant place that here")
+            return False
+        elif self.outOfPlayerRange(mapCoords):
+            print("out of range")
+            return False
         else:
-            print('wah')
-            return None
+            self.place(mapCoords)
+            return True
 
     def place(self, mapCoords):
         mapTile = self.getTileLocationOfCoord(mapCoords)
@@ -174,6 +179,13 @@ class World:
         y = mapCoords[1]
 
         if (x < 0 or x > self.map_width or y < 0 or y > self.map_height):
+            return True
+        else:
+            return False
+
+    def outOfPlayerRange(self, mapCoords):
+        playerCoords = self.player.getUniversalPosition()
+        if (math.sqrt((mapCoords[0] - playerCoords[0])**2 + (mapCoords[1] - playerCoords[1])**2)) > self.player.getRange():
             return True
         else:
             return False

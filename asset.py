@@ -109,6 +109,14 @@ class Text(Asset):
         self.show = show
         self.rect = self.getRect()
 
+        self.font = font
+        self.color = color
+        self.antialias = antialias
+
+    def rerender(self, newText):
+        self.obj = self.renderText(self.font, newText, self.color, self.antialias)
+
+
 class Image(Asset):
     def __init__(self, imageName, clickAction,
                  position = (True, 0, True, 0), transformation = None, cornerPlace = False, show = True):

@@ -23,7 +23,7 @@ class Player(Character):
 
     def __init__(self, imageName, clickAction,
                  dimensions, position = (True, 0, True, 0),
-                 sprites = (), map_dimensions = (), speed = 15):
+                 sprites = (), map_dimensions = (), speed = 15, range = 350):
         super().__init__()
         self.characterImage = Image(imageName, clickAction, position, dimensions)
         self.universalPosition = self.universalPositionGetter(self.characterImage.getPosition(), dimensions)
@@ -32,9 +32,14 @@ class Player(Character):
         self.mapDimensions = map_dimensions
         self.speed = speed
 
+        self.range = range
+
 
     def getRect(self):
         return self.characterImage.getRect()
+
+    def getRange(self):
+        return self.range
 
     def getSpeed(self):
         return self.speed
