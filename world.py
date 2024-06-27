@@ -201,7 +201,7 @@ class World:
         playerWidth, playerHeight = self.player.getRect()[2:4]
         pX1 = playerPosition[0] - playerWidth // 2
         pX2 = playerPosition[0] + playerWidth // 2
-        pY1 = playerPosition[1]  - playerHeight // 2
+        pY1 = playerPosition[1] - playerHeight // 2
         pY2 = playerPosition[1] + playerHeight // 2
 
         objectPosition = self.getCoordsOfTile(*mapTile)
