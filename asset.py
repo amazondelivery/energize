@@ -90,10 +90,14 @@ class Asset:
             position[1] -= height // 2
         return position
 
-    def show(self):
+    def showObject(self):
         self.show = True
 
-    def hide(self):
+    def showWithPosition(self, coords):
+        self.forcePosition(coords[1], coords[0])
+        self.showObject()
+
+    def hideObject(self):
         self.show = False
 
     def getShow(self):

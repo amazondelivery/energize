@@ -3,7 +3,7 @@ from screenObject import Text
 from sequence import Sequence
 from character import Player
 from world import World
-from asset import Map, GUI
+from asset import Map, GUI, Image
 import json
 import os.path
 
@@ -15,9 +15,9 @@ class TitleSequence(Sequence):
         self.audioToggle = True
 
         self.fonts = {
-            "titleFont" : self.font("MajorMonoDisplay-Regular.ttf", 185),
-            "buttonFont" : self.font("MajorMonoDisplay-Regular.ttf", 40),
-            "textFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
+            "titleFont" : self.font("assets/fonts/MajorMonoDisplay-Regular.ttf", 185),
+            "buttonFont" : self.font("assets/fonts/MajorMonoDisplay-Regular.ttf", 40),
+            "textFont" : self.font("assets/fonts/AeogoPixellated-DYYEd.ttf", 40)
         }
 
         self.texts = [
@@ -51,7 +51,7 @@ class SettingsSequence(Sequence):
         super().__init__()
 
         self.fonts = {
-            "mainFont" : self.font("AeogoPixellated-DYYEd.ttf", 40)
+            "mainFont" : self.font("assets/fonts/AeogoPixellated-DYYEd.ttf", 40)
         }
 
         self.texts = [
@@ -86,8 +86,8 @@ class GameScene(Sequence):
         map_width = self.screen_width * 4
         map_height = self.screen_height * 6
 
-        map = Map("game_map.png", (map_width, map_height), (False, 0, False, 0))
-        player = Player("groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
+        map = Map("assets/images/game_map.png", (map_width, map_height), (False, 0, False, 0))
+        player = Player("assets/images/groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
 
         currentSelectionImage = None
         # add currentSelectionImage to guiItems below
@@ -95,14 +95,16 @@ class GameScene(Sequence):
 
         }
 
+        self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
+        tileDim = self.world.getTileDim()
         self.currentlySelectedIcons = [
             None,
-            GUI("assets/solarNight.png", -1, (80,80), True, -40, -40)
+            GUI("assets/images/solarNight.png", -1, (80, 80), True, -40, -40)
         ]
+        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), False)
         self.guiItems = [
             self.currentlySelectedIcons
         ]
-        self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
 
     def draw(self, screen):
         screen.fill(self.world.getGradientColor("sunset"))
@@ -131,6 +133,12 @@ class GameScene(Sequence):
         if currentlySelected != None and currentlySelected.getShow() == True:
             screen.blit(*currentlySelected.blit())
 
+        if self.hover.getShow() == True:
+            screen.blit(*self.hover.blit(offset))
+            print(self.hover.getPosition())
+
+
+
     def record(self, char):
         camera = self.world.getCamera()
         speed = self.world.getPlayer().getSpeed()
@@ -158,17 +166,14 @@ class GameScene(Sequence):
         return -1
 
     def mouse(self, coords, buttonsPressed):
+        mapCursorLocation = self.world.getMap().getUniversalCornerPosition()
+        mapCursorLocation[0] += coords[0]
+        mapCursorLocation[1] += coords[1]
         if buttonsPressed[0] == True:
-            print("hi")
-            mapClick = self.world.getMap().getUniversalCornerPosition()
-            mapClick[0] += coords[0]
-            mapClick[1] += coords[1]
-            self.world.click(coords, mapClick)
+            self.world.click(coords, mapCursorLocation)
         else:
-            mapHover = self.world.getMap().getUniversalCornerPosition()
-            mapHover[0] += coords[0]
-            mapHover[1] += coords[1]
-            self.world.hover(coords, mapHover)
+            if self.world.hover(coords, mapCursorLocation):
+                self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
         return -1
 
     def scroll(self, x, y):

@@ -60,6 +60,9 @@ class World:
     def getPlayer(self):
         return self.player
 
+    def getTileDim(self):
+        return self.tileDim
+
     def getActualCurrentSelection(self):
         return self.currentSelection % self.numItems
 
@@ -134,10 +137,10 @@ class World:
             return True
 
     def place(self, mapCoords):
+        objectPosition = self.normalizeTileCornerPosition(mapCoords)
         mapTile = self.getTileLocationOfCoord(mapCoords)
-        objectPosition = self.getCoordsOfTile(*mapTile)
         if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, 1):
-            self.structures.append(Structure("solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1])))
+            self.structures.append(Structure("assets/images/solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1])))
             self.numSolarPanels -= 1
             print(self.numSolarPanels)
 
@@ -148,9 +151,12 @@ class World:
             return False
 
     def hover(self, frameCoords, mapCoords):
-        if not self.outOfMapBounds(mapCoords):
-            # i want a yellow rectangle to border the tile hovered overs
-            tileTuple = self.getTileLocationOfCoord(mapCoords)
+        if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
+            return False
+        elif self.outOfPlayerRange(mapCoords):
+            return False
+        else:
+            return True
 
     def getCameraOffset(self):
         return self.camera.getPlayerOffset(self.player.getPosition())
@@ -158,7 +164,6 @@ class World:
     def getTileOfCoord(self, mapCoords):
         location = self.getTileLocationOfCoord(mapCoords)
         return self.tileMap[location[1]][location[0]]
-
 
     def getTileLocationOfCoord(self, mapCoords):
         return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
@@ -203,7 +208,6 @@ class World:
         return False
 
     def inPlayersWay(self, mapCoords):
-
         mapTile = self.getTileLocationOfCoord(mapCoords)
         playerTile = self.getPlayerTile()
         if mapTile[0] == playerTile[0] and mapTile[1] == playerTile[1]:
@@ -227,6 +231,9 @@ class World:
         else:
             return False
 
+    def normalizeTileCornerPosition(self, mapCoords):
+        mapTile = self.getTileLocationOfCoord(mapCoords)
+        return self.getCoordsOfTile(*mapTile)
 
     def objectCollision(self, changeX, changeY):
         # https://silentmatt.com/rectangle-intersection/
