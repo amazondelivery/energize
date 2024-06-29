@@ -101,7 +101,7 @@ class GameScene(Sequence):
             None,
             GUI("assets/images/solarNight.png", -1, (80, 80), True, -40, -40)
         ]
-        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), False)
+        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), True)
         self.guiItems = [
             self.currentlySelectedIcons
         ]
@@ -135,7 +135,6 @@ class GameScene(Sequence):
 
         if self.hover.getShow() == True:
             screen.blit(*self.hover.blit(offset))
-            print(self.hover.getPosition())
 
 
 
@@ -174,6 +173,8 @@ class GameScene(Sequence):
         else:
             if self.world.hover(coords, mapCursorLocation):
                 self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
+            else:
+                self.hover.hideObject()
         return -1
 
     def scroll(self, x, y):

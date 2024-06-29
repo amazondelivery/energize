@@ -62,7 +62,7 @@ class Asset:
     def forcePosition(self, x, y):
         #forces a position, not recommended to use
         self.position[0] = x
-        self.position[0] = y
+        self.position[1] = y
 
     def regPosition(self, positionTuple):
         mid_width, mid_height = self.mids()
@@ -94,7 +94,7 @@ class Asset:
         self.show = True
 
     def showWithPosition(self, coords):
-        self.forcePosition(coords[1], coords[0])
+        self.forcePosition(coords[0], coords[1])
         self.showObject()
 
     def hideObject(self):
