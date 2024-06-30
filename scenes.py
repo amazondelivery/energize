@@ -6,8 +6,8 @@ from world import World
 from asset import Map, GUI, Image
 import json
 import os.path
+# main point of this class is to instate world and also translate player inputs to actual changes on screen
 
-#main point of this class is to instate world and also translate player inputs to actual changes on screen
 
 class TitleSequence(Sequence):
     def __init__(self):
@@ -42,7 +42,6 @@ class TitleSequence(Sequence):
             return 2
         else:
             return -1
-
 
 
 class SettingsSequence(Sequence):
@@ -126,6 +125,10 @@ class GameScene(Sequence):
             if structure.getShow() == True:
                 screen.blit(*structure.blit(offset))
 
+        for structure in self.world.getNaturalStructures():
+            if structure.getShow() == True:
+                screen.blit(*structure.blit(offset))
+
         screen.blit(*self.world.getPlayer().blit(offset))
 
         #blits currentlySelectedIcon and number
@@ -135,8 +138,6 @@ class GameScene(Sequence):
 
         if self.hover.getShow() == True:
             screen.blit(*self.hover.blit(offset))
-
-
 
     def record(self, char):
         camera = self.world.getCamera()
@@ -171,7 +172,7 @@ class GameScene(Sequence):
         if buttonsPressed[0] == True:
             self.world.click(coords, mapCursorLocation)
         else:
-            if self.world.hover(coords, mapCursorLocation):
+            if self.world.hover(coords, mapCursorLocation) and self.world.getCurrentSelection() != 0:
                 self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
             else:
                 self.hover.hideObject()

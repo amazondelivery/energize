@@ -39,6 +39,9 @@ class World:
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
         self.tileMap = [[Tile() for i in range(self.map_width // self.tileDim)] for j in range(self.map_height // self.tileDim)]
+        transformerPosition = (200,200)
+        self.naturalStructures = [Structure("assets/images/transformer.png", -1,
+                                            (False, transformerPosition[0], False, transformerPosition[1]))]
         self.structures = self.initializeTileWorldStructures()
         self.guiIcons = [
 
@@ -121,6 +124,9 @@ class World:
 
     def getStructures(self):
         return self.structures
+
+    def getNaturalStructures(self):
+        return self.naturalStructures
 
     def timeIncrease(self):
         self.timeController.timeIncrease()
@@ -248,6 +254,26 @@ class World:
         pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
 
         for obj in self.structures:
+            objectPosition = obj.getPosition()
+            objectWidth, objectHeight = obj.getRect()[2:4]
+            if obj.getCornerType == False:
+                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
+                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
+
+                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+                    return True
+            else:
+                oX1 = objectPosition[0] + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
+                oY1 = objectPosition[1] + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
+
+                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
+                    return True
+
+        for obj in self.naturalStructures:
             objectPosition = obj.getPosition()
             objectWidth, objectHeight = obj.getRect()[2:4]
             if obj.getCornerType == False:
