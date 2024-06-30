@@ -17,7 +17,8 @@ class World:
             0 : "none",
             1 : "solar",
             2 : "wind",
-            3 : "windHelper"
+            3 : "windHelper",
+            4 : "transformer"
         })
 
     def __init__(self, gameMap, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0, 0)):
@@ -39,9 +40,6 @@ class World:
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
         self.tileMap = [[Tile() for i in range(self.map_width // self.tileDim)] for j in range(self.map_height // self.tileDim)]
-        transformerPosition = (200,200)
-        self.naturalStructures = [Structure("assets/images/transformer.png", -1,
-                                            (False, transformerPosition[0], False, transformerPosition[1]))]
         self.structures = self.initializeTileWorldStructures()
         self.guiIcons = [
 
@@ -59,6 +57,7 @@ class World:
 
         # testing
         self.numSolarPanels = 15
+        self.initializeStructure(4, (2,2))
 
     def getPlayer(self):
         return self.player
@@ -72,8 +71,17 @@ class World:
     def getCurrentSelection(self):
         return self.currentSelection
 
-    def initializeStructure(self, typeOfStructure, coords):
-        return 0
+    def initializeStructure(self, typeOfStructure, tileCoord):
+        pixelCoord = self.getCoordsOfTile(*tileCoord)
+        if self.structureCode.get(typeOfStructure) == 'transformer':
+            self.structures.append(Structure("assets/images/transformer.png", -1,
+                                            (False, pixelCoord[0], False, pixelCoord[1])))
+
+        if self.getTileOfTileCoord(tileCoord).place(typeOfStructure):
+            return True
+        else:
+            return False
+
 
     def initializeTileWorldStructures(self):
         structures = []
@@ -124,9 +132,6 @@ class World:
 
     def getStructures(self):
         return self.structures
-
-    def getNaturalStructures(self):
-        return self.naturalStructures
 
     def timeIncrease(self):
         self.timeController.timeIncrease()
@@ -184,6 +189,9 @@ class World:
                 print(columnNum, rowNum)
                 if tile == tileIterate:
                     return (columnNum, rowNum)
+
+    def getTileOfTileCoord(self, tileCoord):
+        return self.tileMap[tileCoord[1]][tileCoord[0]]
 
     def outOfMapBounds(self, mapCoords):
         x = mapCoords[0]
@@ -254,26 +262,6 @@ class World:
         pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
 
         for obj in self.structures:
-            objectPosition = obj.getPosition()
-            objectWidth, objectHeight = obj.getRect()[2:4]
-            if obj.getCornerType == False:
-                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
-                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
-
-                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
-                    return True
-            else:
-                oX1 = objectPosition[0] + objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
-                oY1 = objectPosition[1] + objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
-
-                if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
-                    return True
-
-        for obj in self.naturalStructures:
             objectPosition = obj.getPosition()
             objectWidth, objectHeight = obj.getRect()[2:4]
             if obj.getCornerType == False:

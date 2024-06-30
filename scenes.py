@@ -125,10 +125,6 @@ class GameScene(Sequence):
             if structure.getShow() == True:
                 screen.blit(*structure.blit(offset))
 
-        for structure in self.world.getNaturalStructures():
-            if structure.getShow() == True:
-                screen.blit(*structure.blit(offset))
-
         screen.blit(*self.world.getPlayer().blit(offset))
 
         #blits currentlySelectedIcon and number
