@@ -38,7 +38,10 @@ class Camera:
         return playerCoords[1] - self.focus[1]
 
     def getPlayerOffset(self, playerPosition):
+
         currentCameraFocus = self.getFocusPosition()
+        return ((currentCameraFocus[0] - playerPosition[0]), (currentCameraFocus[1] - playerPosition[1]))
+
 
         accelerationConstant = 5
 
@@ -54,8 +57,6 @@ class Camera:
         positionY = currentCameraFocus[1] - self.velocityY
 
         return (positionX, positionY)
-
-        return ((currentCameraFocus[0] - playerPosition[0]), (currentCameraFocus[1] - playerPosition[1]))
 
     def scan(self, playerCoords):
         if self.distanceFromPlayer(playerCoords) > self.pullDistance:
