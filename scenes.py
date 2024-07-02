@@ -124,6 +124,8 @@ class GameScene(Sequence):
         for structure in self.world.getStructures():
             if structure.getShow() == True:
                 screen.blit(*structure.blit(offset))
+                if structure.getBlitShow() == True:
+                    screen.blit(*structure.blitLabel(offset))
 
         screen.blit(*self.world.getPlayer().blit(offset))
 
@@ -168,7 +170,7 @@ class GameScene(Sequence):
         if buttonsPressed[0] == True:
             self.world.click(coords, mapCursorLocation)
         else:
-            if self.world.hover(coords, mapCursorLocation) and self.world.getCurrentSelection() != 0:
+            if self.world.hover(coords, mapCursorLocation):
                 self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
             else:
                 self.hover.hideObject()

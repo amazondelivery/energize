@@ -7,3 +7,4 @@ class BidirectionalDict(dict):
     def __delitem__(self, key):
         dict.__delitem__(self, self[key])
         dict.__delitem__(self, key)
+

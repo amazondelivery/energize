@@ -1,8 +1,10 @@
-from asset import Image
+from asset import Image, Text
+import pygame as pg
 
 class Structure(Image):
 
-    def __init__(self, imageName, clickAction,
+
+    def __init__(self, imageName, clickAction, label,
                  position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True):
         if transformation == None:
             self.obj = self.renderImage(imageName, (self.tileDim, self.tileDim))
@@ -14,6 +16,15 @@ class Structure(Image):
         self.show = show
         self.rect = self.getRect()
 
+        font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", 25)
+        self.label = Text(font, label, -1, pg.Color(255, 255, 255),
+                          (False, self.position[0], False, self.position[1]), show = False)
+
+    def blitLabel(self, offset):
+        return self.label.blit(offset)
+
+    def getBlitShow(self):
+        return self.label.getShow()
 class AnimatedStructure(Structure):
     def __init__(self, imageNames, clickAction, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, startingFrame = 0):
         if transformation == None:

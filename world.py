@@ -75,7 +75,7 @@ class World:
         pixelCoord = self.getCoordsOfTile(*tileCoord)
         if self.structureCode.get(typeOfStructure) == 'transformer':
             self.structures.append(Structure("assets/images/transformer.png", -1,
-                                            (False, pixelCoord[0], False, pixelCoord[1])))
+                                            self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1])))
 
         if self.getTileOfTileCoord(tileCoord).place(typeOfStructure):
             return True
@@ -151,7 +151,7 @@ class World:
         objectPosition = self.normalizeTileCornerPosition(mapCoords)
         mapTile = self.getTileLocationOfCoord(mapCoords)
         if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, 1):
-            self.structures.append(Structure("assets/images/solarDay.png", -1, (False, objectPosition[0], False, objectPosition[1])))
+            self.structures.append(Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1])))
             self.numSolarPanels -= 1
             print(self.numSolarPanels)
 

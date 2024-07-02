@@ -8,7 +8,7 @@ class Asset:
     tileDim = 80
 
     def renderText(self, font, text, color, antialias = True):
-        font.render(text, antialias, color)
+        return font.render(text, antialias, color)
 
     def getAction(self):
         return self.clickAction
@@ -33,18 +33,11 @@ class Asset:
         return self.cornerPlace
 
     def blit(self, offset = (0,0)):
-        width, height = self.getWidthHeight()
-        positionArray = self.position.copy()
-
-        #remove the width and height adjustments after positionArrays are normalized to be in the middle
+        width,height = self.getWidthHeight()
         if self.cornerPlace:
-            positionArray[0] = positionArray[0] + offset[0]
-            positionArray[1] = positionArray[1] + offset[1]
-            return self.obj, positionArray
+            return self.obj, [self.position[0] + offset[0], self.position[1] + offset[1]]
         else:
-            positionArray[0] = positionArray[0] + offset[0] - width//2
-            positionArray[1] = positionArray[1] + offset[1] - height // 2
-            return self.obj, positionArray
+            return self.obj, [self.position[0] + offset[0] - width // 2, self.position[1] + offset[1] - height // 2]
 
     def getWidthHeight(self):
         return (self.rect[2], self.rect[3])
