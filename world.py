@@ -1,5 +1,5 @@
 from tile import Tile
-from structure import Structure
+from structure import Structure, AnimatedStructure
 from camera import *
 from gradient import *
 from timeController import TimeController
@@ -47,13 +47,11 @@ class World:
         self.mapDimensions = mapDimensions
 
         #player settings
-        self.currentSelection = 0
-        self.numItems = 2
         startingInventory = {
             0 : 999999,
             1 : 15
         }
-        self.inventory = Inventory(self.structureCode, startingInventory)
+        self.inventory = Inventory(0, self.structureCode, startingInventory)
 
         # testing
         self.numSolarPanels = 15
@@ -66,15 +64,15 @@ class World:
         return self.tileDim
 
     def getActualCurrentSelection(self):
-        return self.currentSelection % self.numItems
+        return self.inventory.getCurrentSelection() % self.inventory.getLength()
 
     def getCurrentSelection(self):
-        return self.currentSelection
+        return self.inventory.getCurrentSelection()
 
     def initializeStructure(self, typeOfStructure, tileCoord):
         pixelCoord = self.getCoordsOfTile(*tileCoord)
         if self.structureCode.get(typeOfStructure) == 'transformer':
-            self.structures.append(Structure("assets/images/transformer.png", -1,
+            self.structures.append(AnimatedStructure("transformer", -1,
                                             self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1])))
 
         if self.getTileOfTileCoord(tileCoord).place(typeOfStructure):
@@ -118,11 +116,12 @@ class World:
         return self.camera
 
     def updateSelectedItem(self, y):
-        if (self.currentSelection + y) % 2 != self.currentSelection % 2:
-            self.currentSelection = (self.currentSelection + y) % 2
+        currentSelection = self.inventory.getCurrentSelection()
+        if (currentSelection + y) % 2 != currentSelection % 2:
+            self.inventory.updateCurrentSelection((currentSelection + y) % 2)
 
     def getSelectedItem(self):
-        return self.currentSelection % self.numItems
+        return self.currentSelection % self.inventory.getLength()
 
     def getGradientColor(self, gradientTitle):
         gradient = self.gradients.getGradient(gradientTitle)

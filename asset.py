@@ -33,7 +33,7 @@ class Asset:
         return self.cornerPlace
 
     def blit(self, offset = (0,0)):
-        width,height = self.getWidthHeight()
+        width, height = self.getWidthHeight()
         if self.cornerPlace:
             return self.obj, [self.position[0] + offset[0], self.position[1] + offset[1]]
         else:
