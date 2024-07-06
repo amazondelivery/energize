@@ -47,15 +47,16 @@ class World:
         self.mapDimensions = mapDimensions
 
         #player settings
-        startingInventory = {
+        self.inventory = Inventory(0, self.structureCode, {
             0 : 999999,
             1 : 15
-        }
-        self.inventory = Inventory(0, self.structureCode, startingInventory)
+        })
 
         # testing
         self.numSolarPanels = 15
         self.initializeStructure(4, (2,2))
+
+        self.previousMousePosition = False
 
     def getPlayer(self):
         return self.player
@@ -72,10 +73,12 @@ class World:
     def initializeStructure(self, typeOfStructure, tileCoord):
         pixelCoord = self.getCoordsOfTile(*tileCoord)
         if self.structureCode.get(typeOfStructure) == 'transformer':
-            self.structures.append(AnimatedStructure("transformer", -1,
-                                            self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1])))
+            structure = AnimatedStructure("transformer", -1,
+                                            self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1]))
+            self.placeStructure(structure, pixelCoord)
 
         if self.getTileOfTileCoord(tileCoord).place(typeOfStructure):
+
             return True
         else:
             return False
@@ -89,6 +92,10 @@ class World:
                     tileCoords = self.getCoordsOfTile(columnNum, rowNum)
                     structures.append(self.initializeStructure(type, tileCoords))
         return structures
+
+    def putStructureInTile(self, tileCoord, Structure):
+        tile = self.getTileOfCoord(tileCoord)
+        tile.updateStructureReference(Structure)
 
     def updatePlayer(self, changeX, changeY):
         if not self.checkCollision(changeX, changeY):
@@ -150,9 +157,17 @@ class World:
         objectPosition = self.normalizeTileCornerPosition(mapCoords)
         mapTile = self.getTileLocationOfCoord(mapCoords)
         if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, 1):
-            self.structures.append(Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1])))
-            self.numSolarPanels -= 1
-            print(self.numSolarPanels)
+            structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]))
+            self.placeStructure(structure, mapCoords)
+            self.solarPanelRemovalTestFunction()
+
+    def solarPanelRemovalTestFunction(self):
+        self.numSolarPanels -= 1
+        print(self.numSolarPanels)
+
+    def placeStructure(self, Structure, stickyMapCoords):
+        self.structures.append(Structure)
+        self.putStructureInTile(stickyMapCoords, Structure)
 
     def tilePlace(self, mapTile, type):
         if self.tileMap[mapTile[1]][mapTile[0]].place(type) == True:
@@ -164,9 +179,33 @@ class World:
         if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
             return False
         elif self.outOfPlayerRange(mapCoords):
+            self.updateHoverTile(mapCoords)
             return False
         else:
+            self.updateHoverTile(mapCoords)
             return True
+
+    def updateHoverTile(self, mapCoords):
+        if self.previousMousePosition != False:
+            oldTile = self.previousMousePosition
+            newTile = self.getTileLocationOfCoord(mapCoords)
+            if oldTile != newTile:
+                # print(f"new tile! because oldtile: {oldTile} and newTile: {newTile}") # test
+                self.hideCaptionOfTile(oldTile)
+                self.showCaptionOfTile(newTile)
+                self.previousMousePosition = newTile
+        else:
+            self.previousMousePosition = self.getTileLocationOfCoord(mapCoords)
+
+    def hideCaptionOfTile(self, tileLocation):
+        tile = self.getTileOfTileCoord(tileLocation)
+        if tile.containsStructure():
+            tile.hideStructureCaption()
+
+    def showCaptionOfTile(self, tileLocation):
+        tile = self.getTileOfTileCoord(tileLocation)
+        if tile.containsStructure():
+            tile.showStructureCaption()
 
     def getCameraOffset(self):
         return self.camera.getPlayerOffset(self.player.getPosition())

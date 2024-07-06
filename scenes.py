@@ -121,14 +121,17 @@ class GameScene(Sequence):
 
         screen.blit(*self.world.getMap().blit(offset))
 
+        blitStructureCaption = None
         for structure in self.world.getStructures():
             if structure.getShow() == True:
                 screen.blit(*structure.blit(offset))
                 if structure.getBlitShow() == True:
-                    screen.blit(*structure.blitLabel(offset))
+                    blitStructureCaption = structure
+
 
         screen.blit(*self.world.getPlayer().blit(offset))
-
+        if blitStructureCaption != None:
+            screen.blit(*blitStructureCaption.blitLabel(offset))
         #blits currentlySelectedIcon and number
         currentlySelected = self.currentlySelectedIcons[self.world.getCurrentSelection()]
         if currentlySelected != None and currentlySelected.getShow() == True:

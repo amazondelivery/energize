@@ -25,7 +25,15 @@ class Structure(Image):
     def getBlitShow(self):
         return self.label.getShow()
 
+    def showCaption(self):
+        self.label.showObject()
+
+    def hideCaption(self):
+        self.label.hideObject()
+
 class AnimatedStructure(Structure):
+    #this was kind of hard to figure out because at first i tried to make my overloaded blit() function would call
+    #the parent Image class blit(), which i found out was very hard to do
     def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, startingFrame = 0):
         if transformation == None:
             self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
