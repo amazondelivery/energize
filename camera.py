@@ -54,7 +54,6 @@ class Camera:
         thing2 = self.distanceFromPlayerY(playerPosition) * 0 + 1
         return ((currentCameraFocus[0] - playerPosition[0]) // thing1, (currentCameraFocus[1] - playerPosition[1]) // thing2)
 
-
         accelerationConstant = 5
 
         distanceFromPlayerX = self.distanceFromPlayerX(playerPosition)

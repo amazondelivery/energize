@@ -5,6 +5,7 @@ from gradient import *
 from timeController import TimeController
 from inventory import Inventory
 from utils import *
+import queue
 import math
 # at some point i want the world to be randomly generated with a seed
 
@@ -32,6 +33,7 @@ class World:
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
         self.storedOffset = False
+        self.cameraUpdatesXY = [queue.Queue(),queue.Queue()]
 
         # images that the tiles will use
         self.map = gameMap
@@ -94,10 +96,6 @@ class World:
                     structures.append(self.initializeStructure(type, tileCoords))
         return structures
 
-    def putStructureInTile(self, tileCoord, Structure):
-        tile = self.getTileOfCoord(tileCoord)
-        tile.updateStructureReference(Structure)
-
     def updatePlayer(self, changeX, changeY):
         if not self.checkCollision(changeX, changeY):
             self.player.updatePos(changeX, changeY)
@@ -112,9 +110,6 @@ class World:
             return True
         else:
             return False
-
-    def getMap(self):
-        return self.map
 
     def getPlayerTile(self):
         position = self.player.getUniversalPosition()
@@ -209,13 +204,7 @@ class World:
             tile.showStructureCaption()
 
     def getCameraOffset(self):
-        return self.camera.getPlayerOffset(self.player.getPosition())
-
-
-        self.updateCamera()
-        if self.storedOffset == False or self.camera.cameraMovementRequired(self.player.getPosition()):
-            self.storedOffset = self.camera.getPlayerOffset(self.player.getPosition())
-            print(self.storedOffset)
+        self.storedOffset = self.camera.getPlayerOffset(self.player.getPosition())
         return self.storedOffset
 
     def getTileOfCoord(self, mapCoords):
@@ -297,6 +286,10 @@ class World:
         mapFocus[1] += self.screen_height // 2
         self.camera.updateTruePosition(mapFocus)
 
+    def putStructureInTile(self, tileCoord, Structure):
+        tile = self.getTileOfCoord(tileCoord)
+        tile.updateStructureReference(Structure)
+
     def normalizeTileCornerPosition(self, mapCoords):
         mapTile = self.getTileLocationOfCoord(mapCoords)
         return self.getCoordsOfTile(*mapTile)
@@ -334,3 +327,6 @@ class World:
                     return True
 
         return False
+
+    def getMap(self):
+        return self.map
