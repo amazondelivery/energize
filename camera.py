@@ -12,6 +12,8 @@ class Camera:
         self.velocityX = 0
         self.velocityY = 0
 
+        self.trueFocusPosition = self.focus
+
     def updateX(self, x):
         addend = self.focus[0] + x
         if addend < 0 or addend > self.mapDimensions[0]:
@@ -19,6 +21,9 @@ class Camera:
         else:
             self.focus[0] = addend
             return True
+
+    def updateTruePosition(self, focusPosition):
+        self.trueFocusPosition = focusPosition
 
     def updateY(self, y):
         addend = self.focus[1] + y
@@ -29,18 +34,25 @@ class Camera:
             return True
 
     def distanceFromPlayer(self, playerCoords):
-        return math.sqrt((playerCoords[0] - self.focus[0])**2 + (playerCoords[1] - self.focus[1])**2)
+        return math.sqrt((playerCoords[0] - self.trueFocusPosition[0])**2 + (playerCoords[1] - self.trueFocusPosition[1])**2)
 
     def distanceFromPlayerX(self, playerCoords):
-        return playerCoords[0] - self.focus[0]
+        return playerCoords[0] - self.trueFocusPosition[0]
 
     def distanceFromPlayerY(self, playerCoords):
-        return playerCoords[1] - self.focus[1]
+        return playerCoords[1] - self.trueFocusPosition[1]
+
+    def cameraMovementRequired(self, playerCoords):
+        if self.distanceFromPlayer(playerCoords) > 500:
+            return True
+        else:
+            return False
 
     def getPlayerOffset(self, playerPosition):
-
         currentCameraFocus = self.getFocusPosition()
-        return ((currentCameraFocus[0] - playerPosition[0]), (currentCameraFocus[1] - playerPosition[1]))
+        thing1 = self.distanceFromPlayerX(playerPosition) * 0 + 1
+        thing2 = self.distanceFromPlayerY(playerPosition) * 0 + 1
+        return ((currentCameraFocus[0] - playerPosition[0]) // thing1, (currentCameraFocus[1] - playerPosition[1]) // thing2)
 
 
         accelerationConstant = 5

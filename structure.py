@@ -2,6 +2,8 @@ from asset import Image, Text
 import pygame as pg
 from os import listdir
 
+labelSize = 20
+labelUpMove = 20
 class Structure(Image):
     def __init__(self, imageName, clickAction, label,
                  position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True):
@@ -15,9 +17,7 @@ class Structure(Image):
         self.show = show
         self.rect = self.getRect()
 
-        self.font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", 25)
-        self.label = Text(self.font, label, -1, pg.Color(255, 255, 255),
-                          (False, self.position[0], False, self.position[1]), show = False)
+        self.label = self.initLabel(label)
 
     def blitLabel(self, offset):
         return self.label.blit(offset)
@@ -30,6 +30,11 @@ class Structure(Image):
 
     def hideCaption(self):
         self.label.hideObject()
+
+    def initLabel(self, label):
+        font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", labelSize)
+        return Text(font, label, -1, pg.Color(255, 255, 255),
+                          (False, self.position[0], False, self.position[1] - labelUpMove), show = False)
 
 class AnimatedStructure(Structure):
     #this was kind of hard to figure out because at first i tried to make my overloaded blit() function would call
@@ -49,10 +54,7 @@ class AnimatedStructure(Structure):
         self.animationLength = len(self.objs)
         self.rect = self.getRect()
 
-
-        self.font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", 25)
-        self.label = Text(self.font, label, -1, pg.Color(255, 255, 255),
-                          (False, self.position[0], False, self.position[1]), show = False)
+        self.label = self.initLabel(label)
 
     def blit(self, offset = (0,0)):
         obj = self.objs[self.frame]
@@ -66,9 +68,4 @@ class AnimatedStructure(Structure):
     def getRect(self):
         return self.objs[0].get_rect()
 
-    def blitLabel(self, offset):
-        return self.label.blit(offset)
-
-    def getBlitShow(self):
-        return self.label.getShow()
 

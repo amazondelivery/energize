@@ -1,6 +1,6 @@
 import pygame as pg
 
-#id like to say this is deprecated but not yet!
+# DEPRECATED - DO NOT USE
 class Object():
 
     screen_width = 1280

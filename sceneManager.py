@@ -13,7 +13,7 @@ class SceneManager:
         self.screen = pg.display.set_mode((1280, 720))
         self.clock = pg.time.Clock()
 
-        self.sequences = [TitleSequence(), SettingsSequence(), GameScene()]
+        self.sequences = [TitleSequence(), SettingsSequence(), GameScene(), LoadingScreenInitial()]
 
         #sets intial scene to title screen
         self.currentScene = self.sequences[0]

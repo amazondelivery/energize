@@ -31,6 +31,7 @@ class World:
         self.map_width, self.map_height = mapDimensions
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
+        self.storedOffset = False
 
         # images that the tiles will use
         self.map = gameMap
@@ -210,6 +211,13 @@ class World:
     def getCameraOffset(self):
         return self.camera.getPlayerOffset(self.player.getPosition())
 
+
+        self.updateCamera()
+        if self.storedOffset == False or self.camera.cameraMovementRequired(self.player.getPosition()):
+            self.storedOffset = self.camera.getPlayerOffset(self.player.getPosition())
+            print(self.storedOffset)
+        return self.storedOffset
+
     def getTileOfCoord(self, mapCoords):
         location = self.getTileLocationOfCoord(mapCoords)
         return self.tileMap[location[1]][location[0]]
@@ -282,6 +290,12 @@ class World:
             return True
         else:
             return False
+
+    def updateCamera(self):
+        mapFocus = self.map.getPosition().copy()
+        mapFocus[0] += self.screen_width // 2
+        mapFocus[1] += self.screen_height // 2
+        self.camera.updateTruePosition(mapFocus)
 
     def normalizeTileCornerPosition(self, mapCoords):
         mapTile = self.getTileLocationOfCoord(mapCoords)

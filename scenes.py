@@ -70,8 +70,30 @@ class SettingsSequence(Sequence):
     def mouse(self, coords, buttonsPressed):
         return -1
 
+
+class LoadingScreenInitial(Sequence):
+    def __init__(self):
+        super().__init__()
+
+        loadingFont = self.font("assets/fonts/MajorMonoDisplay-Regular.ttf", 100)
+
+        self.texts = [
+            Text(loadingFont, "Loading", -1, position=(True, -80, True, 0))
+        ]
+
+    def drawHelper(self, screen):
+        screen.fill("PURPLE")
+        return screen
+
+    def record(self, char):
+        return 0
+
+    def mouse(self, coords, buttonsPressed):
+        return -1
+
+
 class GameScene(Sequence):
-    #im not using pickle for game saves
+    # im not using pickle for game saves
     def __init__(self):
         super().__init__()
 
