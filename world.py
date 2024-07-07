@@ -33,7 +33,7 @@ class World:
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
         self.storedOffset = False
-        self.cameraUpdatesXY = [queue.Queue(),queue.Queue()]
+        self.cameraUpdateQueue = [queue.Queue(), queue.Queue()]
 
         # images that the tiles will use
         self.map = gameMap
@@ -81,7 +81,6 @@ class World:
             self.placeStructure(structure, pixelCoord)
 
         if self.getTileOfTileCoord(tileCoord).place(typeOfStructure):
-
             return True
         else:
             return False

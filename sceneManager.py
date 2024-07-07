@@ -13,11 +13,9 @@ class SceneManager:
         self.screen = pg.display.set_mode((1280, 720))
         self.clock = pg.time.Clock()
 
-        self.sequences = [TitleSequence(), SettingsSequence(), GameScene(), LoadingScreenInitial()]
-
-        #sets intial scene to title screen
+        self.sequences = [TitleSequence(), SettingsSequence(), GameScene()]
         self.currentScene = self.sequences[0]
-
+        #sets intial scene to title screen
         self.mouseIgnoreFrames = 0
 
     def update(self, screen):

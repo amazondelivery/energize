@@ -50,9 +50,8 @@ class Camera:
 
     def getPlayerOffset(self, playerPosition):
         currentCameraFocus = self.getFocusPosition()
-        thing1 = self.distanceFromPlayerX(playerPosition) * 0 + 1
-        thing2 = self.distanceFromPlayerY(playerPosition) * 0 + 1
-        return ((currentCameraFocus[0] - playerPosition[0]) // thing1, (currentCameraFocus[1] - playerPosition[1]) // thing2)
+        return ((currentCameraFocus[0] - playerPosition[0]), (currentCameraFocus[1] - playerPosition[1]))
+
 
         accelerationConstant = 5
 

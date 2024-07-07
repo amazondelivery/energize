@@ -4,6 +4,7 @@ from sequence import Sequence
 from character import Player
 from world import World
 from asset import Map, GUI, Image
+from asset import Text as BetterText
 import json
 import os.path
 # main point of this class is to instate world and also translate player inputs to actual changes on screen
@@ -59,27 +60,6 @@ class SettingsSequence(Sequence):
 
         self.images = []
         self.characters = []
-
-    def drawHelper(self, screen):
-        screen.fill("PURPLE")
-        return screen
-
-    def record(self, char):
-        return 0
-
-    def mouse(self, coords, buttonsPressed):
-        return -1
-
-
-class LoadingScreenInitial(Sequence):
-    def __init__(self):
-        super().__init__()
-
-        loadingFont = self.font("assets/fonts/MajorMonoDisplay-Regular.ttf", 100)
-
-        self.texts = [
-            Text(loadingFont, "Loading", -1, position=(True, -80, True, 0))
-        ]
 
     def drawHelper(self, screen):
         screen.fill("PURPLE")
@@ -203,6 +183,40 @@ class GameScene(Sequence):
 
     def scroll(self, x, y):
         self.world.updateSelectedItem(y)
+
+
+class LoadingScreenInitial(Sequence):
+    def __init__(self):
+        super().__init__()
+
+        loadingFont = self.font("assets/fonts/MajorMonoDisplay-Regular.ttf", 80)
+
+        self.texts = [
+            BetterText(loadingFont, "Loading", -1, position=(True, 0, True, 0))
+        ]
+
+    def drawHelper(self, screen):
+        screen.fill("PURPLE")
+        return screen
+
+    def record(self, char):
+        return 0
+
+    def mouse(self, coords, buttonsPressed):
+        return -1
+
+    def blit(self, screen):
+        for image in self.images:
+            screen.blit(*image.blit()) #test value
+        for text in self.texts:
+            screen.blit(*text.blit())
+        for character in self.characters:
+            screen.blit(*character.blit())
+
+    def initializeGame(self):
+        return [TitleSequence(), SettingsSequence(), GameScene()]
+
+
 
 
 
