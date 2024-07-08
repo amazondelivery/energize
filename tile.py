@@ -44,11 +44,33 @@ class Tile:
         else:
             return True
 
+
 class Wire:
 
-    def __init__(self, initialDirection, finalDirection = False):
-        self.initialDirection = initialDirection
-        self.finalDirection = finalDirection
+    wireAssets = {
+        (3, 2) : "3-2-wire.png",
+        (2, 1) : "2-1-wire.png",
+        (3, 4) : "3-4-wire.png",
+        (3, 1) : "3-1-wire.png",
+        (4, 1) : "4-1-wire.png",
+        (2, 4) : "2-4-wire.png"
+    }
+    '''  2
+      3  +  1
+         4
+    '''
+    def __init__(self, initialDirection = 3, finalDirection = 1, leftTile = None, rightTile = None,
+                 bottomTile = None, upTile = None):
+        self.type = (initialDirection, finalDirection)
+
+        if initialDirection == 1:
+            raise Exception()
+
+        if initialDirection == 2:
+            print()
+
+
+
 
 
 
