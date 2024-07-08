@@ -1,3 +1,4 @@
+from structure import Structure, AnimatedStructure
 class Tile:
 
     def __init__(self):
@@ -7,6 +8,7 @@ class Tile:
         # i want the tile object to hold a reference to the structure because itll make it easier to access
         # a tile's structure
         self.structureRef = None
+        self.wire = None
 
     def place(self, type):
         if self.isEmpty():
@@ -44,6 +46,12 @@ class Tile:
         else:
             return True
 
+    def getWire(self):
+        return self.wire
+
+    def setWire(self, Wire):
+        self.wire = Wire
+
 
 class Wire:
 
@@ -68,6 +76,8 @@ class Wire:
     def __init__(self, initialDirection = 3, finalDirection = 1, leftTile = None, rightTile = None,
                  bottomTile = None, upTile = None):
         self.type = (initialDirection, finalDirection)
+
+        self.wireStructure = Structure()
         self.prev = None
         self.next = None
 
