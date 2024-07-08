@@ -73,11 +73,14 @@ class Wire:
       3  +  1
          4
     '''
-    def __init__(self, initialDirection = 3, finalDirection = 1, leftTile = None, rightTile = None,
+    def __init__(self, pixelCornerPosition, initialDirection = 3, finalDirection = 1, leftTile = None, rightTile = None,
                  bottomTile = None, upTile = None):
         self.type = (initialDirection, finalDirection)
 
-        self.wireStructure = Structure()
+        self.wireStructure = Structure(
+            f"assets/images/wire/{self.wireAssets[(initialDirection, finalDirection)]}.png",
+            -1, "Wire", position=(False, pixelCornerPosition[0], False, pixelCornerPosition[1]),
+        )
         self.prev = None
         self.next = None
 
