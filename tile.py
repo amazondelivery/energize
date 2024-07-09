@@ -1,4 +1,6 @@
 from structure import Structure, AnimatedStructure
+
+
 class Tile:
 
     def __init__(self):

@@ -9,6 +9,8 @@ import queue
 import math
 # at some point i want the world to be randomly generated with a seed
 
+# i want to make the World class a lot smaller than it currently is. theres just way too much bloat i have to sort
+# through every time i want to make changes
 
 class World:
 
@@ -19,25 +21,19 @@ class World:
             1 : "solar",
             2 : "wind",
             3 : "windHelper",
-            4 : "transformer"
+            4 : "transformer",
+            5 : "wire"
         })
 
     def __init__(self, gameMap, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0, 0)):
-
-        # error-checking
-        if mapDimensions[0] == 0 or mapDimensions[1] == 0:
-            raise NotImplementedError
-
         # making camera and gradients
         self.map_width, self.map_height = mapDimensions
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
-        self.storedOffset = False
-        self.cameraUpdateQueue = [queue.Queue(), queue.Queue()]
+        # self.cameraUpdateQueue = [queue.Queue(), queue.Queue()]
 
         # images that the tiles will use
         self.map = gameMap
-        self.assets = assets
         self.player = player
         self.timeController = TimeController()
 
