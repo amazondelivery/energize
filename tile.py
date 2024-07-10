@@ -1,5 +1,25 @@
 from structure import Structure, AnimatedStructure
 
+class TileMap:
+    def __init__(self, tileDim, map_width, map_height):
+        self.tileMap = [[Tile() for i in range(map_width // tileDim)] for j in range(map_height // tileDim)]
+        self.tileDim = tileDim
+        self.map_width, self.map_height = map_width, map_height
+
+    def getMap(self):
+        return self.tileMap
+
+    def getTileDim(self):
+        return self.tileDim
+
+    def getMapWidth(self):
+        return self.map_width
+
+    def getMapHeight(self):
+        return self.map_height
+
+
+
 
 class Tile:
 

@@ -8,3 +8,8 @@ class BidirectionalDict(dict):
         dict.__delitem__(self, self[key])
         dict.__delitem__(self, key)
 
+class Calculations:
+
+    # will move collision functions and distance calculations here eventually
+    def nothing(self):
+        print()

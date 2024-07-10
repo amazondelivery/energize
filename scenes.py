@@ -3,7 +3,7 @@ from screenObject import Text
 from sequence import Sequence
 from character import Player
 from world import World
-from asset import Map, GUI, Image
+from asset import GUI, Image
 from asset import Text as BetterText
 import json
 import os.path
@@ -81,26 +81,17 @@ class GameScene(Sequence):
         initialCameraX = 640
         initialCameraY = 360
 
-        #map and player and assets
-
-        #map dimensions
-        map_width = self.screen_width * 4
-        map_height = self.screen_height * 6
-
-        map = Map("assets/images/game_map.png", (map_width, map_height), (False, 0, False, 0))
-        player = Player("assets/images/groo.jpg", -1, (72,69), map_dimensions=(map_width, map_height))
+        #map and p
 
         currentSelectionImage = None
         # add currentSelectionImage to guiItems below
-        assets = {
 
-        }
-
-        self.world = World(map, assets, player, (map_width, map_height), (initialCameraX, initialCameraY))
+        self.world = World((self.screen_width, self.screen_height))
         tileDim = self.world.getTileDim()
         self.currentlySelectedIcons = [
             None,
-            GUI("assets/images/solarNight.png", -1, (80, 80), True, -40, -40)
+            GUI("assets/images/solarNight.png", -1, (80, 80), True, -40, -40),
+            GUI("assets/images/wire/3-2-wire.png", -1, (80, 80), True, -40, -40)
         ]
         self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), True)
         self.guiItems = [
@@ -118,29 +109,48 @@ class GameScene(Sequence):
         self.world.timeIncrease()
         tile = self.world.getPlayerTile()  #unused so far
 
-    def blit(self, screen):
-        offset = self.world.getCameraOffset()
-
+    def blitMap(self, screen, offset):
         screen.blit(*self.world.getMap().blit(offset))
 
+    def blitStructures(self, screen, structureList, offset):
         blitStructureCaption = None
-        for structure in self.world.getStructures():
+        for structure in structureList:
             if structure.getShow() == True:
                 screen.blit(*structure.blit(offset))
                 if structure.getBlitShow() == True:
                     blitStructureCaption = structure
+        return blitStructureCaption
 
-
+    def blitPlayer(self, screen, offset):
         screen.blit(*self.world.getPlayer().blit(offset))
+
+    def blitStructureHoverCaption(self, screen, offset, blitStructureCaption):
         if blitStructureCaption != None:
             screen.blit(*blitStructureCaption.blitLabel(offset))
-        #blits currentlySelectedIcon and number
+
+    def blitCurrentlySelectedIcon(self, screen, offset):
         currentlySelected = self.currentlySelectedIcons[self.world.getCurrentSelection()]
         if currentlySelected != None and currentlySelected.getShow() == True:
             screen.blit(*currentlySelected.blit())
 
+    def blitHoverTile(self, screen, offset):
         if self.hover.getShow() == True:
             screen.blit(*self.hover.blit(offset))
+
+    def blit(self, screen):
+        offset = self.world.getCameraOffset()
+
+        self.blitMap(screen, offset)
+
+        blitStructureCaption = self.blitStructures(screen, self.world.getStructures(), offset)
+
+        self.blitPlayer(screen, offset)
+
+        self.blitStructureHoverCaption(screen, offset, blitStructureCaption)
+
+        self.blitCurrentlySelectedIcon(screen, offset)
+
+        self.blitHoverTile(screen, offset)
 
     def record(self, char):
         camera = self.world.getCamera()

@@ -1,10 +1,12 @@
-from tile import Tile
+from tile import Tile, TileMap
 from structure import Structure, AnimatedStructure
 from camera import *
 from gradient import *
 from timeController import TimeController
 from inventory import Inventory
 from utils import *
+from asset import Map
+from character import Player
 import queue
 import math
 # at some point i want the world to be randomly generated with a seed
@@ -19,41 +21,42 @@ class World:
     structureCode = BidirectionalDict({
             0 : "none",
             1 : "solar",
-            2 : "wind",
-            3 : "windHelper",
-            4 : "transformer",
-            5 : "wire"
+            2 : "wire",
+            3 : "wind",
+            4 : "windHelper",
+            5 : "transformer"
         })
+    initialCameraPoint = (640, 360)
 
-    def __init__(self, gameMap, assets, player, mapDimensions = (0, 0), initialCameraPoint = (0, 0)):
+    def __init__(self, screenDimensions):
         # making camera and gradients
-        self.map_width, self.map_height = mapDimensions
+        self.map_width, self.map_height = screenDimensions[0] * 4, screenDimensions[0] * 4
         self.screen_width, self.screen_height = 1280, 720
-        self.camera = Camera((self.map_width, self.map_height), initialCameraPoint)
+        self.camera = Camera((self.map_width, self.map_height), self.initialCameraPoint)
         # self.cameraUpdateQueue = [queue.Queue(), queue.Queue()]
 
         # images that the tiles will use
-        self.map = gameMap
-        self.player = player
+        self.map = Map("assets/images/game_map.png", (self.map_width, self.map_height), (False, 0, False, 0))
+        self.player = Player("assets/images/groo.jpg", -1, (72,69), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
-        self.tileMap = [[Tile() for i in range(self.map_width // self.tileDim)] for j in range(self.map_height // self.tileDim)]
+        self.tileMap = TileMap(self.tileDim, self.map_width, self.map_height)
         self.structures = self.initializeTileWorldStructures()
         self.guiIcons = [
 
         ]
-        self.mapDimensions = mapDimensions
 
         #player settings
         self.inventory = Inventory(0, self.structureCode, {
             0 : 999999,
-            1 : 15
+            1 : 15,
+            2 : 20
         })
 
         # testing
         self.numSolarPanels = 15
-        self.initializeStructure(4, (2,2))
+        self.initializeStructure(5, (2,2))
 
         self.previousMousePosition = False
 
@@ -84,7 +87,7 @@ class World:
 
     def initializeTileWorldStructures(self):
         structures = []
-        for rowNum, tileRow in enumerate(self.tileMap):
+        for rowNum, tileRow in enumerate(self.tileMap.getMap()):
             for columnNum, tile in enumerate(tileRow):
                 if tile.getType() != 0:
                     tileCoords = self.getCoordsOfTile(columnNum, rowNum)
@@ -115,8 +118,9 @@ class World:
 
     def updateSelectedItem(self, y):
         currentSelection = self.inventory.getCurrentSelection()
-        if (currentSelection + y) % 2 != currentSelection % 2:
-            self.inventory.updateCurrentSelection((currentSelection + y) % 2)
+        size = self.inventory.getSize()
+        if (currentSelection + y) % size != currentSelection % size:
+            self.inventory.updateCurrentSelection((currentSelection + y) % size)
 
     def getSelectedItem(self):
         return self.currentSelection % self.inventory.getLength()
@@ -151,6 +155,9 @@ class World:
             structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
             self.solarPanelRemovalTestFunction()
+        if self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
+            and self.tilePlace(mapTile, self.getActualCurrentSelection()):
+            print("hi")
 
     def solarPanelRemovalTestFunction(self):
         self.numSolarPanels -= 1
@@ -161,7 +168,7 @@ class World:
         self.putStructureInTile(stickyMapCoords, Structure)
 
     def tilePlace(self, mapTile, type):
-        if self.tileMap[mapTile[1]][mapTile[0]].place(type) == True:
+        if self.tileMap.getMap()[mapTile[1]][mapTile[0]].place(type) == True:
             return True
         else:
             return False
@@ -204,7 +211,7 @@ class World:
 
     def getTileOfCoord(self, mapCoords):
         location = self.getTileLocationOfCoord(mapCoords)
-        return self.tileMap[location[1]][location[0]]
+        return self.tileMap.getMap()[location[1]][location[0]]
 
     def getTileLocationOfCoord(self, mapCoords):
         return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
@@ -221,7 +228,7 @@ class World:
                     return (columnNum, rowNum)
 
     def getTileOfTileCoord(self, tileCoord):
-        return self.tileMap[tileCoord[1]][tileCoord[0]]
+        return self.tileMap.getMap()[tileCoord[1]][tileCoord[0]]
 
     def outOfMapBounds(self, mapCoords):
         x = mapCoords[0]
@@ -243,11 +250,11 @@ class World:
         playerRect = self.player.getRect()
         if changeX == 0:
             newY = self.player.getPosition()[1] - changeY
-            if (newY - playerRect[3] // 2 < 0 or newY + playerRect[3] // 2 > self.mapDimensions[1]):
+            if (newY - playerRect[3] // 2 < 0 or newY + playerRect[3] // 2 > self.map_height):
                 return True
         else:
             newX = self.player.getPosition()[0] + changeX
-            if (newX - playerRect[2] // 2 < 0 or newX + playerRect[2] // 2 > self.mapDimensions[0]):
+            if (newX - playerRect[2] // 2 < 0 or newX + playerRect[2] // 2 > self.map_width):
                 return True
         return False
 
@@ -295,11 +302,10 @@ class World:
         playerPosition = self.player.getPosition()
         objectWiggleRoom = 0  # probably not needed
         playerWidth, playerHeight = self.player.getRect()[2:4]
-        paddingValue = 1  # normally 5/4
-        pX1 = playerPosition[0] + changeX * paddingValue - playerWidth // 2
-        pX2 = playerPosition[0] + changeX * paddingValue + playerWidth // 2
-        pY1 = playerPosition[1] - changeY * paddingValue - playerHeight // 2
-        pY2 = playerPosition[1] - changeY * paddingValue + playerHeight // 2
+        pX1 = playerPosition[0] + changeX - playerWidth // 2
+        pX2 = playerPosition[0] + changeX + playerWidth // 2
+        pY1 = playerPosition[1] - changeY - playerHeight // 2
+        pY2 = playerPosition[1] - changeY + playerHeight // 2
 
         for obj in self.structures:
             objectPosition = obj.getPosition()
