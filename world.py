@@ -1,5 +1,5 @@
 from tile import Tile, TileMap
-from structure import Structure, AnimatedStructure
+from structure import Structure, AnimatedStructure, Wire
 from camera import *
 from gradient import *
 from timeController import TimeController
@@ -154,8 +154,8 @@ class World:
             self.solarPanelRemovalTestFunction()
         elif self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
             and self.tilePlace(mapTile, self.getActualCurrentSelection()):
-            structure = Structure("assets/images/wire/3-2-wire.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]), wire = True)
-            self.placeStructure(structure, mapCoords)
+            wire = Wire(objectPosition, 4, 2)
+            self.placeStructure(wire, mapCoords)
 
     def solarPanelRemovalTestFunction(self):
         self.numSolarPanels -= 1
