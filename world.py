@@ -148,7 +148,9 @@ class World:
     def place(self, mapCoords):
         objectPosition = self.normalizeTileCornerPosition(mapCoords)
         mapTile = self.getTileLocationOfCoord(mapCoords)
-        if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, self.getActualCurrentSelection()):
+        if self.getTileOfCoord(mapCoords).getType() == 2:
+            self.getTileOfCoord(mapCoords).getStructureReference().update()
+        elif self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, self.getActualCurrentSelection()):
             structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
             self.solarPanelRemovalTestFunction()

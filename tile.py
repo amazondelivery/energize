@@ -30,7 +30,6 @@ class Tile:
         # i want the tile object to hold a reference to the structure because itll make it easier to access
         # a tile's structure
         self.structureRef = None
-        self.wire = None
 
     def place(self, type):
         if self.isEmpty():
@@ -67,12 +66,6 @@ class Tile:
             return False
         else:
             return True
-
-    def getWire(self):
-        return self.wire
-
-    def setWire(self, Wire):
-        self.wire = Wire
 
 
 

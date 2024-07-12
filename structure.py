@@ -137,6 +137,9 @@ class Wire(Structure):
     def startingFrameCalculator(self):
         return 0
 
+    def update(self):
+        self.scrollLength += 1
+
     def blit(self, offset=(0, 0)):
         imageName = self.wireAssets[self.type]
         for images in self.objs:
@@ -144,7 +147,7 @@ class Wire(Structure):
                 obj = images[1]
 
         for i in range(len(self.objs)):
-            if self.objs[(i + self.scrollLength) % self.objsLength][0] == imageName:
+            if self.objs[i % self.objsLength][0] == imageName:
                 obj = self.objs[(i + self.scrollLength) % self.objsLength][1]
         width, height = self.getWidthHeight()
         if self.cornerPlace:
