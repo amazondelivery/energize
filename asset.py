@@ -15,7 +15,7 @@ class Asset:
 
     def renderImage(self, filename, transformation = False):
         if transformation == False:
-            return pg.image.load(filename)
+            return pg.image.load(filename).convert()
         else:
             image = pg.image.load(filename)
             return pg.transform.scale(image, transformation)
