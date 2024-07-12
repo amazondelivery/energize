@@ -12,13 +12,15 @@ class Inventory:
         self.currentSelection = currentSelection
 
     def getCurrentSelection(self):
-        return self.currentSelection
+        unmoduledCurrentSelection = self.currentSelection
+        return unmoduledCurrentSelection % self.getLength()
 
     def getSize(self):
         return len(self.inventory)
 
     def updateInventory(self, code, num):
-        if self.inventory[code] > 0:
+        if self.inventory[code] + num > 0:
+            self.inventory[code] += num
+            return True
+        else:
             return False
-        self.inventory[code] += num
-        return True

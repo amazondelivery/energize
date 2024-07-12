@@ -43,9 +43,6 @@ class World:
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
         self.tileMap = TileMap(self.tileDim, self.map_width, self.map_height)
         self.structures = self.initializeTileWorldStructures()
-        self.guiIcons = [
-
-        ]
 
         #player settings
         self.inventory = Inventory(0, self.structureCode, {
@@ -99,7 +96,7 @@ class World:
             self.player.updatePos(changeX, changeY)
 
     def renderTiles(self):
-        for rowNum, tileRow in enumerate(self.tileMap):
+        for rowNum, tileRow in enumerate(self.tileMap.getMap()):
             for columnNum, tile in enumerate(tileRow):
                 print('test')
 
@@ -151,13 +148,14 @@ class World:
     def place(self, mapCoords):
         objectPosition = self.normalizeTileCornerPosition(mapCoords)
         mapTile = self.getTileLocationOfCoord(mapCoords)
-        if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, 1):
+        if self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, self.getActualCurrentSelection()):
             structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
             self.solarPanelRemovalTestFunction()
-        if self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
+        elif self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
             and self.tilePlace(mapTile, self.getActualCurrentSelection()):
-            print("hi")
+            structure = Structure("assets/images/wire/3-2-wire.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]), wire = True)
+            self.placeStructure(structure, mapCoords)
 
     def solarPanelRemovalTestFunction(self):
         self.numSolarPanels -= 1
@@ -308,6 +306,8 @@ class World:
         pY2 = playerPosition[1] - changeY + playerHeight // 2
 
         for obj in self.structures:
+            if obj.getWire() == True:
+                continue
             objectPosition = obj.getPosition()
             objectWidth, objectHeight = obj.getRect()[2:4]
             if obj.getCornerType == False:
