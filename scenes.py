@@ -175,7 +175,6 @@ class GameScene(Sequence):
             camera.moveUp(speed)
         elif char == "|":
             camera.moveDown(speed)
-        camera.scan(self.world.getPlayer().getPosition())
         return -1
 
     def mouse(self, coords, buttonsPressed):

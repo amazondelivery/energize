@@ -33,10 +33,9 @@ class World:
         self.map_width, self.map_height = screenDimensions[0] * 4, screenDimensions[0] * 4
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), self.initialCameraPoint)
-        # self.cameraUpdateQueue = [queue.Queue(), queue.Queue()]
 
         # images that the tiles will use
-        self.map = Map("assets/images/game_map.png", (self.map_width, self.map_height), (False, 0, False, 0))
+        self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), (False, 0, False, 0))
         self.player = Player("assets/images/groo.jpg", -1, (72,69), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
 
