@@ -90,10 +90,10 @@ class GameScene(Sequence):
         tileDim = self.world.getTileDim()
         self.currentlySelectedIcons = [
             None,
-            GUI("assets/images/solarNight.png", -1, (80, 80), True, -40, -40),
-            GUI("assets/images/wire/3-2-wire.png", -1, (80, 80), True, -40, -40)
+            GUI("assets/images/solarNight.png", -1, (80, 80), True, left=-40, top=-40),
+            GUI("assets/images/wire/3-2-wire.png", -1, (80, 80), True, left=-40, top=-40)
         ]
-        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), True)
+        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), True, transparent=True)
         self.guiItems = [
             self.currentlySelectedIcons
         ]

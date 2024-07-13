@@ -8,7 +8,9 @@ labelUpMove = 20
 
 class Structure(Image):
     def __init__(self, imageName, clickAction, label,
-                 position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False):
+                 position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False, transparent = False):
+
+        self.transparent = transparent
         if transformation == None:
             self.obj = self.renderImage(imageName, (self.tileDim, self.tileDim))
         else:
@@ -46,7 +48,8 @@ class AnimatedStructure(Structure):
     # this was kind of hard to figure out because at first i tried to make my overloaded blit() function would call
     # the parent Image class blit(), which i found out was very hard to do
     def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
-                 startingFrame = 0, wire = False):
+                 startingFrame = 0, wire = False, transparent = False):
+        self.transparent = transparent
         self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
                          for imageName in listdir(f"assets/images/{imageFolder}")]
         self.clickAction = clickAction
@@ -95,6 +98,7 @@ class Wire(Structure):
 
     def __init__(self, pixelCornerPosition, initialDirection=3, finalDirection=1, leftTile=None, rightTile=None,
                  bottomTile=None, upTile=None):
+        self.transparent = True
         self.objs = [(imageName, self.renderImage(f"assets/images/wire/{imageName}", (self.tileDim, self.tileDim)))
                      for imageName in listdir(f"assets/images/wire")]
         self.clickAction = -1

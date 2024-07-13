@@ -14,11 +14,18 @@ class Asset:
         return self.clickAction
 
     def renderImage(self, filename, transformation = False):
-        if transformation == False:
-            return pg.image.load(filename)
+        if self.transparent == True:
+            if transformation == False:
+                return pg.image.load(filename)
+            else:
+                image = pg.image.load(filename)
+                return pg.transform.scale(image, transformation)
         else:
-            image = pg.image.load(filename)
-            return pg.transform.scale(image, transformation)
+            if transformation == False:
+                return pg.image.load(filename).convert()
+            else:
+                image = pg.image.load(filename)
+                return pg.transform.scale(image, transformation).convert()
 
     def mids(self):
         return (self.screen_width // 2, self.screen_height // 2)
@@ -105,7 +112,7 @@ class Text(Asset):
         self.cornerPlace = cornerPlace
         self.show = show
         self.rect = self.getRect()
-
+        self.transparent = True
         self.font = font
         self.color = color
         self.antialias = antialias
@@ -116,7 +123,9 @@ class Text(Asset):
 
 class Image(Asset):
     def __init__(self, imageName, clickAction,
-                 position = (True, 0, True, 0), transformation = None, cornerPlace = False, show = True):
+                 position = (True, 0, True, 0), transformation = None, cornerPlace = False, show = True, transparent = False):
+
+        self.transparent = transparent
         if transformation == None:
             self.obj = self.renderImage(imageName)
         else:
@@ -129,6 +138,8 @@ class Image(Asset):
 
 class Map(Asset):
     def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
+
+        self.transparent = False
         self.obj = self.renderImage(imageName, transformation)
         self.clickAction = -1
         self.position = self.regPosition(position)
@@ -149,8 +160,10 @@ class Map(Asset):
 
 class GUI(Image):
     def __init__(self, imageName, clickAction,
-                 transformation = None, show = True,
+                 transformation = None, show = True, transparent = True,
                  left = 0, top = 0):
+
+        self.transparent = transparent
         if transformation == None:
             self.obj = self.renderImage(imageName)
         else:
