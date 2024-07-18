@@ -11,7 +11,7 @@ class Structure(Image):
                  position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False, transparent = False):
 
         self.transparent = transparent
-        if transformation == None:
+        if transformation is None:
             self.obj = self.renderImage(imageName, (self.tileDim, self.tileDim))
         else:
             self.obj = self.renderImage(imageName, transformation)
@@ -44,13 +44,52 @@ class Structure(Image):
                           (False, self.position[0], False, self.position[1] - labelUpMove), show = False)
 
 
+class VariantStructure(Image):
+    # testing clickAction being a default parameter, and position being a non-default parameter
+    def __init__(self, imageFolder, label,
+                 position, startingFrame = 0, clickAction = -1, transformation = None, cornerPlace = True,
+                 show = True, wire = False, transparent = False):
+
+        self.transparent = transparent
+        if transformation is None:
+            self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
+                         for imageName in listdir(f"assets/images/{imageFolder}")]
+        else:
+            self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", transformation)
+                         for imageName in listdir(f"assets/images/{imageFolder}")]
+        self.clickAction = clickAction
+        self.position = self.regPosition(position)
+        self.cornerPlace = cornerPlace
+        self.show = show
+        self.frame = startingFrame
+        self.animationLength = len(self.objs)
+        self.rect = self.getRect()
+        self.isWire = wire
+        self.label = self.initLabel(label)
+
+    def blit(self, offset = (0,0)):
+        obj = self.objs[self.frame]
+        width, height = self.getWidthHeight()
+        if self.cornerPlace:
+            return obj, [self.position[0] + offset[0], self.position[1] + offset[1]]
+        else:
+            return obj, [self.position[0] + offset[0] - width // 2, self.position[1] + offset[1] - height // 2]
+
+    def getRect(self):
+        return self.objs[0].get_rect()
+
+
 class AnimatedStructure(Structure):
     # this was kind of hard to figure out because at first i tried to make my overloaded blit() function would call
     # the parent Image class blit(), which i found out was very hard to do
     def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
                  startingFrame = 0, wire = False, transparent = False):
         self.transparent = transparent
-        self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
+        if transformation == None:
+            self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
+                         for imageName in listdir(f"assets/images/{imageFolder}")]
+        else:
+            self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", transformation)
                          for imageName in listdir(f"assets/images/{imageFolder}")]
         self.clickAction = clickAction
         self.position = self.regPosition(position)

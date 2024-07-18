@@ -19,7 +19,7 @@ class Inventory:
         return len(self.inventory)
 
     def updateInventory(self, code, num):
-        if self.inventory[code] + num > 0:
+        if self.inventory[code] + num >= 0:
             self.inventory[code] += num
             return True
         else:

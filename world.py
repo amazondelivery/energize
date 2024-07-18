@@ -147,20 +147,18 @@ class World:
     def place(self, mapCoords):
         objectPosition = self.normalizeTileCornerPosition(mapCoords)
         mapTile = self.getTileLocationOfCoord(mapCoords)
+        currentSelection = self.getActualCurrentSelection()
         if self.getTileOfCoord(mapCoords).getType() == 2:
             self.getTileOfCoord(mapCoords).getStructureReference().update()
-        elif self.structureCode.get(self.getActualCurrentSelection()) == "solar" and self.numSolarPanels > 0 and self.tilePlace(mapTile, self.getActualCurrentSelection()):
-            structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(self.getActualCurrentSelection()), (False, objectPosition[0], False, objectPosition[1]))
+        elif self.structureCode.get(currentSelection) == "solar" and self.tilePlace(mapTile, currentSelection)\
+                and self.inventory.updateInventory(currentSelection, -1):
+            structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(currentSelection),
+                                  (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
-            self.solarPanelRemovalTestFunction()
         elif self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
             and self.tilePlace(mapTile, self.getActualCurrentSelection()):
             wire = Wire(objectPosition, 4, 2)
             self.placeStructure(wire, mapCoords)
-
-    def solarPanelRemovalTestFunction(self):
-        self.numSolarPanels -= 1
-        print(self.numSolarPanels)
 
     def placeStructure(self, Structure, stickyMapCoords):
         self.structures.append(Structure)
@@ -176,18 +174,24 @@ class World:
         if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
             return False
         elif self.outOfPlayerRange(mapCoords):
-            self.updateHoverTile(mapCoords)
+            self.updateHoverTile(mapCoords, frameCoords)
             return False
         else:
-            self.updateHoverTile(mapCoords)
+            self.updateHoverTile(mapCoords, frameCoords)
             return True
 
-    def updateHoverTile(self, mapCoords):
+    def updateHoverTile(self, mapCoords, frameCoords):
         if self.previousMousePosition != False:
             oldTile = self.previousMousePosition
             newTile = self.getTileLocationOfCoord(mapCoords)
             if oldTile != newTile:
-                # print(f"new tile! because oldtile: {oldTile} and newTile: {newTile}") # test
+
+                #debug
+                print(f"new tile! because oldtile: {oldTile} and newTile: {newTile}")
+                print("mapCoords:" + str(mapCoords))
+                print("frameCoords: " + str(frameCoords))
+                print()
+
                 self.hideCaptionOfTile(oldTile)
                 self.showCaptionOfTile(newTile)
                 self.previousMousePosition = newTile

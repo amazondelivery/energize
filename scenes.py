@@ -181,13 +181,16 @@ class GameScene(Sequence):
         mapCursorLocation = self.world.getMap().getUniversalCornerPosition()
         mapCursorLocation[0] += coords[0]
         mapCursorLocation[1] += coords[1]
-        if buttonsPressed[0] == True:
-            self.world.click(coords, mapCursorLocation)
+
+        if self.world.hover(coords, mapCursorLocation):
+            self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
         else:
-            if self.world.hover(coords, mapCursorLocation):
-                self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
-            else:
-                self.hover.hideObject()
+            self.hover.hideObject()
+
+        leftClick = buttonsPressed[0]
+        if leftClick:
+            self.world.click(coords, mapCursorLocation)
+            
         return -1
 
     def scroll(self, x, y):
