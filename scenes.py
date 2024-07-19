@@ -77,22 +77,18 @@ class GameScene(Sequence):
     def __init__(self):
         super().__init__()
 
-        #initial camera positions
-        initialCameraX = 640
-        initialCameraY = 360
+        tileDim = 80
+        self.world = World((self.screen_width, self.screen_height), tileDim)
 
-        #map and p
-
-        currentSelectionImage = None
-        # add currentSelectionImage to guiItems below
-
-        self.world = World((self.screen_width, self.screen_height))
-        tileDim = self.world.getTileDim()
+        leftAlign = -40
+        topAlign = -40
+        currentlySelectedIconDimension = (tileDim, tileDim)
         self.currentlySelectedIcons = [
             None,
-            GUI("assets/images/solarNight.png", -1, (80, 80), True, left=-40, top=-40),
-            GUI("assets/images/wire/3-2-wire.png", -1, (80, 80), True, left=-40, top=-40)
+            GUI("assets/images/solarNight.png", currentlySelectedIconDimension, True, left=leftAlign, top=topAlign),
+            GUI("assets/images/wire/3-2-wire.png", currentlySelectedIconDimension, True, left=leftAlign, top=topAlign)
         ]
+
         self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), True, transparent=True)
         self.guiItems = [
             self.currentlySelectedIcons
@@ -156,17 +152,17 @@ class GameScene(Sequence):
         camera = self.world.getCamera()
         speed = self.world.getPlayer().getSpeed()
         if char == 'w':
-            self.world.updatePlayer(0, speed)
-            self.world.updatePlayer(0, speed)
+            for i in range(speed*2):
+                self.world.updatePlayer(0, 1)
         elif char == 'a':
-            self.world.updatePlayer(-speed, 0)
-            self.world.updatePlayer(-speed, 0)
+            for i in range(speed*2):
+                self.world.updatePlayer(-1, 0)
         elif char == 's':
-            self.world.updatePlayer(0, -speed)
-            self.world.updatePlayer(0, -speed)
+            for i in range(speed*2):
+                self.world.updatePlayer(0, -1)
         elif char == 'd':
-            self.world.updatePlayer(speed, 0)
-            self.world.updatePlayer(speed, 0)
+            for i in range(speed*2):
+                self.world.updatePlayer(1, 0)
         elif char == '<':
             camera.moveLeft(speed)
         elif char == '>':

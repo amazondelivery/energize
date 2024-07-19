@@ -159,8 +159,7 @@ class Map(Asset):
         return self.universalCornerPosition
 
 class GUI(Image):
-    def __init__(self, imageName, clickAction,
-                 transformation = None, show = True, transparent = True,
+    def __init__(self, imageName, transformation = None, clickAction = -1, show = True, transparent = True,
                  left = 0, top = 0):
 
         self.transparent = transparent

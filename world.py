@@ -16,7 +16,6 @@ import math
 
 class World:
 
-    tileDim = 80
     gradients = GameGradients()
     structureCode = BidirectionalDict({
             0 : "none",
@@ -28,8 +27,9 @@ class World:
         })
     initialCameraPoint = (640, 360)
 
-    def __init__(self, screenDimensions):
+    def __init__(self, screenDimensions, tileDim):
         # making camera and gradients
+        self.tileDim = tileDim
         self.map_width, self.map_height = screenDimensions[0] * 4, screenDimensions[0] * 4
         self.screen_width, self.screen_height = 1280, 720
         self.camera = Camera((self.map_width, self.map_height), self.initialCameraPoint)
