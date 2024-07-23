@@ -1,7 +1,5 @@
-import pygame as pg
 from screenObject import Text
 from sequence import Sequence
-from character import Player
 from world import World
 from asset import GUI, Image
 from asset import Text as BetterText
