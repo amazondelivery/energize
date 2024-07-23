@@ -89,7 +89,7 @@ class GameScene(Sequence):
             GUI("assets/images/wire/3-2-wire.png", currentlySelectedIconDimension, True, left=leftAlign, top=topAlign)
         ]
 
-        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim + 5, tileDim + 5), True, transparent=True)
+        self.hover = Image("assets/images/Border.png", -1, (False, 0, False, 0), (tileDim, tileDim), True, transparent=True)
         self.guiItems = [
             self.currentlySelectedIcons
         ]
