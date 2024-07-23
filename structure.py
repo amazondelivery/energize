@@ -8,8 +8,8 @@ labelUpMove = 20
 
 class Structure(Image):
     def __init__(self, imageName, clickAction, label,
-                 position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False, transparent = False):
-
+                 position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False, outputInWatts = 250, transparent = False):
+        self.outputInWatts = outputInWatts
         self.transparent = transparent
         if transformation is None:
             self.obj = self.renderImage(imageName, (self.tileDim, self.tileDim))
@@ -48,8 +48,8 @@ class VariantStructure(Image):
     # testing clickAction being a default parameter, and position being a non-default parameter
     def __init__(self, imageFolder, label,
                  position, startingFrame = 0, clickAction = -1, transformation = None, cornerPlace = True,
-                 show = True, wire = False, transparent = False):
-
+                 show = True, wire = False, outputInWatts = 250, transparent = False):
+        self.outputInWatts = outputInWatts
         self.transparent = transparent
         if transformation is None:
             self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
@@ -83,7 +83,8 @@ class AnimatedStructure(Structure):
     # this was kind of hard to figure out because at first i tried to make my overloaded blit() function would call
     # the parent Image class blit(), which i found out was very hard to do
     def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
-                 startingFrame = 0, wire = False, transparent = False):
+                 startingFrame = 0, wire = False, outputInWatts = 250, transparent = False):
+        self.outputInWatts = outputInWatts
         self.transparent = transparent
         if transformation == None:
             self.objs = [self.renderImage(f"assets/images/{imageFolder}/{imageName}", (self.tileDim, self.tileDim))
@@ -137,6 +138,7 @@ class Wire(Structure):
 
     def __init__(self, pixelCornerPosition, initialDirection=3, finalDirection=1, leftTile=None, rightTile=None,
                  bottomTile=None, upTile=None):
+        self.outputInWatts = 0
         self.transparent = True
         self.objs = [(imageName, self.renderImage(f"assets/images/wire/{imageName}", (self.tileDim, self.tileDim)))
                      for imageName in listdir(f"assets/images/wire")]
@@ -200,6 +202,20 @@ class Wire(Structure):
 
     def getRect(self):
         return self.objs[0][1].get_rect()
+
+
+class Transformer(AnimatedStructure):
+
+    def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
+                 startingFrame = 0, wire = False, transparent = False):
+        super().__init__(self, imageFolder, clickAction, label, position, transformation, cornerPlace, show,
+                 startingFrame, wire, transparent)
+
+        self.collection = 0
+
+    def updateCollection(self, num):
+        self.collection += num
+
 
 
 

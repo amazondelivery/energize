@@ -11,8 +11,6 @@ import queue
 import math
 # at some point i want the world to be randomly generated with a seed
 
-# i want to make the World class a lot smaller than it currently is. theres just way too much bloat i have to sort
-# through every time i want to make changes
 
 class World:
 
@@ -50,8 +48,7 @@ class World:
             2 : 20
         })
 
-        # testing
-        self.numSolarPanels = 15
+        # testing and debug
         self.initializeStructure(5, (2,2))
 
         self.previousMousePosition = False
@@ -185,13 +182,6 @@ class World:
             oldTile = self.previousMousePosition
             newTile = self.getTileLocationOfCoord(mapCoords)
             if oldTile != newTile:
-
-                #debug
-                print(f"new tile! because oldtile: {oldTile} and newTile: {newTile}")
-                print("mapCoords:" + str(mapCoords))
-                print("frameCoords: " + str(frameCoords))
-                print()
-
                 self.hideCaptionOfTile(oldTile)
                 self.showCaptionOfTile(newTile)
                 self.previousMousePosition = newTile

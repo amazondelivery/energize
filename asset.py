@@ -156,7 +156,7 @@ class Map(Asset):
         return self.obj, positionArray
 
     def getUniversalCornerPosition(self):
-        return self.universalCornerPosition
+        return self.universalCornerPosition.copy()
 
 class GUI(Image):
     def __init__(self, imageName, transformation = None, clickAction = -1, show = True, transparent = True,
