@@ -44,7 +44,7 @@ class Structure(Image):
                           (False, self.position[0], False, self.position[1] - labelUpMove), show = False)
 
 
-class VariantStructure(Image):
+class VariantStructure(Structure):
     # testing clickAction being a default parameter, and position being a non-default parameter
     def __init__(self, imageFolder, label,
                  position, startingFrame = 0, clickAction = -1, transformation = None, cornerPlace = True,
@@ -77,6 +77,9 @@ class VariantStructure(Image):
 
     def getRect(self):
         return self.objs[0].get_rect()
+
+    def updateFrame(self, number = 1):
+        self.frame = (self.frame + number) % self.animationLength
 
 
 class AnimatedStructure(Structure):

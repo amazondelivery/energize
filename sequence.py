@@ -1,4 +1,5 @@
 from scenes import *
+import pygame as pg
 from abc import ABC, abstractmethod
 
 class Sequence(ABC):
