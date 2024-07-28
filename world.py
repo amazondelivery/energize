@@ -34,7 +34,7 @@ class World:
 
         # images that the tiles will use
         self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), (False, 0, False, 0))
-        self.player = Player("assets/images/groo.jpg", -1, (72,69), map_dimensions=(self.map_width, self.map_height))
+        self.player = Player("assets/images/groo.jpg", (72,69), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
 
         # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
@@ -213,12 +213,12 @@ class World:
         return (col * self.tileDim, row * self.tileDim)
 
     def getLocationOfTile(self, tile):
-        # avoid using this
-        for rowNum, tileRow in enumerate(self.tileMap):
+        # not a very efficient function so prefer not to use
+        for rowNum, tileRow in enumerate(self.tileMap.getMap()):
             for columnNum, tileIterate in enumerate(tileRow):
-                print(columnNum, rowNum)
                 if tile == tileIterate:
                     return (columnNum, rowNum)
+
 
     def getTileOfTileCoord(self, tileCoord):
         return self.tileMap.getMap()[tileCoord[1]][tileCoord[0]]
@@ -274,12 +274,6 @@ class World:
             return True
         else:
             return False
-
-    def updateCamera(self):
-        mapFocus = self.map.getPosition().copy()
-        mapFocus[0] += self.screen_width // 2
-        mapFocus[1] += self.screen_height // 2
-        self.camera.updateTruePosition(mapFocus)
 
     def putStructureInTile(self, tileCoord, Structure):
         tile = self.getTileOfCoord(tileCoord)

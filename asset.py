@@ -1,14 +1,15 @@
-#may eventually want this class to replace screenObject, because i want a universal position format
 import pygame as pg
+
+
+def renderText(font, text, color, antialias = True):
+    return font.render(text, antialias, color)
+
 
 class Asset:
 
     screen_width = 1280
     screen_height = 720
     tileDim = 80
-
-    def renderText(self, font, text, color, antialias = True):
-        return font.render(text, antialias, color)
 
     def getAction(self):
         return self.clickAction
@@ -60,7 +61,6 @@ class Asset:
         self.position[1] -= y
 
     def forcePosition(self, x, y):
-        #forces a position, not recommended to use
         self.position[0] = x
         self.position[1] = y
 
@@ -104,9 +104,10 @@ class Asset:
         return self.show
 
 class Text(Asset):
-    def __init__(self, font, text, clickAction, color = pg.Color(255, 255, 255),
-                 position = (True, 0, True, 0), antialias = True, cornerPlace = False, show = True):
-        self.obj = self.renderText(font, text, color, antialias)
+    def __init__(self, font, text, color = pg.Color(255, 255, 255),
+                 position = (True, 0, True, 0), antialias = True, cornerPlace = False, show = True,
+                 clickAction = -1):
+        self.obj = renderText(font, text, color, antialias)
         self.clickAction = clickAction
         self.position = self.regPosition(position)
         self.cornerPlace = cornerPlace
@@ -118,12 +119,13 @@ class Text(Asset):
         self.antialias = antialias
 
     def rerender(self, newText):
-        self.obj = self.renderText(self.font, newText, self.color, self.antialias)
+        self.obj = renderText(self.font, newText, self.color, self.antialias)
 
 
 class Image(Asset):
-    def __init__(self, imageName, clickAction,
-                 position = (True, 0, True, 0), transformation = None, cornerPlace = False, show = True, transparent = False):
+    def __init__(self, imageName, position = (True, 0, True, 0), \
+                 transformation = None, cornerPlace = False, show = True,
+                 transparent = False, clickAction = -1):
 
         self.transparent = transparent
         if transformation == None:
@@ -136,17 +138,16 @@ class Image(Asset):
         self.show = show
         self.rect = self.getRect()
 
-class Map(Asset):
-    def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
 
+class Map(Asset):
+
+    def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
         self.transparent = False
         self.obj = self.renderImage(imageName, transformation)
         self.clickAction = -1
         self.position = self.regPosition(position)
         self.universalCornerPosition = [0,0]
         self.rect = self.getRect()
-        #universalCornerPosition is the left corner of the screen relative to the left corner of the map as
-        #   the origin (0,0)
 
     def blit(self, offset = (0,0)):
         positionArray = self.position.copy()
@@ -159,7 +160,7 @@ class Map(Asset):
         return self.universalCornerPosition.copy()
 
 class GUI(Image):
-    def __init__(self, imageName, transformation = None, clickAction = -1, show = True, transparent = True,
+    def __init__(self, imageName, transformation = None, show = True, transparent = True, clickAction = -1,
                  left = 0, top = 0):
 
         self.transparent = transparent
@@ -177,17 +178,17 @@ class GUI(Image):
         width, height = self.getWidthHeight()
         if left < 0:
             x = self.screen_width + left - width
-            #right side must be -left from the right side of the screen
+            # right side must be -left from the right side of the screen
         else:
             x = left
-            #left side must be left from the left side of the screen
+            # left side must be left from the left side of the screen
 
         if top < 0:
-            #bottom side must be -top from the bottom side of the screen
+            # bottom side must be -top from the bottom side of the screen
             y = self.screen_height + top - height
         else:
             y = top
-            #top side must be top from the top side of the screen
+            # top side must be top from the top side of the screen
 
         return (x, y)
 

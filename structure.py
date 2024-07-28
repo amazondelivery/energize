@@ -40,7 +40,7 @@ class Structure(Image):
 
     def initLabel(self, label):
         font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", labelSize)
-        return Text(font, label, -1, pg.Color(255, 255, 255),
+        return Text(font, label, pg.Color(255, 255, 255),
                           (False, self.position[0], False, self.position[1] - labelUpMove), show = False)
 
 

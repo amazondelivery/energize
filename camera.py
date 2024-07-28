@@ -1,47 +1,17 @@
 import math
 import queue
 
-class Camera:
 
-    def __init__(self, mapDimensions, initialFocus):
+class Camera():
+
+    def __init__(self, mapDimensions, initialFocus, initialPlayerPosition = (0,0)):
         self.mapDimensions = mapDimensions
         self.focus = [*initialFocus]
-        self.pullDistance = 200
 
-        self.accelerationX = 0
-        self.accelerationY = 0
-
-        self.velocityX = 0
-        self.velocityY = 0
-
-        self.trueFocusPosition = self.focus
-
-        self.cameraUpdateQueue = [queue.Queue(0), queue.Queue(0)]
-
-    def updateX(self, x):
-        addend = self.focus[0] + x
-        if addend < 0 or addend > self.mapDimensions[0]:
-            return False
-        else:
-            self.focus[0] = addend
-            return True
-
-    def updateY(self, y):
-        addend = self.focus[1] + y
-        if addend < 0 or addend > self.mapDimensions[1]:
-            return False
-        else:
-            self.focus[1] = addend
-            return True
-
-    def distanceFromPlayer(self, playerCoords):
-        return math.sqrt((playerCoords[0] - self.trueFocusPosition[0])**2 + (playerCoords[1] - self.trueFocusPosition[1])**2)
+        self.previousPlayerPosition = [*initialPlayerPosition]
 
     def getPlayerOffset(self, playerPosition):
-        currentCameraFocus = self.getFocusPosition()
-        return ((currentCameraFocus[0] - playerPosition[0]), (currentCameraFocus[1] - playerPosition[1]))
-        #increase acceleration of movement of camera the farther the player is from the camera focus
+        # self.previousPlayerPosition = playerPosition
+        return ((self.focus[0] - playerPosition[0]), (self.focus[1] - playerPosition[1]))
 
-    def getFocusPosition(self):
-        return self.focus
 
