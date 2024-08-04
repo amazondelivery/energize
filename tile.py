@@ -30,6 +30,7 @@ class Tile:
         # i want the tile object to hold a reference to the structure because itll make it easier to access
         # a tile's structure
         self.structureRef = None
+        self.parentCluster = None
 
     def place(self, type):
         if self.isEmpty():
@@ -43,6 +44,12 @@ class Tile:
             return True
         else:
             print(self.type)
+            return False
+
+    def isEqual(self, type):
+        if self.type == type:
+            return True
+        else:
             return False
 
     def getType(self):
@@ -66,6 +73,38 @@ class Tile:
             return False
         else:
             return True
+
+def requiresNewCluster(tileLocation, tileMap, type):
+
+    if tileLocation[0] > 0:
+        if not tileMap[tileLocation[1]][tileLocation[0] - 1].isEqual(type):
+            return False
+
+    if tileLocation[1] > 0:
+        if not tileMap[tileLocation[1] - 1][tileLocation[0]].isEqual(type):
+            return False
+
+    if tileLocation[0] < len(tileMap[0]) - 1:
+        if not tileMap[tileLocation[1]][tileLocation[0] + 1].isEqual(type):
+            return False
+
+    if tileLocation[1] < len(tileMap) - 1:
+        if not tileMap[tileLocation[1] + 1][tileLocation[0]].isEqual(type):
+            return False
+
+    return True
+
+class Cluster:
+    def __init__(self, initialTile):
+        self.tileCluster = [initialTile]
+
+    def collect(self):
+        sum = 0
+        for tile in self.tileCluster:
+            sum += tile.collect()
+
+        return sum
+
 
 
 
