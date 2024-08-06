@@ -1,13 +1,33 @@
 from structure import Structure, AnimatedStructure
+from asset import Asset
 
 
-class TileMap:
-    def __init__(self, tileDim, map_width, map_height):
+class Map(Asset):
+
+    def __init__(self, imageName, transformation, tileDim, position = (False, 0, False, 0)):
+        self.transparent = False
+        self.obj = self.renderImage(imageName, transformation)
+        self.clickAction = -1
+        self.position = self.regPosition(position)
+        self.universalCornerPosition = [0,0]
+        self.rect = self.getRect()
+
+        map_width, map_height = transformation
         self.tileMap = [[Tile() for i in range(map_width // tileDim)] for j in range(map_height // tileDim)]
         self.tileDim = tileDim
         self.map_width, self.map_height = map_width, map_height
 
-    def getMap(self):
+    def blit(self, offset = (0,0)):
+        positionArray = self.position.copy()
+        positionArray[0] += offset[0]
+        positionArray[1] += offset[1]
+        self.universalCornerPosition[0], self.universalCornerPosition[1] = -positionArray[0], -positionArray[1]
+        return self.obj, positionArray
+
+    def getUniversalCornerPosition(self):
+        return self.universalCornerPosition.copy()
+    
+    def getTileMap(self):
         return self.tileMap
 
     def getTileDim(self):
@@ -18,8 +38,6 @@ class TileMap:
 
     def getMapHeight(self):
         return self.map_height
-
-
 
 
 class Tile:

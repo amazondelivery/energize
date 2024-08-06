@@ -1,11 +1,10 @@
-from tile import Tile, TileMap
+from tile import Map
 from structure import Structure, AnimatedStructure, Wire
 from camera import *
 from gradient import *
 from timeController import TimeController
 from inventory import Inventory
 from utils import *
-from asset import Map
 from character import Player
 import queue
 import math
@@ -35,12 +34,9 @@ class World:
         self.camera = Camera((self.map_width, self.map_height), self.initialCameraPoint)
 
         # map, player, time controller
-        self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), (False, 0, False, 0))
+        self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), self.tileDim)
         self.player = Player("assets/images/groo.jpg", (72,69), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
-
-        # creates tilemap of width // 40 and height // 40) and initializes structures from previous playthrough
-        self.tileMap = TileMap(self.tileDim, self.map_width, self.map_height)
         self.structures = self.initializeTileWorldStructures()
 
         #player settings
@@ -85,7 +81,7 @@ class World:
 
     def initializeTileWorldStructures(self):
         structures = []
-        for rowNum, tileRow in enumerate(self.tileMap.getMap()):
+        for rowNum, tileRow in enumerate(self.map.getTileMap()):
             for columnNum, tile in enumerate(tileRow):
                 if tile.getType() != 0:
                     tileCoords = self.getCoordsOfTile(columnNum, rowNum)
@@ -97,7 +93,7 @@ class World:
             self.player.updatePos(changeX, changeY)
 
     def renderTiles(self):
-        for rowNum, tileRow in enumerate(self.tileMap.getMap()):
+        for rowNum, tileRow in enumerate(self.map.getTileMap()):
             for columnNum, tile in enumerate(tileRow):
                 print('test')
 
@@ -167,7 +163,7 @@ class World:
         self.putStructureInTile(stickyMapCoords, Structure)
 
     def tilePlace(self, mapTile, type):
-        if self.tileMap.getMap()[mapTile[1]][mapTile[0]].place(type) == True:
+        if self.map.getTileMap()[mapTile[1]][mapTile[0]].place(type) == True:
             return True
         else:
             return False
@@ -209,7 +205,7 @@ class World:
 
     def getTileOfCoord(self, mapCoords):
         location = self.getTileLocationOfCoord(mapCoords)
-        return self.tileMap.getMap()[location[1]][location[0]]
+        return self.map.getTileMap()[location[1]][location[0]]
 
     def getTileLocationOfCoord(self, mapCoords):
         return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
@@ -219,14 +215,14 @@ class World:
 
     def getLocationOfTile(self, tile):
         # not a very efficient function so prefer not to use
-        for rowNum, tileRow in enumerate(self.tileMap.getMap()):
+        for rowNum, tileRow in enumerate(self.map.getTileMap()):
             for columnNum, tileIterate in enumerate(tileRow):
                 if tile == tileIterate:
                     return (columnNum, rowNum)
 
 
     def getTileOfTileCoord(self, tileCoord):
-        return self.tileMap.getMap()[tileCoord[1]][tileCoord[0]]
+        return self.map.getTileMap()[tileCoord[1]][tileCoord[0]]
 
     def outOfMapBounds(self, mapCoords):
         x = mapCoords[0]

@@ -138,27 +138,6 @@ class Image(Asset):
         self.show = show
         self.rect = self.getRect()
 
-
-class Map(Asset):
-
-    def __init__(self, imageName, transformation, position = (False, 0, False, 0)):
-        self.transparent = False
-        self.obj = self.renderImage(imageName, transformation)
-        self.clickAction = -1
-        self.position = self.regPosition(position)
-        self.universalCornerPosition = [0,0]
-        self.rect = self.getRect()
-
-    def blit(self, offset = (0,0)):
-        positionArray = self.position.copy()
-        positionArray[0] += offset[0]
-        positionArray[1] += offset[1]
-        self.universalCornerPosition[0], self.universalCornerPosition[1] = -positionArray[0], -positionArray[1]
-        return self.obj, positionArray
-
-    def getUniversalCornerPosition(self):
-        return self.universalCornerPosition.copy()
-
 class GUI(Image):
     def __init__(self, imageName, transformation = None, show = True, transparent = True, clickAction = -1,
                  left = 0, top = 0):
