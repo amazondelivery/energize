@@ -10,7 +10,6 @@ import queue
 import math
 # at some point i want the world to be randomly generated with a seed
 # world.py needs to be cut down because it is way too big and it makes coding confusing
-# makes sense to combine Map and tileMap into one thing, right
 
 
 class World:
@@ -78,7 +77,6 @@ class World:
         else:
             return False
 
-
     def initializeTileWorldStructures(self):
         structures = []
         for rowNum, tileRow in enumerate(self.map.getTileMap()):
@@ -105,7 +103,7 @@ class World:
 
     def getPlayerTile(self):
         position = self.player.getUniversalPosition()
-        return (self.getTileLocationOfCoord(position))
+        return (self.map.getTileLocationOfCoord(position))
 
     def getCamera(self):
         return self.camera
@@ -144,29 +142,23 @@ class World:
 
     def place(self, mapCoords):
         objectPosition = self.normalizeTileCornerPosition(mapCoords)
-        mapTile = self.getTileLocationOfCoord(mapCoords)
+        mapTile = self.map.getTileLocationOfCoord(mapCoords)
         currentSelection = self.getActualCurrentSelection()
-        if self.getTileOfCoord(mapCoords).getType() == 2:
-            self.getTileOfCoord(mapCoords).getStructureReference().update()
-        elif self.structureCode.get(currentSelection) == "solar" and self.tilePlace(mapTile, currentSelection)\
+        if self.map.getTileOfCoord(mapCoords).getType() == 2:
+            self.map.getTileOfCoord(mapCoords).getStructureReference().update()
+        elif self.structureCode.get(currentSelection) == "solar" and self.map.tilePlace(mapTile, currentSelection)\
                 and self.inventory.updateInventory(currentSelection, -1):
             structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(currentSelection),
                                   (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
         elif self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
-            and self.tilePlace(mapTile, self.getActualCurrentSelection()):
+            and self.map.tilePlace(mapTile, self.getActualCurrentSelection()):
             wire = Wire(objectPosition, 4, 2)
             self.placeStructure(wire, mapCoords)
 
     def placeStructure(self, Structure, stickyMapCoords):
         self.structures.append(Structure)
         self.putStructureInTile(stickyMapCoords, Structure)
-
-    def tilePlace(self, mapTile, type):
-        if self.map.getTileMap()[mapTile[1]][mapTile[0]].place(type) == True:
-            return True
-        else:
-            return False
 
     def hover(self, frameCoords, mapCoords):
         if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
@@ -181,13 +173,13 @@ class World:
     def updateHoverTile(self, mapCoords, frameCoords):
         if self.previousMousePosition != False:
             oldTile = self.previousMousePosition
-            newTile = self.getTileLocationOfCoord(mapCoords)
+            newTile = self.map.getTileLocationOfCoord(mapCoords)
             if oldTile != newTile:
                 self.hideCaptionOfTile(oldTile)
                 self.showCaptionOfTile(newTile)
                 self.previousMousePosition = newTile
         else:
-            self.previousMousePosition = self.getTileLocationOfCoord(mapCoords)
+            self.previousMousePosition = self.map.getTileLocationOfCoord(mapCoords)
 
     def hideCaptionOfTile(self, tileLocation):
         tile = self.getTileOfTileCoord(tileLocation)
@@ -202,13 +194,6 @@ class World:
     def getCameraOffset(self):
         self.storedOffset = self.camera.getPlayerOffset(self.player.getPosition())
         return self.storedOffset
-
-    def getTileOfCoord(self, mapCoords):
-        location = self.getTileLocationOfCoord(mapCoords)
-        return self.map.getTileMap()[location[1]][location[0]]
-
-    def getTileLocationOfCoord(self, mapCoords):
-        return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
 
     def getCoordsOfTile(self, col, row):
         return (col * self.tileDim, row * self.tileDim)
@@ -253,7 +238,7 @@ class World:
         return False
 
     def inPlayersWay(self, mapCoords):
-        mapTile = self.getTileLocationOfCoord(mapCoords)
+        mapTile = self.map.getTileLocationOfCoord(mapCoords)
         playerTile = self.getPlayerTile()
         if mapTile[0] == playerTile[0] and mapTile[1] == playerTile[1]:
             return True
@@ -277,11 +262,11 @@ class World:
             return False
 
     def putStructureInTile(self, tileCoord, Structure):
-        tile = self.getTileOfCoord(tileCoord)
+        tile = self.map.getTileOfCoord(tileCoord)
         tile.updateStructureReference(Structure)
 
     def normalizeTileCornerPosition(self, mapCoords):
-        mapTile = self.getTileLocationOfCoord(mapCoords)
+        mapTile = self.map.getTileLocationOfCoord(mapCoords)
         return self.getCoordsOfTile(*mapTile)
 
     def objectCollision(self, changeX, changeY):

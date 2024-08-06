@@ -39,6 +39,28 @@ class Map(Asset):
     def getMapHeight(self):
         return self.map_height
 
+    def loadSavedStructures(self):
+        structures = []
+        for rowNum, tileRow in enumerate(self.map.getTileMap()):
+            for columnNum, tile in enumerate(tileRow):
+                if tile.getType() != 0:
+                    tileCoords = self.getCoordsOfTile(columnNum, rowNum)
+                    structures.append(self.initializeStructure(type, tileCoords))
+        return structures
+
+    def getTileLocationOfCoord(self, mapCoords):
+        return (mapCoords[0] // self.tileDim, mapCoords[1] // self.tileDim)
+
+    def getTileOfCoord(self, mapCoords):
+        location = self.getTileLocationOfCoord(mapCoords)
+        return self.getTileMap()[location[1]][location[0]]
+
+    def tilePlace(self, mapTile, type):
+        if self.tileMap[mapTile[1]][mapTile[0]].place(type) == True:
+            return True
+        else:
+            return False
+
 
 class Tile:
 
