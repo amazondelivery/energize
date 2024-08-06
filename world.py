@@ -10,6 +10,8 @@ from character import Player
 import queue
 import math
 # at some point i want the world to be randomly generated with a seed
+# world.py needs to be cut down because it is way too big and it makes coding confusing
+# makes sense to combine Map and tileMap into one thing, right
 
 
 class World:
@@ -24,15 +26,15 @@ class World:
             5 : "transformer"
         })
     initialCameraPoint = (640, 360)
+    tileDim = 80
 
-    def __init__(self, screenDimensions, tileDim):
-        # making camera and gradients
-        self.tileDim = tileDim
+    def __init__(self, screenDimensions):
+        # map and screens widths and heights
         self.map_width, self.map_height = screenDimensions[0] * 4, screenDimensions[0] * 4
-        self.screen_width, self.screen_height = 1280, 720
+        self.screen_width, self.screen_height = screenDimensions[0], screenDimensions[1]
         self.camera = Camera((self.map_width, self.map_height), self.initialCameraPoint)
 
-        # images that the tiles will use
+        # map, player, time controller
         self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), (False, 0, False, 0))
         self.player = Player("assets/images/groo.jpg", (72,69), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
@@ -48,13 +50,16 @@ class World:
             2 : 20
         })
 
-        # testing and debug
+        # default Structures
         self.initializeStructure(5, (2,2))
 
         self.previousMousePosition = False
 
     def getPlayer(self):
         return self.player
+
+    def getTileDim(self):
+        return self.tileDim
 
     def getTileDim(self):
         return self.tileDim

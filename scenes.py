@@ -75,11 +75,11 @@ class GameScene(Sequence):
     def __init__(self):
         super().__init__()
 
-        tileDim = 80
-        self.world = World((self.screen_width, self.screen_height), tileDim)
+        self.world = World((self.screen_width, self.screen_height))
 
         leftAlign = -40
         topAlign = -40
+        tileDim = self.world.getTileDim()
         currentlySelectedIconDimension = (tileDim, tileDim)
         self.currentlySelectedIcons = [
             None,

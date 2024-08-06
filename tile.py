@@ -1,5 +1,6 @@
 from structure import Structure, AnimatedStructure
 
+
 class TileMap:
     def __init__(self, tileDim, map_width, map_height):
         self.tileMap = [[Tile() for i in range(map_width // tileDim)] for j in range(map_height // tileDim)]
@@ -35,6 +36,7 @@ class Tile:
     def place(self, type):
         if self.isEmpty():
             self.type = type
+
             return True
         else:
             return False
@@ -74,25 +76,32 @@ class Tile:
         else:
             return True
 
-def requiresNewCluster(tileLocation, tileMap, type):
+    def getCluster(self):
+        return self.parentCluster
 
-    if tileLocation[0] > 0:
-        if not tileMap[tileLocation[1]][tileLocation[0] - 1].isEqual(type):
-            return False
+    def setCluster(self, cluster):
+        self.parentCluster = cluster
 
-    if tileLocation[1] > 0:
-        if not tileMap[tileLocation[1] - 1][tileLocation[0]].isEqual(type):
-            return False
+def getSurroundingClusters(tileLocation, tileMap, type):
 
-    if tileLocation[0] < len(tileMap[0]) - 1:
-        if not tileMap[tileLocation[1]][tileLocation[0] + 1].isEqual(type):
-            return False
+    #      1
+    #  2   +   0
+    #      3
+    clusters = [None, None, None, None]
 
-    if tileLocation[1] < len(tileMap) - 1:
-        if not tileMap[tileLocation[1] + 1][tileLocation[0]].isEqual(type):
-            return False
+    if tileLocation[0] > 0 and tileMap[tileLocation[1]][tileLocation[0] - 1].isEqual(type):
+            clusters[2] = tileMap[tileLocation[1]][tileLocation[0] - 1].getCluster()
 
-    return True
+    if tileLocation[1] > 0 and tileMap[tileLocation[1] - 1][tileLocation[0]].isEqual(type):
+            clusters[1] = tileMap[tileLocation[1]][tileLocation[0] - 1].getCluster()
+
+    if tileLocation[0] < len(tileMap[0]) - 1 and tileMap[tileLocation[1]][tileLocation[0] + 1].isEqual(type):
+            clusters[0] = tileMap[tileLocation[1]][tileLocation[0] - 1].getCluster()
+
+    if tileLocation[1] < len(tileMap) - 1 and tileMap[tileLocation[1] + 1][tileLocation[0]].isEqual(type):
+            clusters[3] = tileMap[tileLocation[1]][tileLocation[0] - 1].getCluster()
+
+    return clusters
 
 class Cluster:
     def __init__(self, initialTile):
@@ -104,6 +113,15 @@ class Cluster:
             sum += tile.collect()
 
         return sum
+
+    def addTile(self, Tile):
+        self.tileCluster.append(Tile)
+
+    def transferTilesToNewCluster(self, newCluster):
+        for tile in self.tileCluster:
+            tile.setCluster(newCluster)
+            newCluster.addTile(tile)
+
 
 
 
