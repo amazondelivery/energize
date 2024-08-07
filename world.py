@@ -147,7 +147,7 @@ class World:
 
     def placeStructure(self, Structure, stickyMapCoords):
         self.structures.append(Structure)
-        self.putStructureInTile(stickyMapCoords, Structure)
+        self.map.putStructureInTile(stickyMapCoords, Structure)
 
     def hover(self, frameCoords, mapCoords):
         if self.map.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
@@ -174,6 +174,7 @@ class World:
                 tile = self.map.getTileOfTileCoord(newTile)
                 if tile.containsStructure():
                     tile.showCaption()
+
                 self.previousMousePosition = newTile
         else:
             self.previousMousePosition = self.map.getTileLocationOfCoord(mapCoords)
@@ -219,10 +220,6 @@ class World:
             return True
         else:
             return False
-
-    def putStructureInTile(self, tileCoord, Structure):
-        tile = self.map.getTileOfCoord(tileCoord)
-        tile.updateStructureReference(Structure)
 
     def mapCollision(self, changeX, changeY):
         playerRect = self.player.getRect()

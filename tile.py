@@ -71,6 +71,10 @@ class Map(Asset):
         mapTile = self.getTileLocationOfCoord(mapCoords)
         return self.getCoordsOfTile(*mapTile)
 
+    def putStructureInTile(self, tileCoord, Structure):
+        tile = self.getTileOfCoord(tileCoord)
+        tile.updateStructureReference(Structure)
+
     def outOfMapBounds(self, mapCoords):
         x = mapCoords[0]
         y = mapCoords[1]
