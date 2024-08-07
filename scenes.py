@@ -177,15 +177,26 @@ class GameScene(Sequence):
         mapCursorLocation[1] += coords[1]
 
         if self.world.hover(coords, mapCursorLocation):
-            self.hover.showWithPosition(self.world.normalizeTileCornerPosition(mapCursorLocation))
+            self.hover.showWithPosition(self.world.getMap().normalizeTileCornerPosition(mapCursorLocation))
         else:
             self.hover.hideObject()
 
         leftClick = buttonsPressed[0]
         if leftClick:
-            self.world.click(coords, mapCursorLocation)
+            self.click(coords, mapCursorLocation)
             
         return -1
+
+    def click(self, frameCoords, mapCoords):
+        if self.world.getMap().outOfMapBounds(mapCoords) or self.world.inPlayersWay(mapCoords):
+            print("cant place that here")
+            return False
+        elif self.world.outOfPlayerRange(mapCoords):
+            print("out of range")
+            return False
+        else:
+            self.world.place(mapCoords)
+            return True
 
     def scroll(self, x, y):
         self.world.updateSelectedItem(y)

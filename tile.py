@@ -53,10 +53,29 @@ class Map(Asset):
 
     def getTileOfCoord(self, mapCoords):
         location = self.getTileLocationOfCoord(mapCoords)
-        return self.getTileMap()[location[1]][location[0]]
+        return self.tileMap[location[1]][location[0]]
+
+    def getTileOfTileCoord(self, tileCoord):
+        return self.tileMap[tileCoord[1]][tileCoord[0]]
+
+    def getCoordsOfTile(self, col, row):
+        return (col * self.tileDim, row * self.tileDim)
 
     def tilePlace(self, mapTile, type):
         if self.tileMap[mapTile[1]][mapTile[0]].place(type) == True:
+            return True
+        else:
+            return False
+
+    def normalizeTileCornerPosition(self, mapCoords):
+        mapTile = self.getTileLocationOfCoord(mapCoords)
+        return self.getCoordsOfTile(*mapTile)
+
+    def outOfMapBounds(self, mapCoords):
+        x = mapCoords[0]
+        y = mapCoords[1]
+
+        if (x < 0 or x > self.map_width or y < 0 or y > self.map_height):
             return True
         else:
             return False
@@ -104,10 +123,10 @@ class Tile:
     def getStructureReference(self):
         return self.structureRef
 
-    def hideStructureCaption(self):
+    def hideCaption(self):
         self.structureRef.hideCaption()
 
-    def showStructureCaption(self):
+    def showCaption(self):
         self.structureRef.showCaption()
 
     def containsStructure(self):
@@ -121,6 +140,7 @@ class Tile:
 
     def setCluster(self, cluster):
         self.parentCluster = cluster
+
 
 def getSurroundingClusters(tileLocation, tileMap, type):
 

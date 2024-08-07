@@ -66,13 +66,13 @@ class World:
         return self.inventory.getCurrentSelection()
 
     def initializeStructure(self, typeOfStructure, tileCoord):
-        pixelCoord = self.getCoordsOfTile(*tileCoord)
+        pixelCoord = self.map.getCoordsOfTile(*tileCoord)
         if self.structureCode.get(typeOfStructure) == 'transformer':
             structure = AnimatedStructure("transformer", -1,
                                             self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1]))
             self.placeStructure(structure, pixelCoord)
 
-        if self.getTileOfTileCoord(tileCoord).place(typeOfStructure):
+        if self.map.getTileOfTileCoord(tileCoord).place(typeOfStructure):
             return True
         else:
             return False
@@ -129,19 +129,8 @@ class World:
     def timeIncrease(self):
         self.timeController.timeIncrease()
 
-    def click(self, frameCoords, mapCoords):
-        if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
-            print("cant place that here")
-            return False
-        elif self.outOfPlayerRange(mapCoords):
-            print("out of range")
-            return False
-        else:
-            self.place(mapCoords)
-            return True
-
     def place(self, mapCoords):
-        objectPosition = self.normalizeTileCornerPosition(mapCoords)
+        objectPosition = self.map.normalizeTileCornerPosition(mapCoords)
         mapTile = self.map.getTileLocationOfCoord(mapCoords)
         currentSelection = self.getActualCurrentSelection()
         if self.map.getTileOfCoord(mapCoords).getType() == 2:
@@ -161,7 +150,7 @@ class World:
         self.putStructureInTile(stickyMapCoords, Structure)
 
     def hover(self, frameCoords, mapCoords):
-        if self.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
+        if self.map.outOfMapBounds(mapCoords) or self.inPlayersWay(mapCoords):
             return False
         elif self.outOfPlayerRange(mapCoords):
             self.updateHoverTile(mapCoords, frameCoords)
@@ -175,28 +164,23 @@ class World:
             oldTile = self.previousMousePosition
             newTile = self.map.getTileLocationOfCoord(mapCoords)
             if oldTile != newTile:
-                self.hideCaptionOfTile(oldTile)
-                self.showCaptionOfTile(newTile)
+
+                # Hides caption of old tile
+                tile = self.map.getTileOfTileCoord(oldTile)
+                if tile.containsStructure():
+                    tile.hideCaption()
+
+                # Shows caption of new tile
+                tile = self.map.getTileOfTileCoord(newTile)
+                if tile.containsStructure():
+                    tile.showCaption()
                 self.previousMousePosition = newTile
         else:
             self.previousMousePosition = self.map.getTileLocationOfCoord(mapCoords)
 
-    def hideCaptionOfTile(self, tileLocation):
-        tile = self.getTileOfTileCoord(tileLocation)
-        if tile.containsStructure():
-            tile.hideStructureCaption()
-
-    def showCaptionOfTile(self, tileLocation):
-        tile = self.getTileOfTileCoord(tileLocation)
-        if tile.containsStructure():
-            tile.showStructureCaption()
-
     def getCameraOffset(self):
         self.storedOffset = self.camera.getPlayerOffset(self.player.getPosition())
         return self.storedOffset
-
-    def getCoordsOfTile(self, col, row):
-        return (col * self.tileDim, row * self.tileDim)
 
     def getLocationOfTile(self, tile):
         # not a very efficient function so prefer not to use
@@ -205,37 +189,12 @@ class World:
                 if tile == tileIterate:
                     return (columnNum, rowNum)
 
-
-    def getTileOfTileCoord(self, tileCoord):
-        return self.map.getTileMap()[tileCoord[1]][tileCoord[0]]
-
-    def outOfMapBounds(self, mapCoords):
-        x = mapCoords[0]
-        y = mapCoords[1]
-
-        if (x < 0 or x > self.map_width or y < 0 or y > self.map_height):
-            return True
-        else:
-            return False
-
     def outOfPlayerRange(self, mapCoords):
         playerCoords = self.player.getUniversalPosition()
         if (math.sqrt((mapCoords[0] - playerCoords[0])**2 + (mapCoords[1] - playerCoords[1])**2)) > self.player.getRange():
             return True
         else:
             return False
-
-    def mapCollision(self, changeX, changeY):
-        playerRect = self.player.getRect()
-        if changeX == 0:
-            newY = self.player.getPosition()[1] - changeY
-            if (newY - playerRect[3] // 2 < 0 or newY + playerRect[3] // 2 > self.map_height):
-                return True
-        else:
-            newX = self.player.getPosition()[0] + changeX
-            if (newX - playerRect[2] // 2 < 0 or newX + playerRect[2] // 2 > self.map_width):
-                return True
-        return False
 
     def inPlayersWay(self, mapCoords):
         mapTile = self.map.getTileLocationOfCoord(mapCoords)
@@ -250,7 +209,7 @@ class World:
         pY1 = playerPosition[1] - playerHeight // 2
         pY2 = playerPosition[1] + playerHeight // 2
 
-        objectPosition = self.getCoordsOfTile(*mapTile)
+        objectPosition = self.map.getCoordsOfTile(*mapTile)
         oX1 = objectPosition[0]
         oX2 = objectPosition[0] + self.tileDim
         oY1 = objectPosition[1]
@@ -265,9 +224,17 @@ class World:
         tile = self.map.getTileOfCoord(tileCoord)
         tile.updateStructureReference(Structure)
 
-    def normalizeTileCornerPosition(self, mapCoords):
-        mapTile = self.map.getTileLocationOfCoord(mapCoords)
-        return self.getCoordsOfTile(*mapTile)
+    def mapCollision(self, changeX, changeY):
+        playerRect = self.player.getRect()
+        if changeX == 0:
+            newY = self.player.getPosition()[1] - changeY
+            if (newY - playerRect[3] // 2 < 0 or newY + playerRect[3] // 2 > self.map_height):
+                return True
+        else:
+            newX = self.player.getPosition()[0] + changeX
+            if (newX - playerRect[2] // 2 < 0 or newX + playerRect[2] // 2 > self.map_width):
+                return True
+        return False
 
     def objectCollision(self, changeX, changeY):
         # https://silentmatt.com/rectangle-intersection/
