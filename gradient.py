@@ -17,7 +17,7 @@ class Gradient:
 class GameGradients:
     #includes all the gradients used in the game backgrounds
     gradients = {
-        "sunset":
+        "sunrise":
             Gradient(
                 ((6, 4, 4),
                  (8, 10, 10),

@@ -1,11 +1,16 @@
 class TimeController:
 
     def __init__(self):
-        self.day = True
         self.time = 0
 
-    def timeIncrease(self):
-        self.time += 1
+        # constants
+
+    def timeIncrease(self, increment=1):
+        self.time += increment
 
     def getTime(self):
         return self.time
+
+    def isDayTime(self):
+        # to be filled in
+        return True

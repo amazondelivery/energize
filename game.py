@@ -15,8 +15,8 @@ class Game:
     def tick(self):
         self.sceneManager.tick()
 
-    def record(self, char):
-        self.sceneManager.record(char)
+    def record(self, key):
+        self.sceneManager.record(key)
 
     def mouse(self, coords, buttonsPressed):
         self.sceneManager.mouse(coords, buttonsPressed)

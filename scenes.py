@@ -3,10 +3,18 @@ from sequence import Sequence
 from world import World
 from asset import GUI, Image
 from asset import Text as BetterText
+import pygame as pg
 import json
 import os.path
 # main point of this class is to instate world and also translate player inputs to actual changes on screen
 
+keywords = {
+    pg.K_a : 'a',
+    pg.K_q : 'q',
+    pg.K_w : 'w',
+    pg.K_s : 's',
+    pg.K_d : 'd'
+}
 
 class TitleSequence(Sequence):
     def __init__(self):
@@ -93,15 +101,13 @@ class GameScene(Sequence):
         ]
 
     def draw(self, screen):
-        screen.fill(self.world.getGradientColor("sunset"))
         self.worldEvent()
+        screen.fill(self.world.getGradientColor("sunrise"))
         self.blit(screen)
-        # print(self.world.getSelectedItem())
         return screen
 
     def worldEvent(self):
         self.world.timeIncrease()
-        tile = self.world.getPlayerTile()  #unused so far
 
     def blitMap(self, screen, offset):
         screen.blit(*self.world.getMap().blit(offset))
@@ -146,9 +152,10 @@ class GameScene(Sequence):
 
         self.blitHoverTile(screen, offset)
 
-    def record(self, char):
+    def record(self, key):
         camera = self.world.getCamera()
         speed = self.world.getPlayer().getSpeed()
+        char = keywords.get(key)
         if char == 'w':
             for i in range(speed*2):
                 self.world.updatePlayer(0, 1)

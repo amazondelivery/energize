@@ -34,8 +34,8 @@ class SceneManager:
         self.clock.tick(60)
         self.update(self.screen)
 
-    def record(self, char):
-        num = self.currentScene.record(char)
+    def record(self, key):
+        num = self.currentScene.record(key)
         if num != -1:
             self.changeScene(num)
 
