@@ -19,7 +19,7 @@ class Player(Character):
     def __init__(self, imageName, dimensions, position = (True, 0, True, 0),
                  sprites = (), map_dimensions = (), speed = 15, range = 350, clickAction = -1):
         super().__init__()
-        self.characterImage = Image(imageName, position, dimensions)
+        self.characterImage = Image(imageName, position, dimensions, transparent=True)
         self.universalPosition = self.universalPositionGetter(self.characterImage.getPosition(), dimensions)
         self.dimensions = dimensions
         self.sprites = sprites

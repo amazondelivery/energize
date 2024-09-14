@@ -34,7 +34,7 @@ class World:
 
         # map, player, time controller
         self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), self.tileDim)
-        self.player = Player("assets/images/groo.jpg", (72,69), map_dimensions=(self.map_width, self.map_height))
+        self.player = Player("assets/images/groo.png", (80 * 2,80 * 2), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
         self.structures = self.initializeTileWorldStructures()
 
