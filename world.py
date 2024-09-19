@@ -68,8 +68,8 @@ class World:
     def initializeStructure(self, typeOfStructure, tileCoord):
         pixelCoord = self.map.getCoordsOfTile(*tileCoord)
         if self.structureCode.get(typeOfStructure) == 'transformer':
-            structure = AnimatedStructure("transformer", -1,
-                                            self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1]))
+            structure = AnimatedStructure("transformer",
+                                          self.structureCode.get(typeOfStructure), (False, pixelCoord[0], False, pixelCoord[1]))
             self.placeStructure(structure, pixelCoord)
 
         if self.map.getTileOfTileCoord(tileCoord).place(typeOfStructure):
@@ -137,7 +137,7 @@ class World:
             self.map.getTileOfCoord(mapCoords).getStructureReference().update()
         elif self.structureCode.get(currentSelection) == "solar" and self.map.tilePlace(mapTile, currentSelection)\
                 and self.inventory.updateInventory(currentSelection, -1):
-            structure = Structure("assets/images/solarDay.png", -1, self.structureCode.get(currentSelection),
+            structure = Structure("assets/images/solarDay.png", self.structureCode.get(currentSelection),
                                   (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
         elif self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\

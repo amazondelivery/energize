@@ -7,8 +7,9 @@ labelUpMove = 20
 
 
 class Structure(Image):
-    def __init__(self, imageName, clickAction, label,
-                 position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False, outputInWatts = 250, transparent = False):
+    def __init__(self, imageName, label,
+                 position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True, wire = False,
+                 outputInWatts = 250, transparent = False, clickAction = -1):
         self.outputInWatts = outputInWatts
         self.transparent = transparent
         if transformation is None:
@@ -47,8 +48,8 @@ class Structure(Image):
 class VariantStructure(Structure):
     # testing clickAction being a default parameter, and position being a non-default parameter
     def __init__(self, imageFolder, label,
-                 position, startingFrame = 0, clickAction = -1, transformation = None, cornerPlace = True,
-                 show = True, wire = False, outputInWatts = 250, transparent = False):
+                 position, startingFrame = 0, transformation = None, cornerPlace = True,
+                 show = True, wire = False, outputInWatts = 250, transparent = False, clickAction = -1):
         self.outputInWatts = outputInWatts
         self.transparent = transparent
         if transformation is None:
@@ -85,8 +86,8 @@ class VariantStructure(Structure):
 class AnimatedStructure(Structure):
     # this was kind of hard to figure out because at first i tried to make my overloaded blit() function would call
     # the parent Image class blit(), which i found out was very hard to do
-    def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
-                 startingFrame = 0, wire = False, outputInWatts = 250, transparent = False):
+    def __init__(self, imageFolder, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
+                 startingFrame = 0, wire = False, outputInWatts = 250, transparent = False, clickAction = -1):
         self.outputInWatts = outputInWatts
         self.transparent = transparent
         if transformation == None:
@@ -209,10 +210,10 @@ class Wire(Structure):
 
 class Transformer(AnimatedStructure):
 
-    def __init__(self, imageFolder, clickAction, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
-                 startingFrame = 0, wire = False, transparent = False):
-        super().__init__(self, imageFolder, clickAction, label, position, transformation, cornerPlace, show,
-                 startingFrame, wire, transparent)
+    def __init__(self, imageFolder, label, position = (False, 0, False, 0), transformation = None, cornerPlace = True, show = True,
+                 startingFrame = 0, wire = False, transparent = False, clickAction = -1):
+        super().__init__(self, imageFolder, label, position, transformation, cornerPlace, show,
+                 startingFrame, wire, transparent, clickAction)
 
         self.collection = 0
 
