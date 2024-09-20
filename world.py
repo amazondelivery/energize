@@ -14,6 +14,7 @@ import math
 
 class World:
 
+    objectWiggleRoom = 0  # should probably stay 0
     gradients = GameGradients()
     structureCode = BidirectionalDict({
             0 : "none",
@@ -33,8 +34,9 @@ class World:
         self.camera = Camera((self.map_width, self.map_height), self.initialCameraPoint)
 
         # map, player, time controller
+        playerConversionFactor = 2.5
         self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), self.tileDim)
-        self.player = Player("assets/images/groo.png", (80 * 2,80 * 2), map_dimensions=(self.map_width, self.map_height))
+        self.player = Player("assets/images/player.png", (round(39 * playerConversionFactor), round(77 * playerConversionFactor)), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
         self.structures = self.initializeTileWorldStructures()
 
@@ -237,7 +239,6 @@ class World:
         # https://silentmatt.com/rectangle-intersection/
         # used the above link to help
         playerPosition = self.player.getPosition()
-        objectWiggleRoom = 0  # probably not needed
         playerWidth, playerHeight = self.player.getRect()[2:4]
         pX1 = playerPosition[0] + changeX - playerWidth // 2
         pX2 = playerPosition[0] + changeX + playerWidth // 2
@@ -250,18 +251,18 @@ class World:
             objectPosition = obj.getPosition()
             objectWidth, objectHeight = obj.getRect()[2:4]
             if obj.getCornerType == False:
-                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
-                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
+                oX1 = objectPosition[0] - objectWidth // 2 + self.objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth // 2 - self.objectWiggleRoom
+                oY1 = objectPosition[1] - objectHeight // 2 + self.objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight // 2 - self.objectWiggleRoom
 
                 if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
                     return True
             else:
-                oX1 = objectPosition[0] + objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
-                oY1 = objectPosition[1] + objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
+                oX1 = objectPosition[0] + self.objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth - self.objectWiggleRoom
+                oY1 = objectPosition[1] + self.objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight - self.objectWiggleRoom
 
                 if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
                     return True
