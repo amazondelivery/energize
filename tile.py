@@ -167,25 +167,6 @@ def getSurroundingClusters(tileLocation, tileMap, type):
 
     return clusters
 
-class Cluster:
-    def __init__(self, initialTile):
-        self.tileCluster = [initialTile]
-
-    def collect(self):
-        sum = 0
-        for tile in self.tileCluster:
-            sum += tile.collect()
-
-        return sum
-
-    def addTile(self, Tile):
-        self.tileCluster.append(Tile)
-
-    def transferTilesToNewCluster(self, newCluster):
-        for tile in self.tileCluster:
-            tile.setCluster(newCluster)
-            newCluster.addTile(tile)
-
 
 
 
