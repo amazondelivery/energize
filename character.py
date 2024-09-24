@@ -16,13 +16,17 @@ class Character():
 
 class Player(Character):
 
-    def __init__(self, imageName, dimensions, position = (True, 0, True, 0),
-                 sprites = (), map_dimensions = (), speed = 15, range = 350, clickAction = -1):
+    def __init__(self, assetFolder, dimensions, default = "stand.png", frontRuns = ("downLeft.png",  "downRight.png"),
+                 position = (True, 0, True, 0), map_dimensions = (), speed = 15,
+                 range = 350, clickAction = -1):
         super().__init__()
-        self.characterImage = Image(imageName, position, dimensions, transparent=True)
+        self.default = Image("assets/images/player/" + default, position, dimensions, transparent=True)
+        self.frontRuns = (Image("assets/images/player/" + frontRuns[0], position, dimensions, transparent=True),
+                          Image("assets/images/player/" + frontRuns[1], position, dimensions, transparent=True))
+
+        self.characterImage = self.default
         self.universalPosition = self.universalPositionGetter(self.characterImage.getPosition(), dimensions)
         self.dimensions = dimensions
-        self.sprites = sprites
         self.mapDimensions = map_dimensions
         self.speed = speed
 
