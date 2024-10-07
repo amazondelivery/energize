@@ -1,5 +1,5 @@
-from structure import Structure, AnimatedStructure
-from asset import Asset
+from gameStructure.structure import Structure, AnimatedStructure
+from gameStructure.asset import Asset
 
 
 class Map(Asset):

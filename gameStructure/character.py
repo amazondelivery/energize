@@ -1,4 +1,4 @@
-from asset import Image
+from gameStructure.asset import Image
 
 class Character():
     def __init__(self):

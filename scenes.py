@@ -1,8 +1,8 @@
-from screenObject import Text
+from gameStructure.screenObject import Text
 from sequence import Sequence
-from world import World
-from asset import GUI, Image
-from asset import Text as BetterText
+from gameStructure.world import World
+from gameStructure.asset import GUI, Image
+from gameStructure.asset import Text as BetterText
 import pygame as pg
 import json
 import os.path

@@ -1,4 +1,4 @@
-from asset import Image, Text
+from gameStructure.asset import Image, Text
 import pygame as pg
 from os import listdir
 

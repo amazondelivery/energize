@@ -1,11 +1,11 @@
 from tile import Map
-from structure import Structure, AnimatedStructure, Wire
-from camera import *
-from gradient import *
-from timeController import TimeController
-from inventory import Inventory
+from gameStructure.structure import Structure, AnimatedStructure, Wire
+from gameStructure.camera import *
+from gameStructure.gradient import *
+from gameStructure.timeController import TimeController
+from gameStructure.inventory import Inventory
 from utils import *
-from character import Player
+from gameStructure.character import Player
 import queue
 import math
 # at some point i want the world to be randomly generated with a seed
