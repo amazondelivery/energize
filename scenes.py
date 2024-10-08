@@ -1,7 +1,8 @@
 from gameStructure.screenObject import Text
 from sequence import Sequence
 from gameStructure.world import World
-from gameStructure.asset import GUI, Image
+from gameStructure.asset import Image
+from gameStructure.gui import GUI, ScoreTicker
 from gameStructure.asset import Text as BetterText
 import pygame as pg
 import json
@@ -91,8 +92,8 @@ class GameScene(Sequence):
         currentlySelectedIconDimension = (tileDim, tileDim)
         self.currentlySelectedIcons = [
             None,
-            GUI("assets/images/solarNight.png", currentlySelectedIconDimension, True, left=leftAlign, top=topAlign),
-            GUI("assets/images/wire/3-2-wire.png", currentlySelectedIconDimension, True, left=leftAlign, top=topAlign)
+            GUI("assets/images/solarNight.png", leftAlign, topAlign, currentlySelectedIconDimension, True),
+            GUI("assets/images/wire/3-2-wire.png", leftAlign, topAlign, currentlySelectedIconDimension, True)
         ]
 
         self.hover = Image("assets/images/Border.png", (False, 0, False, 0), (tileDim, tileDim), True, transparent=True)
