@@ -39,6 +39,12 @@ class Structure(Image):
     def getWire(self):
         return self.isWire
 
+        
+
+
+
+
+
     def initLabel(self, label):
         font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", labelSize)
         return Text(font, label, pg.Color(255, 255, 255),

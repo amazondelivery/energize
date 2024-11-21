@@ -9,7 +9,6 @@ from gameStructure.character import Player
 import queue
 import math
 # at some point i want the world to be randomly generated with a seed
-# world.py needs to be cut down because it is way too big and it makes coding confusing
 
 
 class World:
@@ -36,7 +35,7 @@ class World:
         # map, player, time controller
         playerConversionFactor = 2.5
         self.map = Map("assets/images/maps/game_map1.png", (self.map_width, self.map_height), self.tileDim)
-        self.player = Player("assets/images/player.png", (round(39 * playerConversionFactor), round(77 * playerConversionFactor)), map_dimensions=(self.map_width, self.map_height))
+        self.player = Player("assets/images/player", (round(39 * playerConversionFactor), round(77 * playerConversionFactor)), map_dimensions=(self.map_width, self.map_height))
         self.timeController = TimeController()
         self.structures = self.initializeTileWorldStructures()
 
@@ -58,14 +57,8 @@ class World:
     def getTileDim(self):
         return self.tileDim
 
-    def getTileDim(self):
-        return self.tileDim
-
-    def getActualCurrentSelection(self):
-        return self.inventory.getCurrentSelection() % self.inventory.getLength()
-
     def getCurrentSelection(self):
-        return self.inventory.getCurrentSelection()
+        return self.inventory.getCurrentSelection() % self.inventory.getLength()
 
     def initializeStructure(self, typeOfStructure, tileCoord):
         pixelCoord = self.map.getCoordsOfTile(*tileCoord)
@@ -134,7 +127,7 @@ class World:
     def place(self, mapCoords):
         objectPosition = self.map.normalizeTileCornerPosition(mapCoords)
         mapTile = self.map.getTileLocationOfCoord(mapCoords)
-        currentSelection = self.getActualCurrentSelection()
+        currentSelection = self.getCurrentSelection()
         if self.map.getTileOfCoord(mapCoords).getType() == 2:
             self.map.getTileOfCoord(mapCoords).getStructureReference().update()
         elif self.structureCode.get(currentSelection) == "solar" and self.map.tilePlace(mapTile, currentSelection)\
@@ -142,8 +135,8 @@ class World:
             structure = Structure("assets/images/solarDay.png", self.structureCode.get(currentSelection),
                                   (False, objectPosition[0], False, objectPosition[1]))
             self.placeStructure(structure, mapCoords)
-        elif self.structureCode.get(self.getActualCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getActualCurrentSelection(), -1)\
-            and self.map.tilePlace(mapTile, self.getActualCurrentSelection()):
+        elif self.structureCode.get(self.getCurrentSelection()) == 'wire' and self.inventory.updateInventory(self.getCurrentSelection(), -1)\
+            and self.map.tilePlace(mapTile, self.getCurrentSelection()):
             wire = Wire(objectPosition, 4, 2)
             self.placeStructure(wire, mapCoords)
 
