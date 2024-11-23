@@ -122,7 +122,8 @@ class World:
         return self.structures
 
     def timeIncrease(self):
-        self.timeController.timeIncrease()
+        newTime = self.timeController.timeIncrease()
+
 
     def place(self, mapCoords):
         objectPosition = self.map.normalizeTileCornerPosition(mapCoords)

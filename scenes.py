@@ -2,8 +2,9 @@ from gameStructure.screenObject import Text
 from sequence import Sequence
 from gameStructure.world import World
 from gameStructure.asset import Image
-from gameStructure.gui import GUI, ScoreTicker
-from gameStructure.asset import Text as BetterText
+from gameStructure.gui import GUI, NumberGUI
+from gameStructure.asset import Text
+from gameStructure.screenObject import Text as DeprecatedText
 import pygame as pg
 import json
 import os.path
@@ -29,9 +30,9 @@ class TitleSequence(Sequence):
         }
 
         self.texts = [
-            Text(self.fonts['titleFont'], "ENERGIZE", -1, position=(True, 0, True, 165)),
-            Text(self.fonts['buttonFont'], "PLAY", 2, position=(True, 0, True, -30)),
-            Text(self.fonts['buttonFont'], "SETTINGS", 1, position=(True, 0, True, -130))
+            DeprecatedText(self.fonts['titleFont'], "ENERGIZE", position=(True, 0, True, 165), clickAction = -1),
+            DeprecatedText(self.fonts['buttonFont'], "PLAY", position=(True, 0, True, -30), clickAction = 2),
+            DeprecatedText(self.fonts['buttonFont'], "SETTINGS", position=(True, 0, True, -130), clickAction = 1)
         ]
 
         self.images = []
@@ -62,7 +63,7 @@ class SettingsSequence(Sequence):
         }
 
         self.texts = [
-            Text(self.fonts['mainFont'], "Sample Text", -1, position=(True, 0, True, 0))
+            Text(self.fonts['mainFont'], "Sample Text", position=(True, 0, True, 0))
         ]
 
         self.images = []
@@ -97,8 +98,10 @@ class GameScene(Sequence):
         ]
 
         self.hover = Image("assets/images/Border.png", (False, 0, False, 0), (tileDim, tileDim), True, transparent=True)
+
+        font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", 30)
         self.guiItems = [
-            self.currentlySelectedIcons
+            NumberGUI(0, 50, 50, font)
         ]
 
     def draw(self, screen):
@@ -217,7 +220,7 @@ class LoadingScreenInitial(Sequence):
         loadingFont = self.font("assets/fonts/MajorMonoDisplay-Regular.ttf", 80)
 
         self.texts = [
-            BetterText(loadingFont, "Loading", -1, position=(True, 0, True, 0))
+            Text(loadingFont, "Loading", -1, position=(True, 0, True, 0))
         ]
 
     def drawHelper(self, screen):

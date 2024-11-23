@@ -118,9 +118,6 @@ class Text(Asset):
         self.color = color
         self.antialias = antialias
 
-    def rerender(self, newText):
-        self.obj = renderText(self.font, newText, self.color, self.antialias)
-
 
 class Image(Asset):
     def __init__(self, imageName, position = (True, 0, True, 0), \
@@ -143,5 +140,7 @@ class Image(Asset):
             return self.renderImage(imageName)
         else:
             return self.renderImage(imageName, transformation)
+
+
 
 

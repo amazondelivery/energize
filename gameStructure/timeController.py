@@ -7,6 +7,7 @@ class TimeController:
 
     def timeIncrease(self, increment=1):
         self.time += increment
+        return self.time
 
     def getTime(self):
         return self.time

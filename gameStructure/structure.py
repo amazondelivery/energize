@@ -46,6 +46,7 @@ class Structure(Image):
 
 
     def initLabel(self, label):
+
         font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", labelSize)
         return Text(font, label, pg.Color(255, 255, 255),
                           (False, self.position[0], False, self.position[1] - labelUpMove), show = False)
@@ -151,11 +152,11 @@ class Wire(Structure):
         self.outputInWatts = 0
         self.transparent = True
         self.objs = [(imageName, self.renderImage(f"assets/images/wire/{imageName}", (self.tileDim, self.tileDim)))
-                     for imageName in listdir(f"assets/images/wire")]
+                     for imageName in listdir(f"assets/images/wire") if imageName != ".DS_Store"]
         self.clickAction = -1
         self.position = tuple(pixelCornerPosition)
         self.cornerPlace = True
-        self.frame = self.startingFrameCalculator()
+        self.frame = self.startingFrameCalculator(leftTile, rightTile, bottomTile, upTile)
         self.objsLength = len(self.objs)
         self.rect = self.getRect()
         self.isWire = True
@@ -189,7 +190,7 @@ class Wire(Structure):
         else:
             raise Exception()
 
-    def startingFrameCalculator(self):
+    def startingFrameCalculator(self, leftTile, rightTile, bottomTile, upTile):
         return 0
 
     def update(self):

@@ -1,13 +1,10 @@
-from gameStructure.asset import Image, Text
+from gameStructure.asset import Image, Text, renderText
 import pygame as pg
-
 
 class GUI(Image):
     def __init__(self, imageName, left, top, transformation = None, show = True, transparent = True, clickAction = -1):
 
-        # might remove line below, not needed
         self.transparent = transparent
-
         self.obj = self.transformationChecker(imageName, transformation)
         self.rect = self.getRect()
         self.clickAction = clickAction
@@ -44,6 +41,47 @@ class GUI(Image):
             return self.obj, positionArray
         else:
             return self.obj, positionArray
+
+class NumberGUI(Text):
+    def __init__(self, initialNumber, left, top, font, color = pg.Color(255, 255, 255), antialias = True,
+                 transformation = None, show = True, transparent = True, clickAction = -1):
+
+        self.obj = renderText(font, str(initialNumber), color, antialias)
+        self.rect = self.obj.get_rect()
+        self.transparent = transparent
+        self.counter = initialNumber
+        self.font = font
+        self.color = color
+        self.antialias = antialias
+        self.position = self.regPosition(left, top)
+        self.cornerPlace = True
+        self.show = show
+
+
+    def update(self, byHowMuch):
+        self.counter += byHowMuch
+        self.rerender(str(self.counter))
+
+    def rerender(self, newText):
+        self.obj = renderText(self.font, newText, self.color, self.antialias)
+
+    def regPosition(self, left, top):
+        width, height = self.getWidthHeight()
+        if left < 0:
+            x = self.screen_width + left - width
+            # right side must be -left from the right side of the screen
+        else:
+            x = left
+            # left side must be left from the left side of the screen
+
+        if top < 0:
+            # bottom side must be -top from the bottom side of the screen
+            y = self.screen_height + top - height
+        else:
+            y = top
+            # top side must be top from the top side of the screen
+
+        return (x, y)
 
 
 # basic GUI that encompasses a number
