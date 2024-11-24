@@ -1,4 +1,5 @@
-from gameStructure.asset import Image
+from gameStructure.asset import Image, Asset
+
 
 class Character():
     def __init__(self):
@@ -53,15 +54,16 @@ class Player(Character):
         self.universalPosition[0] += changeX
         self.universalPosition[1] -= changeY
 
-    def testUpdatedPos(self, x, y):
-        return (self.universalPosition[0] + x, self.universalPosition[1] - y)
-
-    def changeImage(self, newImage):
-        prevImage = self.characterImage
-        self.characterImage = Image(newImage, prevImage.getAction(), prevImage.getPosition(), self.dimensions)
-
     def getUniversalPosition(self):
         return self.universalPosition
 
     def getPosition(self):
         return self.characterImage.getPosition()
+
+    def updatePos(self, x, y):
+        self.default.updatePosition(x,y)
+        for thing in self.frontRuns:
+            thing.updatePosition(x,y)
+
+    def updateCharacterImage(self, number):
+        self.characterImage = self.frontRuns[number % 2]

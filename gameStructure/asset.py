@@ -122,7 +122,7 @@ class Text(Asset):
 class Image(Asset):
     def __init__(self, imageName, position = (True, 0, True, 0), \
                  transformation = None, cornerPlace = False, show = True,
-                 transparent = False, clickAction = -1):
+                 transparent = False, clickAction = -1, naturalPosition = None):
 
         self.transparent = transparent
         if transformation == None:
@@ -130,7 +130,10 @@ class Image(Asset):
         else:
             self.obj = self.renderImage(imageName, transformation)
         self.clickAction = clickAction
-        self.position = self.regPosition(position)
+        if naturalPosition == None:
+            self.position = self.regPosition(position)
+        else:
+            self.position = naturalPosition
         self.cornerPlace = cornerPlace
         self.show = show
         self.rect = self.getRect()

@@ -43,10 +43,13 @@ class GUI(Image):
             return self.obj, positionArray
 
 class NumberGUI(Text):
-    def __init__(self, initialNumber, left, top, font, color = pg.Color(255, 255, 255), antialias = True,
+    def __init__(self, initialNumber, left, top, font, label = None, color = pg.Color(255, 255, 255), antialias = True,
                  transformation = None, show = True, transparent = True, clickAction = -1):
-
-        self.obj = renderText(font, str(initialNumber), color, antialias)
+        self.label = label
+        if (self.label != None):
+            self.obj = renderText(font, str(initialNumber) + " " + label, color, antialias)
+        else:
+            self.obj = renderText(font, str(initialNumber), color, antialias)
         self.rect = self.obj.get_rect()
         self.transparent = transparent
         self.counter = initialNumber
@@ -60,7 +63,10 @@ class NumberGUI(Text):
 
     def update(self, byHowMuch):
         self.counter += byHowMuch
-        self.rerender(str(self.counter))
+        if (self.label != None):
+            self.rerender(str(self.counter) + " " + self.label)
+        else:
+            self.rerender(str(self.counter))
 
     def rerender(self, newText):
         self.obj = renderText(self.font, newText, self.color, self.antialias)

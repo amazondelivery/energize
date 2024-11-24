@@ -265,3 +265,7 @@ class World:
 
     def getMap(self):
         return self.map
+
+    def updatePlayerSprite(self):
+        time = self.timeController.getTime()
+        self.player.updateCharacterImage(time)

@@ -99,9 +99,9 @@ class GameScene(Sequence):
 
         self.hover = Image("assets/images/Border.png", (False, 0, False, 0), (tileDim, tileDim), True, transparent=True)
 
-        font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", 30)
+        font = pg.font.Font("assets/fonts/MajorMonoDisplay-Regular.ttf", 20)
         self.guiItems = [
-            NumberGUI(0, 50, 50, font)
+            NumberGUI(0, 50, 50, font, "Watt-hours")
         ]
 
     def draw(self, screen):
@@ -141,6 +141,11 @@ class GameScene(Sequence):
         if self.hover.getShow() == True:
             screen.blit(*self.hover.blit(offset))
 
+    def blitGUI(self, screen, offset):
+        for GUI in self.guiItems:
+            if (GUI.getShow() == True):
+                screen.blit(*GUI.blit())
+
     def blit(self, screen):
         offset = self.world.getCameraOffset()
 
@@ -156,6 +161,8 @@ class GameScene(Sequence):
 
         self.blitHoverTile(screen, offset)
 
+        self.blitGUI(screen, offset)
+
     def record(self, key):
         camera = self.world.getCamera()
         speed = self.world.getPlayer().getSpeed()
@@ -163,15 +170,19 @@ class GameScene(Sequence):
         if char == 'w':
             for i in range(speed*2):
                 self.world.updatePlayer(0, 1)
+            self.world.updatePlayerSprite()
         elif char == 'a':
             for i in range(speed*2):
                 self.world.updatePlayer(-1, 0)
+            self.world.updatePlayerSprite()
         elif char == 's':
             for i in range(speed*2):
                 self.world.updatePlayer(0, -1)
+            self.world.updatePlayerSprite()
         elif char == 'd':
             for i in range(speed*2):
                 self.world.updatePlayer(1, 0)
+            self.world.updatePlayerSprite()
         elif char == '<':
             camera.moveLeft(speed)
         elif char == '>':
