@@ -8,12 +8,18 @@ from utils import *
 from gameStructure.character import Player
 import queue
 import math
-# at some point i want the world to be randomly generated with a seed
+
+# static world settings
+defaultWorldStructures = (
+    # (typeOfStructure, tileCoord)
+    (5, (2,2)),
+    (5, (10,10))
+)
+objectWiggleRoom = 0 # describes hitbox error correction
 
 
 class World:
 
-    objectWiggleRoom = 0  # should probably stay 0
     gradients = GameGradients()
     structureCode = BidirectionalDict({
             0 : "none",
@@ -46,8 +52,7 @@ class World:
             2 : 20
         })
 
-        # default Structures
-        self.initializeStructure(5, (2,2))
+        self.initializeDefaultStructures()
 
         self.previousMousePosition = False
 
@@ -59,6 +64,10 @@ class World:
 
     def getCurrentSelection(self):
         return self.inventory.getCurrentSelection() % self.inventory.getLength()
+
+    def initializeDefaultStructures(self):
+        for structureTupleAndPosition in defaultWorldStructures:
+            self.initializeStructure(*structureTupleAndPosition)
 
     def initializeStructure(self, typeOfStructure, tileCoord):
         pixelCoord = self.map.getCoordsOfTile(*tileCoord)
@@ -245,18 +254,18 @@ class World:
             objectPosition = obj.getPosition()
             objectWidth, objectHeight = obj.getRect()[2:4]
             if obj.getCornerType == False:
-                oX1 = objectPosition[0] - objectWidth // 2 + self.objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth // 2 - self.objectWiggleRoom
-                oY1 = objectPosition[1] - objectHeight // 2 + self.objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight // 2 - self.objectWiggleRoom
+                oX1 = objectPosition[0] - objectWidth // 2 + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth // 2 - objectWiggleRoom
+                oY1 = objectPosition[1] - objectHeight // 2 + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight // 2 - objectWiggleRoom
 
                 if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
                     return True
             else:
-                oX1 = objectPosition[0] + self.objectWiggleRoom
-                oX2 = objectPosition[0] + objectWidth - self.objectWiggleRoom
-                oY1 = objectPosition[1] + self.objectWiggleRoom
-                oY2 = objectPosition[1] + objectHeight - self.objectWiggleRoom
+                oX1 = objectPosition[0] + objectWiggleRoom
+                oX2 = objectPosition[0] + objectWidth - objectWiggleRoom
+                oY1 = objectPosition[1] + objectWiggleRoom
+                oY2 = objectPosition[1] + objectHeight - objectWiggleRoom
 
                 if (pX1 < oX2 and pX2 > oX1 and pY1 < oY2 and pY2 > oY1):
                     return True
